@@ -131,6 +131,15 @@
             <Form>BoardView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Board\BoardState.pas"/>
+        <DCCReference Include="Board\BoardBuilder.pas"/>
+        <DCCReference Include="Board\BoardPiece.pas"/>
+        <DCCReference Include="Pieces\Pawn.pas"/>
+        <DCCReference Include="Pieces\Bishop.pas"/>
+        <DCCReference Include="Pieces\Queen.pas"/>
+        <DCCReference Include="Pieces\King.pas"/>
+        <DCCReference Include="Pieces\Rook.pas"/>
+        <DCCReference Include="Pieces\Knight.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -146,6 +155,7 @@
     <ProjectExtensions>
         <Borland.Personality>Delphi.Personality.12</Borland.Personality>
         <Borland.ProjectType>Application</Borland.ProjectType>
+        <ProjectFileVersion>12</ProjectFileVersion>
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
@@ -157,7 +167,7 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="5">
-                <DeployFile LocalName="Win32\Debug\PascalChess.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Dist\exe\PascalChess.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>PascalChess.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -1119,7 +1129,6 @@
                 <Platform value="Win64">True</Platform>
             </Platforms>
         </BorlandProject>
-        <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>
     <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
