@@ -11,7 +11,8 @@ uses
   Queen in 'Pieces\Queen.pas',
   King in 'Pieces\King.pas',
   Rook in 'Pieces\Rook.pas',
-  Knight in 'Pieces\Knight.pas';
+  Knight in 'Pieces\Knight.pas',
+  ImageLoader in 'Images\ImageLoader.pas';
 
 {$R *.res}
 

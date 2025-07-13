@@ -1,0 +1,6 @@
+Bishop RCDATA "Bishop.png" 
+King RCDATA "King.png" 
+Knight RCDATA "Knight.png" 
+Pawn RCDATA "Pawn.png" 
+Queen RCDATA "Queen.png" 
+Rook RCDATA "Rook.png" 

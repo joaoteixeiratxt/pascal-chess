@@ -140,6 +140,7 @@
         <DCCReference Include="Pieces\King.pas"/>
         <DCCReference Include="Pieces\Rook.pas"/>
         <DCCReference Include="Pieces\Knight.pas"/>
+        <DCCReference Include="Images\ImageLoader.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
