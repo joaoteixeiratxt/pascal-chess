@@ -6,13 +6,9 @@ uses
   System.Classes, System.Types, BoardPiece;
 
 type
-  TRook = class(TInterfacedObject, IPiece)
-  private
-    FPieceType: TPieceType;
-    function GetPieceType: TPieceType;
+  TRook = class(TPieceBase)
   public
     constructor Create;
-    property PieceType: TPieceType read GetPieceType;
   end;
 
 implementation
@@ -22,11 +18,6 @@ implementation
 constructor TRook.Create;
 begin
   FPieceType := ptRook;
-end;
-
-function TRook.GetPieceType: TPieceType;
-begin
-  Result := FPieceType;
 end;
 
 end.

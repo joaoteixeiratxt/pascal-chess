@@ -6,13 +6,9 @@ uses
   System.Classes, System.Types, BoardPiece;
 
 type
-  TPawn = class(TInterfacedObject, IPiece)
-  private
-    FPieceType: TPieceType;
-    function GetPieceType: TPieceType;
+  TPawn = class(TPieceBase)
   public
     constructor Create;
-    property PieceType: TPieceType read GetPieceType;
   end;
 
 implementation
@@ -22,11 +18,6 @@ implementation
 constructor TPawn.Create;
 begin
   FPieceType := ptPawn;
-end;
-
-function TPawn.GetPieceType: TPieceType;
-begin
-  Result := FPieceType;
 end;
 
 end.
