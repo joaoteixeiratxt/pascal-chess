@@ -120,7 +120,6 @@ end;
 procedure TBoard.Render;
 var
   Piece: IPiece;
-  PieceName: string;
   PiecePanel: TPanel;
   Row, Col: Integer;
   SquareImage: TImage;
@@ -138,12 +137,9 @@ begin
         Continue;
 
       PiecePanel := FBoardMatrix[Row, Col];
-
-      //TODO: Make a helper
-      PieceName := TObject(Piece).ClassName.Remove(0, 1);
-
       SquareImage := TImage(PiecePanel.Components[0]);
-      TImageLoader.Load(PieceName, SquareImage);
+
+      TImageLoader.Load(Piece.ImageName, SquareImage);
     end;
   end;
 

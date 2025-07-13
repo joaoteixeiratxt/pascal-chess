@@ -8,7 +8,7 @@ uses
 type
   TKing = class(TPieceBase)
   public
-    constructor Create;
+    constructor Create(Color: TPieceColor); override;
   end;
 
 implementation
@@ -17,6 +17,7 @@ implementation
 
 constructor TKing.Create;
 begin
+  inherited Create(Color);
   FPieceType := ptKing;
 end;
 

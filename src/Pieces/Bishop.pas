@@ -8,7 +8,7 @@ uses
 type
   TBishop = class(TPieceBase)
   public
-    constructor Create;
+    constructor Create(Color: TPieceColor); override;
   end;
 
 implementation
@@ -17,6 +17,7 @@ implementation
 
 constructor TBishop.Create;
 begin
+  inherited Create(Color);
   FPieceType := ptBishop;
 end;
 

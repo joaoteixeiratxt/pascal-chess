@@ -40,29 +40,29 @@ begin
     for Column := 0 to 7 do
       FBoardMatrix[Row, Column] := nil;
 
-  FBoardMatrix[7, 0] := TPieceFactory.New(ptRook);
-  FBoardMatrix[7, 1] := TPieceFactory.New(ptKnight);
-  FBoardMatrix[7, 2] := TPieceFactory.New(ptBishop);
-  FBoardMatrix[7, 3] := TPieceFactory.New(ptQueen);
-  FBoardMatrix[7, 4] := TPieceFactory.New(ptKing);
-  FBoardMatrix[7, 5] := TPieceFactory.New(ptBishop);
-  FBoardMatrix[7, 6] := TPieceFactory.New(ptKnight);
-  FBoardMatrix[7, 7] := TPieceFactory.New(ptRook);
+  FBoardMatrix[0, 0] := TPieceFactory.New(ptRook, pcBlack);
+  FBoardMatrix[0, 1] := TPieceFactory.New(ptKnight, pcBlack);
+  FBoardMatrix[0, 2] := TPieceFactory.New(ptBishop, pcBlack);
+  FBoardMatrix[0, 3] := TPieceFactory.New(ptQueen, pcBlack);
+  FBoardMatrix[0, 4] := TPieceFactory.New(ptKing, pcBlack);
+  FBoardMatrix[0, 5] := TPieceFactory.New(ptBishop, pcBlack);
+  FBoardMatrix[0, 6] := TPieceFactory.New(ptKnight, pcBlack);
+  FBoardMatrix[0, 7] := TPieceFactory.New(ptRook, pcBlack);
 
   for Column := 0 to 7 do
-    FBoardMatrix[6, Column] := TPieceFactory.New(ptPawn);
+    FBoardMatrix[1, Column] := TPieceFactory.New(ptPawn, pcBlack);
 
-  FBoardMatrix[0, 0] := TPieceFactory.New(ptRook);
-  FBoardMatrix[0, 1] := TPieceFactory.New(ptKnight);
-  FBoardMatrix[0, 2] := TPieceFactory.New(ptBishop);
-  FBoardMatrix[0, 3] := TPieceFactory.New(ptQueen);
-  FBoardMatrix[0, 4] := TPieceFactory.New(ptKing);
-  FBoardMatrix[0, 5] := TPieceFactory.New(ptBishop);
-  FBoardMatrix[0, 6] := TPieceFactory.New(ptKnight);
-  FBoardMatrix[0, 7] := TPieceFactory.New(ptRook);
+  FBoardMatrix[7, 0] := TPieceFactory.New(ptRook, pcWhite);
+  FBoardMatrix[7, 1] := TPieceFactory.New(ptKnight, pcWhite);
+  FBoardMatrix[7, 2] := TPieceFactory.New(ptBishop, pcWhite);
+  FBoardMatrix[7, 3] := TPieceFactory.New(ptQueen, pcWhite);
+  FBoardMatrix[7, 4] := TPieceFactory.New(ptKing, pcWhite);
+  FBoardMatrix[7, 5] := TPieceFactory.New(ptBishop, pcWhite);
+  FBoardMatrix[7, 6] := TPieceFactory.New(ptKnight, pcWhite);
+  FBoardMatrix[7, 7] := TPieceFactory.New(ptRook, pcWhite);
 
   for Column := 0 to 7 do
-    FBoardMatrix[1, Column] := TPieceFactory.New(ptPawn);
+    FBoardMatrix[6, Column] := TPieceFactory.New(ptPawn, pcWhite);
 end;
 
 function TBoardState.GetPieceMatrix: TPieceMatrix;

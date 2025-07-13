@@ -28,22 +28,34 @@ type
 
   IPiece = interface
   ['{04894C92-B55A-499E-BEC9-828C029975CC}']
+    function GetColor: TPieceColor;
+    procedure SetColor(const Value: TPieceColor);
     function GetPieceType: TPieceType;
+    function GetImageName: string;
+    property Color: TPieceColor read GetColor;
     property PieceType: TPieceType read GetPieceType;
+    property ImageName: string read GetImageName;
   end;
 
   TPieceBase = class(TInterfacedObject, IPiece)
   protected
+    FColor: TPieceColor;
     FPieceType: TPieceType;
   private
+    function GetColor: TPieceColor;
+    procedure SetColor(const Value: TPieceColor);
     function GetPieceType: TPieceType;
+    function GetImageName: string;
   public
+    constructor Create(Color: TPieceColor); virtual;
+    property Color: TPieceColor read GetColor;
     property PieceType: TPieceType read GetPieceType;
+    property ImageName: string read GetImageName;
   end;
 
   TPieceFactory = class
   public
-    class function New(PieceType: TPieceType): IPiece; static;
+    class function New(PieceType: TPieceType; Color: TPieceColor): IPiece; static;
   end;
 
 implementation
@@ -53,23 +65,43 @@ uses
 
 { TPieceBase }
 
+constructor TPieceBase.Create(Color: TPieceColor);
+begin
+  FColor := Color;
+end;
+
+function TPieceBase.GetColor: TPieceColor;
+begin
+  Result := FColor;
+end;
+
+procedure TPieceBase.SetColor(const Value: TPieceColor);
+begin
+  FColor := Value;
+end;
+
 function TPieceBase.GetPieceType: TPieceType;
 begin
   Result := FPieceType;
 end;
 
+function TPieceBase.GetImageName: string;
+begin
+  Result := FColor.GetName() + FPieceType.GetName();
+end;
+
 { TPieceFactory }
 
-class function TPieceFactory.New(PieceType: TPieceType): IPiece;
+class function TPieceFactory.New(PieceType: TPieceType; Color: TPieceColor): IPiece;
 begin
   case PieceType of
     ptNone: Result := nil;
-    ptPawn: Result := TPawn.Create();
-    ptRook: Result := TRook.Create();
-    ptKnight: Result := TKnight.Create();
-    ptBishop: Result := TBishop.Create();
-    ptQueen: Result := TQueen.Create();
-    ptKing: Result := TKing.Create();
+    ptPawn: Result := TPawn.Create(Color);
+    ptRook: Result := TRook.Create(Color);
+    ptKnight: Result := TKnight.Create(Color);
+    ptBishop: Result := TBishop.Create(Color);
+    ptQueen: Result := TQueen.Create(Color);
+    ptKing: Result := TKing.Create(Color);
   end;
 end;
 
