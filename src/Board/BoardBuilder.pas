@@ -14,7 +14,6 @@ type
 
   TSquareBuilder = class
   public
-    class var Toggle: Boolean;
     class function Build(const RowPanel: TPanel): TPanel; static;
   end;
 
@@ -63,14 +62,12 @@ begin
   Result.ParentColor := False;
   Result.BevelOuter := bvNone;
 
-  if Toggle then
-    Result.Color := TColorUtils.HexToColor('EBECD0')
+  if TColorUtils.ToggleColor() then
+    Result.Color := TColorUtils.HexToColor(PRIMARY_SQUARE_COLOR)
   else
-    Result.Color := TColorUtils.HexToColor('739552');
+    Result.Color := TColorUtils.HexToColor(SECONDARY_SQUARE_COLOR);
 
   TSquareImageBuilder.Build(Result);
-
-  Toggle := not Toggle;
 end;
 
 { TSquareImageBuilder }
@@ -105,7 +102,7 @@ begin
 
   for Row := 0 to Pred(BOARD_ROWS) do
   begin
-    TSquareBuilder.Toggle := not TSquareBuilder.Toggle;
+    TColorUtils.ToggleColor();
     RowPanel := TRowBuilder.Build(FBoardPanel);
 
     for Col := 0 to Pred(BOARD_COLUMNS) do

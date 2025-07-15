@@ -8,8 +8,11 @@ uses
 
 type
   TColorUtils = class
+  private
+    class var FToggle: Boolean;
   public
-    class function HexToColor(HexString: string): TColor;
+    class function ToggleColor: Boolean;
+    class function HexToColor(HexString: string): TColor; static;
   end;
 
 implementation
@@ -24,6 +27,12 @@ begin
      StrToInt('$'+Copy(HexString, 3, 2)),
      StrToInt('$'+Copy(HexString, 5, 2))
    ) ;
+end;
+
+class function TColorUtils.ToggleColor: Boolean;
+begin
+  Result := FToggle;
+  FToggle := not FToggle;
 end;
 
 end.

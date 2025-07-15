@@ -9,6 +9,8 @@ uses
 const
   BOARD_ROWS = 8;
   BOARD_COLUMNS = 8;
+  PRIMARY_SQUARE_COLOR = 'EBECD0';
+  SECONDARY_SQUARE_COLOR = '739552';
 
 type
   TBoardMatrix = array[0..7, 0..7] of TPanel;
