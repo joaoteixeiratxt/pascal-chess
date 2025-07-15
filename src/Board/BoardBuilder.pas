@@ -24,16 +24,19 @@ type
 
   IBoardBuilder = interface
   ['{C15DF4E4-4B03-4C73-B7DD-560151028BC9}']
-    function Board(const BoardPanel: TPanel): IBoardBuilder;
-    function Build(State: IBoardState): IBoard;
+    function SetBoardPanel(const BoardPanel: TPanel): IBoardBuilder;
+    function SetState(const State: IBoardState): IBoardBuilder;
+    function Build: IBoard;
   end;
 
   TBoardBuilder = class(TInterfacedObject, IBoardBuilder)
   private
     FBoardPanel: TPanel;
+    FState: IBoardState;
   public
-    function Board(const BoardPanel: TPanel): IBoardBuilder;
-    function Build(State: IBoardState): IBoard;
+    function SetBoardPanel(const BoardPanel: TPanel): IBoardBuilder;
+    function SetState(const State: IBoardState): IBoardBuilder;
+    function Build: IBoard;
   end;
 
 implementation
@@ -79,20 +82,25 @@ begin
   SquareImage := TImage.Create(SquarePanel);
   SquareImage.Parent := SquarePanel;
   SquareImage.Align := alClient;
-  SquareImage.Cursor := crHandPoint;
   SquareImage.Proportional := True;
   SquareImage.Transparent := True;
 end;
 
 { TBoardBuilder }
 
-function TBoardBuilder.Board(const BoardPanel: TPanel): IBoardBuilder;
+function TBoardBuilder.SetBoardPanel(const BoardPanel: TPanel): IBoardBuilder;
 begin
   FBoardPanel := BoardPanel;
   Result := Self;
 end;
 
-function TBoardBuilder.Build(State: IBoardState): IBoard;
+function TBoardBuilder.SetState(const State: IBoardState): IBoardBuilder;
+begin
+  FState := State;
+  Result := Self;
+end;
+
+function TBoardBuilder.Build: IBoard;
 var
   Row, Col: Integer;
   RowPanel: TPanel;
@@ -109,7 +117,7 @@ begin
       BoardMatrix[Row, Col]:= TSquareBuilder.Build(RowPanel);
   end;
 
-  Result.SetState(State);
+  Result.SetState(FState);
   Result.SetBoardPanel(FBoardPanel);
   Result.SetBoardMatrix(BoardMatrix);
 end;

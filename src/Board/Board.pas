@@ -76,6 +76,7 @@ begin
       PiecePanel := FBoardMatrix[Row, Col];
 
       SquareImage := TImage(PiecePanel.Components[0]);
+      SquareImage.Cursor := crHandPoint;
 
       TImageLoader.Load(Piece.ImageName, SquareImage);
     end;

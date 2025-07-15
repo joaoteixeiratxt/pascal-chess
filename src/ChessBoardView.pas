@@ -49,8 +49,9 @@ begin
   BoardBuilder := TBoardBuilder.Create();
 
   Board := BoardBuilder
-              .Board(pnlBoard)
-              .Build(BoardState);
+              .SetBoardPanel(pnlBoard)
+              .SetState(BoardState)
+              .Build();
 
   Board.Render();
 end;
