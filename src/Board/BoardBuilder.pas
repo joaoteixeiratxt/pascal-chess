@@ -3,12 +3,10 @@ unit BoardBuilder;
 interface
 
 uses
-  System.Classes, System.Types, System.SysUtils, Vcl.ExtCtrls,
-  Vcl.Controls, BoardState, BoardPiece, ImageLoader;
+  System.Classes, System.Types, System.SysUtils, Vcl.ExtCtrls, Winapi.Windows,
+  Vcl.Controls, Vcl.Graphics, Board, BoardState, BoardPiece, ImageLoader, ColorUtils;
 
 type
-  TBoardMatrix = array[0..7, 0..7] of TPanel;
-
   TRowBuilder = class
   public
     class function Build(const BoardPanel: TPanel): TPanel; static;
@@ -16,32 +14,13 @@ type
 
   TSquareBuilder = class
   public
+    class var Toggle: Boolean;
     class function Build(const RowPanel: TPanel): TPanel; static;
   end;
 
   TSquareImageBuilder = class
   public
     class procedure Build(const SquarePanel: TPanel); static;
-  end;
-
-  IBoard = interface
-  ['{9E74D5D8-3789-4B7F-A288-EEED76F9F589}']
-    procedure SetState(const State: IBoardState);
-    procedure SetBoardPanel(const BoardPanel: TPanel);
-    procedure SetBoardMatrix(const BoardMatrix: TBoardMatrix);
-    procedure Render;
-  end;
-
-  TBoard = class(TInterfacedObject, IBoard)
-  private
-    FState: IBoardState;
-    FBoardPanel: TPanel;
-    FBoardMatrix: TBoardMatrix;
-  public
-    procedure SetState(const State: IBoardState);
-    procedure SetBoardPanel(const BoardPanel: TPanel);
-    procedure SetBoardMatrix(const BoardMatrix: TBoardMatrix);
-    procedure Render;
   end;
 
   IBoardBuilder = interface
@@ -60,10 +39,6 @@ type
 
 implementation
 
-const
-  ROWS = 8;
-  COLUMNS = 8;
-
 { TRowBuilder }
 
 class function TRowBuilder.Build(const BoardPanel: TPanel): TPanel;
@@ -72,7 +47,8 @@ begin
   Result.Parent := BoardPanel;
   Result.Align := alTop;
   Result.Width := BoardPanel.Width;
-  Result.Height := Trunc(BoardPanel.Height / ROWS);
+  Result.Height := Trunc(BoardPanel.Height / BOARD_ROWS);
+  Result.BevelOuter := bvNone;
 end;
 
 { TSquareBuilder }
@@ -82,9 +58,19 @@ begin
   Result := TPanel.Create(RowPanel);
   Result.Parent := RowPanel;
   Result.Align := alLeft;
-  Result.Width := Trunc(RowPanel.Width / COLUMNS);
+  Result.Width := Trunc(RowPanel.Width / BOARD_COLUMNS);
+  Result.ParentBackground := False;
+  Result.ParentColor := False;
+  Result.BevelOuter := bvNone;
+
+  if Toggle then
+    Result.Color := TColorUtils.HexToColor('EBECD0')
+  else
+    Result.Color := TColorUtils.HexToColor('739552');
 
   TSquareImageBuilder.Build(Result);
+
+  Toggle := not Toggle;
 end;
 
 { TSquareImageBuilder }
@@ -98,51 +84,7 @@ begin
   SquareImage.Align := alClient;
   SquareImage.Cursor := crHandPoint;
   SquareImage.Proportional := True;
-end;
-
-{ TBoard }
-
-procedure TBoard.SetState(const State: IBoardState);
-begin
-  FState := State;
-end;
-
-procedure TBoard.SetBoardPanel(const BoardPanel: TPanel);
-begin
-  FBoardPanel := BoardPanel;
-end;
-
-procedure TBoard.SetBoardMatrix(const BoardMatrix: TBoardMatrix);
-begin
-  FBoardMatrix := BoardMatrix;
-end;
-
-procedure TBoard.Render;
-var
-  Piece: IPiece;
-  PiecePanel: TPanel;
-  Row, Col: Integer;
-  SquareImage: TImage;
-  PieceMatrix: TPieceMatrix;
-begin
-  PieceMatrix := FState.GetPieceMatrix();
-
-  for Row := 0 to 7 do
-  begin
-    for Col := 0 to 7 do
-    begin
-      Piece := PieceMatrix[Row, Col];
-
-      if not Assigned(Piece) then
-        Continue;
-
-      PiecePanel := FBoardMatrix[Row, Col];
-      SquareImage := TImage(PiecePanel.Components[0]);
-
-      TImageLoader.Load(Piece.ImageName, SquareImage);
-    end;
-  end;
-
+  SquareImage.Transparent := True;
 end;
 
 { TBoardBuilder }
@@ -161,11 +103,12 @@ var
 begin
   Result := TBoard.Create();
 
-  for Row := 0 to Pred(ROWS) do
+  for Row := 0 to Pred(BOARD_ROWS) do
   begin
+    TSquareBuilder.Toggle := not TSquareBuilder.Toggle;
     RowPanel := TRowBuilder.Build(FBoardPanel);
 
-    for Col := 0 to Pred(COLUMNS) do
+    for Col := 0 to Pred(BOARD_COLUMNS) do
       BoardMatrix[Row, Col]:= TSquareBuilder.Build(RowPanel);
   end;
 

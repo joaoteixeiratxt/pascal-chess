@@ -2,7 +2,7 @@ program PascalChess;
 
 uses
   Vcl.Forms,
-  Board in 'Board.pas' {BoardView},
+  ChessBoardView in 'ChessBoardView.pas' {BoardView},
   BoardState in 'Board\BoardState.pas',
   BoardBuilder in 'Board\BoardBuilder.pas',
   BoardPiece in 'Board\BoardPiece.pas',
@@ -12,7 +12,9 @@ uses
   King in 'Pieces\King.pas',
   Rook in 'Pieces\Rook.pas',
   Knight in 'Pieces\Knight.pas',
-  ImageLoader in 'Images\ImageLoader.pas';
+  ImageLoader in 'Images\ImageLoader.pas',
+  ColorUtils in 'Utils\ColorUtils.pas',
+  Board in 'Board\Board.pas';
 
 {$R *.res}
 

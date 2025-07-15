@@ -127,7 +127,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="Board.pas">
+        <DCCReference Include="ChessBoardView.pas">
             <Form>BoardView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
@@ -141,6 +141,8 @@
         <DCCReference Include="Pieces\Rook.pas"/>
         <DCCReference Include="Pieces\Knight.pas"/>
         <DCCReference Include="Images\ImageLoader.pas"/>
+        <DCCReference Include="Utils\ColorUtils.pas"/>
+        <DCCReference Include="Board\Board.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

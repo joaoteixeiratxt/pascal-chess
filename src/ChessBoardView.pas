@@ -1,4 +1,4 @@
-unit Board;
+unit ChessBoardView;
 
 interface
 
@@ -24,6 +24,7 @@ type
     pnlExit: TPanel;
     pnlMessages: TPanel;
     pnlPrevious: TPanel;
+    procedure FormCreate(Sender: TObject);
   end;
 
 var
@@ -31,6 +32,27 @@ var
 
 implementation
 
+uses
+  Board, BoardState, BoardBuilder;
+
 {$R *.dfm}
+
+procedure TBoardView.FormCreate(Sender: TObject);
+var
+  Board: IBoard;
+  BoardState: IBoardState;
+  BoardBuilder: IBoardBuilder;
+begin
+  BoardState := TBoardState.Create();
+  BoardState.Initialize();
+
+  BoardBuilder := TBoardBuilder.Create();
+
+  Board := BoardBuilder
+              .Board(pnlBoard)
+              .Build(BoardState);
+
+  Board.Render();
+end;
 
 end.

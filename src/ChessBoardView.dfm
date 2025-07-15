@@ -15,6 +15,7 @@ object BoardView: TBoardView
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poOwnerFormCenter
+  OnCreate = FormCreate
   TextHeight = 15
   object pnlOpponent: TPanel
     Left = 0
