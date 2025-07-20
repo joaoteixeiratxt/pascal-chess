@@ -8,8 +8,6 @@ uses
   System.Generics.Collections;
 
 const
-  BOARD_ROWS = 8;
-  BOARD_COLUMNS = 8;
   PRIMARY_SQUARE_COLOR = 'EBECD0';
   SECONDARY_SQUARE_COLOR = '739552';
 
@@ -31,6 +29,7 @@ type
     FBoardMatrix: TBoardMatrix;
     FPiecesMap: TDictionary<Integer,IPiece>;
     procedure OnPieceClick(Sender: TObject);
+    procedure OnLegalMoveClick(Sender: TObject);
     procedure ClearHighlights;
     procedure HightLightPossibleMovements(const PossibleMovements: TPossibleMovements);
   public
@@ -78,11 +77,11 @@ var
   Row, Col: Integer;
   HighlightImage: TImage;
 begin
-  for Row := 0 to Pred(BOARD_ROWS) do
+  for Row := Pred(BOARD_ROWS) downto 0 do
   begin
     for Col := 0 to Pred(BOARD_COLUMNS) do
     begin
-      PiecePanel := FBoardMatrix[Row, Col];
+      PiecePanel := FBoardMatrix[Col, Row];
 
       HighlightImage := TImage(PiecePanel.FindComponent('LegalMoveHighlight'));
       HighlightImage.Cursor := crDefault;
@@ -101,11 +100,12 @@ begin
 
   for Coordinates in PossibleMovements do
   begin
-    PiecePanel := FBoardMatrix[Coordinates.Y, Coordinates.X];
+    PiecePanel := FBoardMatrix[Coordinates.X, Coordinates.Y];
 
     HighlightImage := TImage(PiecePanel.FindComponent('LegalMoveHighlight'));
     HighlightImage.Cursor := crHandPoint;
     HighlightImage.Visible := True;
+    HighlightImage.OnClick := OnLegalMoveClick;
   end;
 end;
 
@@ -114,10 +114,29 @@ var
   Piece: IPiece;
 begin
   Piece := FPiecesMap[TComponent(Sender).Tag];
-
   TBoardState.State.SelectedPiece := Piece;
 
   HightLightPossibleMovements(Piece.GetPossibleMovements());
+end;
+
+procedure TBoard.OnLegalMoveClick(Sender: TObject);
+var
+  SquarePanel: TPanel;
+  Coordinates: string;
+  FromCol, FromRow, ToCol, ToRow: Integer;
+begin
+  SquarePanel := TPanel(TComponent(Sender).Owner);
+  Coordinates := SquarePanel.Name;
+
+  FromCol := FState.SelectedPiece.Coordinates.X;
+  FromRow := FState.SelectedPiece.Coordinates.Y;
+
+  ToCol := Coordinates.Split(['_'])[0].Split(['X'])[1].ToInteger();
+  ToRow := Coordinates.Split(['_'])[1].Split(['Y'])[1].ToInteger();
+
+  FState.MovePiece(FromCol, FromRow, ToCol, ToRow);
+
+  ClearHighlights();
 end;
 
 procedure TBoard.Render;
@@ -130,20 +149,24 @@ var
 begin
   PieceMatrix := FState.GetPieceMatrix();
 
-  for Row := 0 to Pred(BOARD_ROWS) do
+  for Row := Pred(BOARD_ROWS) downto 0 do
   begin
     for Col := 0 to Pred(BOARD_COLUMNS) do
     begin
-      Piece := PieceMatrix[Row, Col];
+      Piece := PieceMatrix[Col, Row];
+      PiecePanel := FBoardMatrix[Col, Row];
 
       if not Assigned(Piece) then
+      begin
+        TImage(PiecePanel.FindComponent('Piece')).Visible := False;
+        TImage(PiecePanel.FindComponent('LegalMoveHighlight')).Visible := False;
         Continue;
-
-      PiecePanel := FBoardMatrix[Row, Col];
+      end;
 
       SquareImage := TImage(PiecePanel.FindComponent('Piece'));
       SquareImage.Cursor := crHandPoint;
       SquareImage.OnClick := OnPieceClick;
+      SquareImage.Visible := True;
 
       TImageLoader.Load(Piece.ImageName, SquareImage);
 

@@ -6,6 +6,10 @@ uses
   System.Classes, System.Types, System.SysUtils, System.Generics.Collections,
   BoardPiece;
 
+const
+  BOARD_ROWS = 8;
+  BOARD_COLUMNS = 8;
+
 type
   TPieceMatrix = array[0..7, 0..7] of IPiece;
 
@@ -19,7 +23,7 @@ type
     procedure SetSelectedPiece(const Value: IPiece);
     function GetPieceAt(const Row, Col: Integer): IPiece;
     procedure SetPieceAt(const Row, Col: Integer; const Value: IPiece);
-    procedure MovePiece(const FromRow, FromCol, ToRow, ToCol: Integer);
+    procedure MovePiece(const FromCol, FromRow, ToCol, ToRow: Integer);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     procedure RegisterObserver(const Event: TStateUpdateEvent);
   end;
@@ -40,7 +44,7 @@ type
     function GetPieceMatrix: TPieceMatrix;
     function GetPieceAt(const Row, Col: Integer): IPiece;
     procedure SetPieceAt(const Row, Col: Integer; const Value: IPiece);
-    procedure MovePiece(const FromRow, FromCol, ToRow, ToCol: Integer);
+    procedure MovePiece(const FromCol, FromRow, ToCol, ToRow: Integer);
     procedure RegisterObserver(const Event: TStateUpdateEvent);
 
     class var State: IBoardState;
@@ -65,42 +69,42 @@ procedure TBoardState.Initialize;
 var
   Row, Column: Integer;
 begin
-  for Row := 0 to 7 do
-    for Column := 0 to 7 do
+  for Row := Pred(BOARD_ROWS) downto 0 do
+    for Column := 0 to Pred(BOARD_COLUMNS) do
       FBoardMatrix[Row, Column] := nil;
 
-  FBoardMatrix[0, 0] := TPieceFactory.New(ptRook, pcBlack);
-  FBoardMatrix[0, 1] := TPieceFactory.New(ptKnight, pcBlack);
-  FBoardMatrix[0, 2] := TPieceFactory.New(ptBishop, pcBlack);
-  FBoardMatrix[0, 3] := TPieceFactory.New(ptQueen, pcBlack);
-  FBoardMatrix[0, 4] := TPieceFactory.New(ptKing, pcBlack);
-  FBoardMatrix[0, 5] := TPieceFactory.New(ptBishop, pcBlack);
-  FBoardMatrix[0, 6] := TPieceFactory.New(ptKnight, pcBlack);
-  FBoardMatrix[0, 7] := TPieceFactory.New(ptRook, pcBlack);
+  FBoardMatrix[0, 0] := TPieceFactory.New(ptRook, pcWhite);
+  FBoardMatrix[1, 0] := TPieceFactory.New(ptKnight, pcWhite);
+  FBoardMatrix[2, 0] := TPieceFactory.New(ptBishop, pcWhite);
+  FBoardMatrix[3, 0] := TPieceFactory.New(ptQueen, pcWhite);
+  FBoardMatrix[4, 0] := TPieceFactory.New(ptKing, pcWhite);
+  FBoardMatrix[5, 0] := TPieceFactory.New(ptBishop, pcWhite);
+  FBoardMatrix[6, 0] := TPieceFactory.New(ptKnight, pcWhite);
+  FBoardMatrix[7, 0] := TPieceFactory.New(ptRook, pcWhite);
 
-  for Column := 0 to 7 do
+  for Column := 0 to Pred(BOARD_COLUMNS) do
   begin
-    FBoardMatrix[1, Column] := TPieceFactory.New(ptPawn, pcBlack);
-    FBoardMatrix[1, Column].Coordinates := TPoint.Create(Column, 1);
+    FBoardMatrix[Column, 1] := TPieceFactory.New(ptPawn, pcWhite);
+    FBoardMatrix[Column, 1].Coordinates := TPoint.Create(Column, 1);
 
-    FBoardMatrix[0, Column].Coordinates := TPoint.Create(Column, 0);
+    FBoardMatrix[Column, 0].Coordinates := TPoint.Create(Column, 0);
   end;
 
-  FBoardMatrix[7, 0] := TPieceFactory.New(ptRook, pcWhite);
-  FBoardMatrix[7, 1] := TPieceFactory.New(ptKnight, pcWhite);
-  FBoardMatrix[7, 2] := TPieceFactory.New(ptBishop, pcWhite);
-  FBoardMatrix[7, 3] := TPieceFactory.New(ptQueen, pcWhite);
-  FBoardMatrix[7, 4] := TPieceFactory.New(ptKing, pcWhite);
-  FBoardMatrix[7, 5] := TPieceFactory.New(ptBishop, pcWhite);
-  FBoardMatrix[7, 6] := TPieceFactory.New(ptKnight, pcWhite);
-  FBoardMatrix[7, 7] := TPieceFactory.New(ptRook, pcWhite);
+  FBoardMatrix[0, 7] := TPieceFactory.New(ptRook, pcBlack);
+  FBoardMatrix[1, 7] := TPieceFactory.New(ptKnight, pcBlack);
+  FBoardMatrix[2, 7] := TPieceFactory.New(ptBishop, pcBlack);
+  FBoardMatrix[3, 7] := TPieceFactory.New(ptQueen, pcBlack);
+  FBoardMatrix[4, 7] := TPieceFactory.New(ptKing, pcBlack);
+  FBoardMatrix[5, 7] := TPieceFactory.New(ptBishop, pcBlack);
+  FBoardMatrix[6, 7] := TPieceFactory.New(ptKnight, pcBlack);
+  FBoardMatrix[7, 7] := TPieceFactory.New(ptRook, pcBlack);
 
-  for Column := 0 to 7 do
+  for Column := 0 to Pred(BOARD_COLUMNS) do
   begin
-    FBoardMatrix[6, Column] := TPieceFactory.New(ptPawn, pcWhite);
-    FBoardMatrix[6, Column].Coordinates := TPoint.Create(Column, 6);
+    FBoardMatrix[Column, 6] := TPieceFactory.New(ptPawn, pcBlack);
+    FBoardMatrix[Column, 6].Coordinates := TPoint.Create(Column, 6);
 
-    FBoardMatrix[7, Column].Coordinates := TPoint.Create(Column, 7);
+    FBoardMatrix[Column, 7].Coordinates := TPoint.Create(Column, 7);
   end;
 end;
 
@@ -129,10 +133,11 @@ begin
   FBoardMatrix[Row, Col] := Value;
 end;
 
-procedure TBoardState.MovePiece(const FromRow, FromCol, ToRow, ToCol: Integer);
+procedure TBoardState.MovePiece(const FromCol, FromRow, ToCol, ToRow: Integer);
 begin
-  FBoardMatrix[ToRow, ToCol] := FBoardMatrix[FromRow, FromCol];
-  FBoardMatrix[FromRow, FromCol] := nil;
+  FBoardMatrix[ToCol, ToRow] := FBoardMatrix[FromCol, FromRow];
+  FBoardMatrix[ToCol, ToRow].Coordinates := TPoint.Create(ToCol, ToRow);
+  FBoardMatrix[FromCol, FromRow] := nil;
 
   NotifyAll();
 end;

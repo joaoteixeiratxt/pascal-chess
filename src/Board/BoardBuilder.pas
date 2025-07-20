@@ -64,6 +64,7 @@ begin
   Result.ParentBackground := False;
   Result.ParentColor := False;
   Result.BevelOuter := bvNone;
+  Result.ShowCaption := False;
 
   if TColorUtils.ToggleColor() then
     Result.Color := TColorUtils.HexToColor(PRIMARY_SQUARE_COLOR)
@@ -115,7 +116,7 @@ begin
   Result := TBoard.Create();
 
   ImageTag := 0;
-  for Row := 0 to Pred(BOARD_ROWS) do
+  for Row := Pred(BOARD_ROWS) downto 0 do
   begin
     TColorUtils.ToggleColor();
     RowPanel := TRowBuilder.Build(FBoardPanel);
@@ -123,14 +124,15 @@ begin
     for Col := 0 to Pred(BOARD_COLUMNS) do
     begin
       SquarePanel := TSquareBuilder.Build(RowPanel, ImageTag);
+      SquarePanel.Name := Format('X%d_Y%d',[Col, Row]);
 
       HighlightImage := TImage(SquarePanel.FindComponent('LegalMoveHighlight'));
-      HighlightImage.Cursor := crHandPoint;
+      HighlightImage.Cursor := crDefault;
       HighlightImage.Visible := False;
 
       TImageLoader.Load('LegalMoveHighlight', HighlightImage);
 
-      BoardMatrix[Row, Col] := SquarePanel;
+      BoardMatrix[Col, Row] := SquarePanel;
       Inc(ImageTag);
     end;
   end;
