@@ -3,7 +3,7 @@ unit BoardPiece;
 interface
 
 uses
-  System.TypInfo, System.SysUtils;
+  System.TypInfo, System.SysUtils, System.Types;
 
 type
   TPieceColor = (pcBlack, pcWhite);
@@ -18,6 +18,8 @@ type
     ptKing
   );
 
+  TPossibleMovements = array of TPoint;
+
   TPieceColorHelper = record helper for TPieceColor
     function GetName: string;
   end;
@@ -26,31 +28,47 @@ type
     function GetName: string;
   end;
 
-  IPiece = interface
+  IStrategy = interface
+  ['{F8ABC721-210D-49B1-A889-5FB08D1C21D2}']
+    procedure SetCoordinates(const Value: TPoint);
+    function GetPossibleMovements: TPossibleMovements;
+  end;
+
+  IPiece = interface(IStrategy)
   ['{04894C92-B55A-499E-BEC9-828C029975CC}']
     function GetColor: TPieceColor;
     procedure SetColor(const Value: TPieceColor);
     function GetPieceType: TPieceType;
     function GetImageName: string;
+    function GetCoordinates: TPoint;
     property Color: TPieceColor read GetColor;
     property PieceType: TPieceType read GetPieceType;
     property ImageName: string read GetImageName;
+    property Coordinates: TPoint read GetCoordinates write SetCoordinates;
+    procedure SetStrategy(const Strategy: IStrategy);
   end;
 
-  TPieceBase = class(TInterfacedObject, IPiece)
+  TPieceBase = class(TInterfacedObject, IPiece, IStrategy)
   protected
     FColor: TPieceColor;
     FPieceType: TPieceType;
+    FCoordinates: TPoint;
+    FStrategy: IStrategy;
   private
     function GetColor: TPieceColor;
     procedure SetColor(const Value: TPieceColor);
     function GetPieceType: TPieceType;
     function GetImageName: string;
+    function GetCoordinates: TPoint;
+    procedure SetCoordinates(const Value: TPoint);
   public
     constructor Create(Color: TPieceColor); virtual;
     property Color: TPieceColor read GetColor;
     property PieceType: TPieceType read GetPieceType;
     property ImageName: string read GetImageName;
+    property Coordinates: TPoint read GetCoordinates write SetCoordinates;
+    procedure SetStrategy(const Strategy: IStrategy);
+    function GetPossibleMovements: TPossibleMovements;
   end;
 
   TPieceFactory = class
@@ -88,6 +106,27 @@ end;
 function TPieceBase.GetImageName: string;
 begin
   Result := FColor.GetName() + FPieceType.GetName();
+end;
+
+procedure TPieceBase.SetCoordinates(const Value: TPoint);
+begin
+  FCoordinates := Value;
+end;
+
+function TPieceBase.GetCoordinates: TPoint;
+begin
+  Result := FCoordinates;
+end;
+
+procedure TPieceBase.SetStrategy(const Strategy: IStrategy);
+begin
+  FStrategy := Strategy;
+end;
+
+function TPieceBase.GetPossibleMovements: TPossibleMovements;
+begin
+  FStrategy.SetCoordinates(FCoordinates);
+  Result := FStrategy.GetPossibleMovements();
 end;
 
 { TPieceFactory }
