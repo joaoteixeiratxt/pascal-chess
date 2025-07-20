@@ -14,12 +14,12 @@ type
 
   TSquareBuilder = class
   public
-    class function Build(const RowPanel: TPanel): TPanel; static;
+    class function Build(const RowPanel: TPanel; const ImageTag: Integer): TPanel; static;
   end;
 
   TSquareImageBuilder = class
   public
-    class procedure Build(const SquarePanel: TPanel); static;
+    class procedure Build(const ImageName: string; SquarePanel: TPanel; const Tag: Integer); static;
   end;
 
   IBoardBuilder = interface
@@ -55,7 +55,7 @@ end;
 
 { TSquareBuilder }
 
-class function TSquareBuilder.Build(const RowPanel: TPanel): TPanel;
+class function TSquareBuilder.Build(const RowPanel: TPanel; const ImageTag: Integer): TPanel;
 begin
   Result := TPanel.Create(RowPanel);
   Result.Parent := RowPanel;
@@ -70,12 +70,13 @@ begin
   else
     Result.Color := TColorUtils.HexToColor(SECONDARY_SQUARE_COLOR);
 
-  TSquareImageBuilder.Build(Result);
+  TSquareImageBuilder.Build('Piece', Result, ImageTag);
+  TSquareImageBuilder.Build('LegalMoveHighlight', Result, ImageTag);
 end;
 
 { TSquareImageBuilder }
 
-class procedure TSquareImageBuilder.Build(const SquarePanel: TPanel);
+class procedure TSquareImageBuilder.Build(const ImageName: string; SquarePanel: TPanel; const Tag: Integer);
 var
   SquareImage: TImage;
 begin
@@ -84,6 +85,8 @@ begin
   SquareImage.Align := alClient;
   SquareImage.Proportional := True;
   SquareImage.Transparent := True;
+  SquareImage.Name := ImageName;
+  SquareImage.Tag := Tag;
 end;
 
 { TBoardBuilder }
@@ -104,17 +107,32 @@ function TBoardBuilder.Build: IBoard;
 var
   Row, Col: Integer;
   RowPanel: TPanel;
+  ImageTag: Integer;
+  SquarePanel: TPanel;
+  HighlightImage: TImage;
   BoardMatrix: TBoardMatrix;
 begin
   Result := TBoard.Create();
 
+  ImageTag := 0;
   for Row := 0 to Pred(BOARD_ROWS) do
   begin
     TColorUtils.ToggleColor();
     RowPanel := TRowBuilder.Build(FBoardPanel);
 
     for Col := 0 to Pred(BOARD_COLUMNS) do
-      BoardMatrix[Row, Col]:= TSquareBuilder.Build(RowPanel);
+    begin
+      SquarePanel := TSquareBuilder.Build(RowPanel, ImageTag);
+
+      HighlightImage := TImage(SquarePanel.FindComponent('LegalMoveHighlight'));
+      HighlightImage.Cursor := crHandPoint;
+      HighlightImage.Visible := False;
+
+      TImageLoader.Load('LegalMoveHighlight', HighlightImage);
+
+      BoardMatrix[Row, Col] := SquarePanel;
+      Inc(ImageTag);
+    end;
   end;
 
   Result.SetState(FState);
