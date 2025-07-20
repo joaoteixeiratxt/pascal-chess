@@ -31,7 +31,7 @@ type
     procedure OnPieceClick(Sender: TObject);
     procedure OnLegalMoveClick(Sender: TObject);
     procedure ClearHighlights;
-    procedure HightLightPossibleMovements(const PossibleMovements: TPossibleMovements);
+    procedure HightLightLegalMoves(const LegalMoves: TLegalMoves);
   public
     constructor Create;
     destructor Destroy; override;
@@ -90,7 +90,7 @@ begin
   end;
 end;
 
-procedure TBoard.HightLightPossibleMovements(const PossibleMovements: TPossibleMovements);
+procedure TBoard.HightLightLegalMoves(const LegalMoves: TLegalMoves);
 var
   Coordinates: TPoint;
   PiecePanel: TPanel;
@@ -98,7 +98,7 @@ var
 begin
   ClearHighlights();
 
-  for Coordinates in PossibleMovements do
+  for Coordinates in LegalMoves do
   begin
     PiecePanel := FBoardMatrix[Coordinates.X, Coordinates.Y];
 
@@ -116,7 +116,7 @@ begin
   Piece := FPiecesMap[TComponent(Sender).Tag];
   TBoardState.State.SelectedPiece := Piece;
 
-  HightLightPossibleMovements(Piece.GetPossibleMovements());
+  HightLightLegalMoves(Piece.GetLegalMoves());
 end;
 
 procedure TBoard.OnLegalMoveClick(Sender: TObject);

@@ -18,7 +18,7 @@ type
     ptKing
   );
 
-  TPossibleMovements = array of TPoint;
+  TLegalMoves = array of TPoint;
 
   TPieceColorHelper = record helper for TPieceColor
     function GetName: string;
@@ -31,7 +31,7 @@ type
   IStrategy = interface
   ['{F8ABC721-210D-49B1-A889-5FB08D1C21D2}']
     procedure SetCoordinates(const Value: TPoint);
-    function GetPossibleMovements: TPossibleMovements;
+    function GetLegalMoves: TLegalMoves;
   end;
 
   IPiece = interface(IStrategy)
@@ -68,7 +68,7 @@ type
     property ImageName: string read GetImageName;
     property Coordinates: TPoint read GetCoordinates write SetCoordinates;
     procedure SetStrategy(const Strategy: IStrategy);
-    function GetPossibleMovements: TPossibleMovements;
+    function GetLegalMoves: TLegalMoves;
   end;
 
   TPieceFactory = class
@@ -123,10 +123,10 @@ begin
   FStrategy := Strategy;
 end;
 
-function TPieceBase.GetPossibleMovements: TPossibleMovements;
+function TPieceBase.GetLegalMoves: TLegalMoves;
 begin
   FStrategy.SetCoordinates(FCoordinates);
-  Result := FStrategy.GetPossibleMovements();
+  Result := FStrategy.GetLegalMoves();
 end;
 
 { TPieceFactory }
