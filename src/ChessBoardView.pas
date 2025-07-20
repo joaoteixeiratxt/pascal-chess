@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage, Board, BoardState, BoardBuilder;
 
 type
   TBoardView = class(TForm)
@@ -25,6 +25,9 @@ type
     pnlMessages: TPanel;
     pnlPrevious: TPanel;
     procedure FormCreate(Sender: TObject);
+  private
+    FBoard: IBoard;
+    procedure UpdateBoard;
   end;
 
 var
@@ -32,28 +35,27 @@ var
 
 implementation
 
-uses
-  Board, BoardState, BoardBuilder;
-
 {$R *.dfm}
 
 procedure TBoardView.FormCreate(Sender: TObject);
 var
-  Board: IBoard;
-  BoardState: IBoardState;
   BoardBuilder: IBoardBuilder;
 begin
-  BoardState := TBoardState.Create();
-  BoardState.Initialize();
-
   BoardBuilder := TBoardBuilder.Create();
 
-  Board := BoardBuilder
+  FBoard := BoardBuilder
               .SetBoardPanel(pnlBoard)
-              .SetState(BoardState)
+              .SetState(TBoardState.State)
               .Build();
 
-  Board.Render();
+  TBoardState.State.RegisterObserver(UpdateBoard);
+
+  FBoard.Render();
+end;
+
+procedure TBoardView.UpdateBoard;
+begin
+  FBoard.Render();
 end;
 
 end.
