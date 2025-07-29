@@ -21,11 +21,14 @@ type
     function GetPieceMatrix: TPieceMatrix;
     function GetSelectedPiece: IPiece;
     procedure SetSelectedPiece(const Value: IPiece);
+    function GetCurrentPlayerColor: TPieceColor;
+    procedure SetCurrentPlayerColor(const Value: TPieceColor);
     function GetPieceAt(const Row, Col: Integer): IPiece;
     procedure SetPieceAt(const Row, Col: Integer; const Value: IPiece);
     procedure MovePiece(const FromCol, FromRow, ToCol, ToRow: Integer);
-    property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     procedure RegisterObserver(const Event: TStateUpdateEvent);
+    property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
+    property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
   end;
 
   TBoardState = class(TInterfacedObject, IBoardState)
@@ -33,19 +36,23 @@ type
     FBoardMatrix: TPieceMatrix;
     FEvents: TList<TStateUpdateEvent>;
     FSelectedPiece: IPiece;
+    FCurrentPlayerColor: TPieceColor;
     function GetSelectedPiece: IPiece;
     procedure SetSelectedPiece(const Value: IPiece);
     procedure NotifyAll;
+    function GetCurrentPlayerColor: TPieceColor;
+    procedure SetCurrentPlayerColor(const Value: TPieceColor);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Initialize;
-    property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     function GetPieceMatrix: TPieceMatrix;
     function GetPieceAt(const Row, Col: Integer): IPiece;
     procedure SetPieceAt(const Row, Col: Integer; const Value: IPiece);
     procedure MovePiece(const FromCol, FromRow, ToCol, ToRow: Integer);
     procedure RegisterObserver(const Event: TStateUpdateEvent);
+    property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
+    property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
 
     class var State: IBoardState;
   end;
@@ -121,6 +128,16 @@ end;
 function TBoardState.GetPieceMatrix: TPieceMatrix;
 begin
   Result := FBoardMatrix;
+end;
+
+function TBoardState.GetCurrentPlayerColor: TPieceColor;
+begin
+  Result := FCurrentPlayerColor;
+end;
+
+procedure TBoardState.SetCurrentPlayerColor(const Value: TPieceColor);
+begin
+  FCurrentPlayerColor := Value;
 end;
 
 function TBoardState.GetPieceAt(const Row, Col: Integer): IPiece;
