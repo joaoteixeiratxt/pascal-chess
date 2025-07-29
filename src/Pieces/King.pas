@@ -3,7 +3,7 @@ unit King;
 interface
 
 uses
-  System.Classes, System.Types, BoardPiece;
+  System.Classes, System.Types, BoardPiece, BoardState, PieceBase;
 
 type
   TKing = class(TPieceBase)
@@ -11,12 +11,9 @@ type
     constructor Create(Color: TPieceColor); override;
   end;
 
-  TKingStrategy = class(TInterfacedObject, IStrategy)
-  private
-    FCoordinates: TPoint;
+  TKingStrategy = class(TStrategyBase)
   public
-    procedure SetCoordinates(const Value: TPoint);
-    function GetLegalMoves: TLegalMoves;
+    function GetLegalMoves: TLegalMoves; override;
   end;
 
 implementation
@@ -33,11 +30,6 @@ end;
 
 { TKingStrategy }
 
-procedure TKingStrategy.SetCoordinates(const Value: TPoint);
-begin
-  FCoordinates := Value;
-end;
-
 function TKingStrategy.GetLegalMoves: TLegalMoves;
 const
   MOV_X: array[0..7] of Integer = ( -1, 0, 1, -1, 1, -1, 0, 1 );
@@ -45,6 +37,8 @@ const
 var
   I, X, Y, Indice: Integer;
 begin
+  inherited;
+
   for I := 0 to 7 do
   begin
     X := FCoordinates.X + MOV_X[I];
@@ -52,6 +46,9 @@ begin
 
     if (X >= 0) and (X <= 7) and (Y >= 0) and (Y <= 7) then
     begin
+      if Assigned(FMatrix[X, Y]) then
+        Continue;
+
       Indice := Length(Result);
       SetLength(Result, Indice + 1);
       Result[Indice] := TPoint.Create(X, Y);

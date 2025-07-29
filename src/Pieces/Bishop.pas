@@ -3,7 +3,7 @@ unit Bishop;
 interface
 
 uses
-  System.Classes, System.Types, BoardPiece;
+  System.Classes, System.Types, BoardPiece, PieceBase;
 
 type
   TBishop = class(TPieceBase)
@@ -11,12 +11,9 @@ type
     constructor Create(Color: TPieceColor); override;
   end;
 
-  TBishopStrategy = class(TInterfacedObject, IStrategy)
-  private
-    FCoordinates: TPoint;
+  TBishopStrategy = class(TStrategyBase)
   public
-    procedure SetCoordinates(const Value: TPoint);
-    function GetLegalMoves: TLegalMoves;
+    function GetLegalMoves: TLegalMoves; override;
   end;
 
 implementation
@@ -33,19 +30,19 @@ end;
 
 { TBishopStrategy }
 
-procedure TBishopStrategy.SetCoordinates(const Value: TPoint);
-begin
-  FCoordinates := Value;
-end;
-
 function TBishopStrategy.GetLegalMoves: TLegalMoves;
 var
   Indice, X, Y: Integer;
 begin
+  inherited;
+
   X := FCoordinates.X + 1;
   Y := FCoordinates.Y + 1;
   while (X <= 7) and (Y <= 7) do
   begin
+    if Assigned(FMatrix[X, Y]) then
+      Break;
+
     Indice := Length(Result);
     SetLength(Result, Indice + 1);
     Result[Indice] := TPoint.Create(X, Y);
@@ -58,6 +55,9 @@ begin
   Y := FCoordinates.Y + 1;
   while (X >= 0) and (Y <= 7) do
   begin
+    if Assigned(FMatrix[X, Y]) then
+      Break;
+
     Indice := Length(Result);
     SetLength(Result, Indice + 1);
     Result[Indice] := TPoint.Create(X, Y);
@@ -70,6 +70,9 @@ begin
   Y := FCoordinates.Y - 1;
   while (X <= 7) and (Y >= 0) do
   begin
+    if Assigned(FMatrix[X, Y]) then
+      Break;
+
     Indice := Length(Result);
     SetLength(Result, Indice + 1);
     Result[Indice] := TPoint.Create(X, Y);
@@ -82,6 +85,9 @@ begin
   Y := FCoordinates.Y - 1;
   while (X >= 0) and (Y >= 0) do
   begin
+    if Assigned(FMatrix[X, Y]) then
+      Break;
+
     Indice := Length(Result);
     SetLength(Result, Indice + 1);
     Result[Indice] := TPoint.Create(X, Y);

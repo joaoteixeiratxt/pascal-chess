@@ -3,7 +3,7 @@ unit Rook;
 interface
 
 uses
-  System.Classes, System.Types, BoardPiece;
+  System.Classes, System.Types, BoardPiece, BoardState, PieceBase;
 
 type
   TRook = class(TPieceBase)
@@ -11,12 +11,9 @@ type
     constructor Create(Color: TPieceColor); override;
   end;
 
-  TRookStrategy = class(TInterfacedObject, IStrategy)
-  private
-    FCoordinates: TPoint;
+  TRookStrategy = class(TStrategyBase)
   public
-    procedure SetCoordinates(const Value: TPoint);
-    function GetLegalMoves: TLegalMoves;
+    function GetLegalMoves: TLegalMoves; override;
   end;
 
 implementation
@@ -33,19 +30,19 @@ end;
 
 { TRookStrategy }
 
-procedure TRookStrategy.SetCoordinates(const Value: TPoint);
-begin
-  FCoordinates := Value;
-end;
-
 function TRookStrategy.GetLegalMoves: TLegalMoves;
 var
   Indice, X, Y: Integer;
 begin
+  inherited;
+
   X := FCoordinates.X;
   Y := FCoordinates.Y + 1;
   while (Y <= 7) do
   begin
+    if Assigned(FMatrix[X, Y]) then
+      Break;
+
     Indice := Length(Result);
     SetLength(Result, Indice + 1);
     Result[Indice] := TPoint.Create(X, Y);
@@ -56,6 +53,9 @@ begin
   Y := FCoordinates.Y - 1;
   while (Y >= 0) do
   begin
+    if Assigned(FMatrix[X, Y]) then
+      Break;
+
     Indice := Length(Result);
     SetLength(Result, Indice + 1);
     Result[Indice] := TPoint.Create(X, Y);
@@ -66,6 +66,9 @@ begin
   Y := FCoordinates.Y;
   while (X <= 7) do
   begin
+    if Assigned(FMatrix[X, Y]) then
+      Break;
+
     Indice := Length(Result);
     SetLength(Result, Indice + 1);
     Result[Indice] := TPoint.Create(X, Y);
@@ -76,6 +79,9 @@ begin
   Y := FCoordinates.Y;
   while (X >= 0) do
   begin
+    if Assigned(FMatrix[X, Y]) then
+      Break;
+
     Indice := Length(Result);
     SetLength(Result, Indice + 1);
     Result[Indice] := TPoint.Create(X, Y);

@@ -3,7 +3,7 @@ unit Pawn;
 interface
 
 uses
-  System.Classes, System.Types, BoardPiece;
+  System.Classes, System.Types, BoardPiece, PieceBase;
 
 type
   TPawn = class(TPieceBase)
@@ -11,12 +11,9 @@ type
     constructor Create(Color: TPieceColor); override;
   end;
 
-  TPawnStrategy = class(TInterfacedObject, IStrategy)
-  private
-    FCoordinates: TPoint;
+  TPawnStrategy = class(TStrategyBase)
   public
-    procedure SetCoordinates(const Value: TPoint);
-    function GetLegalMoves: TLegalMoves;
+    function GetLegalMoves: TLegalMoves; override;
   end;
 
 implementation
@@ -33,15 +30,12 @@ end;
 
 { TPawnStrategy }
 
-procedure TPawnStrategy.SetCoordinates(const Value: TPoint);
-begin
-  FCoordinates := Value;
-end;
-
 function TPawnStrategy.GetLegalMoves: TLegalMoves;
 var
   Indice, Y: Integer;
 begin
+  inherited;
+
   Y := FCoordinates.Y + 1;
 
   if (Y >= 0) and (Y <= 7) then

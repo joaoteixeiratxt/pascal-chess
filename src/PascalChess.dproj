@@ -143,6 +143,7 @@
         <DCCReference Include="Images\ImageLoader.pas"/>
         <DCCReference Include="Utils\ColorUtils.pas"/>
         <DCCReference Include="Board\Board.pas"/>
+        <DCCReference Include="Pieces\PieceBase.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -3,7 +3,7 @@ unit Knight;
 interface
 
 uses
-  System.Classes, System.Types, BoardPiece;
+  System.Classes, System.Types, BoardPiece, BoardState, PieceBase;
 
 type
   TKnight = class(TPieceBase)
@@ -11,12 +11,9 @@ type
     constructor Create(Color: TPieceColor); override;
   end;
 
-  TKnightStrategy = class(TInterfacedObject, IStrategy)
-  private
-    FCoordinates: TPoint;
+  TKnightStrategy = class(TStrategyBase)
   public
-    procedure SetCoordinates(const Value: TPoint);
-    function GetLegalMoves: TLegalMoves;
+    function GetLegalMoves: TLegalMoves; override;
   end;
 
 implementation
@@ -33,11 +30,6 @@ end;
 
 { TKnightStrategy }
 
-procedure TKnightStrategy.SetCoordinates(const Value: TPoint);
-begin
-  FCoordinates := Value;
-end;
-
 function TKnightStrategy.GetLegalMoves: TLegalMoves;
 const
   MOV_X: array[0..7] of Integer = ( 2, 1, -1, -2, -2, -1, 1, 2 );
@@ -45,6 +37,8 @@ const
 var
   I, Indice, X, Y: Integer;
 begin
+  inherited;
+
   for I := 0 to 7 do
   begin
     X := FCoordinates.X + MOV_X[I];
@@ -52,6 +46,9 @@ begin
 
     if (X >= 0) and (X <= 7) and (Y >= 0) and (Y <= 7) then
     begin
+      if Assigned(FMatrix[X, Y]) then
+        Continue;
+
       Indice := Length(Result);
       SetLength(Result, Indice + 1);
 

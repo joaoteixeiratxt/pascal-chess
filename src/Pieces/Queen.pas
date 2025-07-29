@@ -3,7 +3,7 @@ unit Queen;
 interface
 
 uses
-  System.Classes, System.Types, BoardPiece;
+  System.Classes, System.Types, BoardPiece, PieceBase;
 
 type
   TQueen = class(TPieceBase)
@@ -11,12 +11,9 @@ type
     constructor Create(Color: TPieceColor); override;
   end;
 
-  TQueenStrategy = class(TInterfacedObject, IStrategy)
-  private
-    FCoordinates: TPoint;
+  TQueenStrategy = class(TStrategyBase)
   public
-    procedure SetCoordinates(const Value: TPoint);
-    function GetLegalMoves: TLegalMoves;
+    function GetLegalMoves: TLegalMoves; override;
   end;
 
 implementation
@@ -36,15 +33,12 @@ end;
 
 { TQueenStrategy }
 
-procedure TQueenStrategy.SetCoordinates(const Value: TPoint);
-begin
-  FCoordinates := Value;
-end;
-
 function TQueenStrategy.GetLegalMoves: TLegalMoves;
 var
   BishopStrategy, RookStrategy: IStrategy;
 begin
+  inherited;
+
   BishopStrategy := TBishopStrategy.Create();
   BishopStrategy.SetCoordinates(FCoordinates);
 

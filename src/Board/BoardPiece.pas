@@ -48,29 +48,6 @@ type
     procedure SetStrategy(const Strategy: IStrategy);
   end;
 
-  TPieceBase = class(TInterfacedObject, IPiece, IStrategy)
-  protected
-    FColor: TPieceColor;
-    FPieceType: TPieceType;
-    FCoordinates: TPoint;
-    FStrategy: IStrategy;
-  private
-    function GetColor: TPieceColor;
-    procedure SetColor(const Value: TPieceColor);
-    function GetPieceType: TPieceType;
-    function GetImageName: string;
-    function GetCoordinates: TPoint;
-    procedure SetCoordinates(const Value: TPoint);
-  public
-    constructor Create(Color: TPieceColor); virtual;
-    property Color: TPieceColor read GetColor;
-    property PieceType: TPieceType read GetPieceType;
-    property ImageName: string read GetImageName;
-    property Coordinates: TPoint read GetCoordinates write SetCoordinates;
-    procedure SetStrategy(const Strategy: IStrategy);
-    function GetLegalMoves: TLegalMoves;
-  end;
-
   TPieceFactory = class
   public
     class function New(PieceType: TPieceType; Color: TPieceColor): IPiece; static;
@@ -80,54 +57,6 @@ implementation
 
 uses
   Pawn, Rook, Knight, Bishop, Queen, King;
-
-{ TPieceBase }
-
-constructor TPieceBase.Create(Color: TPieceColor);
-begin
-  FColor := Color;
-end;
-
-function TPieceBase.GetColor: TPieceColor;
-begin
-  Result := FColor;
-end;
-
-procedure TPieceBase.SetColor(const Value: TPieceColor);
-begin
-  FColor := Value;
-end;
-
-function TPieceBase.GetPieceType: TPieceType;
-begin
-  Result := FPieceType;
-end;
-
-function TPieceBase.GetImageName: string;
-begin
-  Result := FColor.GetName() + FPieceType.GetName();
-end;
-
-procedure TPieceBase.SetCoordinates(const Value: TPoint);
-begin
-  FCoordinates := Value;
-end;
-
-function TPieceBase.GetCoordinates: TPoint;
-begin
-  Result := FCoordinates;
-end;
-
-procedure TPieceBase.SetStrategy(const Strategy: IStrategy);
-begin
-  FStrategy := Strategy;
-end;
-
-function TPieceBase.GetLegalMoves: TLegalMoves;
-begin
-  FStrategy.SetCoordinates(FCoordinates);
-  Result := FStrategy.GetLegalMoves();
-end;
 
 { TPieceFactory }
 

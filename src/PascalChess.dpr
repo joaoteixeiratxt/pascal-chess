@@ -14,7 +14,8 @@ uses
   Knight in 'Pieces\Knight.pas',
   ImageLoader in 'Images\ImageLoader.pas',
   ColorUtils in 'Utils\ColorUtils.pas',
-  Board in 'Board\Board.pas';
+  Board in 'Board\Board.pas',
+  PieceBase in 'Pieces\PieceBase.pas';
 
 {$R *.res}
 
