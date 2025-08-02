@@ -35,6 +35,8 @@ const
   MOV_X: array[0..7] of Integer = ( 2, 1, -1, -2, -2, -1, 1, 2 );
   MOV_Y: array[0..7] of Integer = ( 1, 2, 2, 1, -1, -2, -2, -1 );
 var
+  Point: TPoint;
+  Piece: IPiece;
   I, Indice, X, Y: Integer;
 begin
   inherited;
@@ -46,13 +48,16 @@ begin
 
     if (X >= 0) and (X <= 7) and (Y >= 0) and (Y <= 7) then
     begin
-      if Assigned(FMatrix[X, Y]) then
+      Point := TPoint.Create(X, Y);
+      Piece := FState.GetPieceAt(Point);
+
+      if Assigned(Piece) and (Piece.Color = FState.CurrentPlayerColor) then
         Continue;
 
       Indice := Length(Result);
       SetLength(Result, Indice + 1);
 
-      Result[Indice] := TPoint.Create(X, Y);
+      Result[Indice] := Point;
     end;
   end;
 end;

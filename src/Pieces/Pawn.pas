@@ -32,6 +32,8 @@ end;
 
 function TPawnStrategy.GetLegalMoves: TLegalMoves;
 var
+  Piece: IPiece;
+  Point: TPoint;
   Indice, Y: Integer;
 begin
   inherited;
@@ -40,17 +42,10 @@ begin
 
   if (Y >= 0) and (Y <= 7) then
   begin
-    Indice := Length(Result);
-    SetLength(Result, Indice + 1);
+    Point := TPoint.Create(FCoordinates.X, Y);
+    Piece := FState.GetPieceAt(Point);
 
-    Result[Indice] := TPoint.Create(FCoordinates.X, Y);
-  end;
-
-  if FCoordinates.Y = 1 then
-  begin
-    Y := FCoordinates.Y + 2;
-
-    if Y <= 7 then
+    if (not Assigned(Piece)) then
     begin
       Indice := Length(Result);
       SetLength(Result, Indice + 1);
@@ -59,20 +54,49 @@ begin
     end;
   end;
 
+  if FCoordinates.Y = 1 then
+  begin
+    Y := FCoordinates.Y + 2;
+
+    if Y <= 7 then
+    begin
+      Point := TPoint.Create(FCoordinates.X, Y);
+      Piece := FState.GetPieceAt(Point);
+
+      if (not Assigned(Piece)) then
+      begin
+        Indice := Length(Result);
+        SetLength(Result, Indice + 1);
+
+        Result[Indice] := TPoint.Create(FCoordinates.X, Y);
+      end;
+    end;
+  end;
+
   if (FCoordinates.X - 1 >= 0) and (FCoordinates.Y + 1 <= 7) then
   begin
-    Indice := Length(Result);
-    SetLength(Result, Indice + 1);
+    Point := TPoint.Create(FCoordinates.X - 1, FCoordinates.Y + 1);
+    Piece := FState.GetPieceAt(Point);
 
-    Result[Indice] := TPoint.Create(FCoordinates.X - 1, FCoordinates.Y + 1);
+    if Assigned(Piece) and (Piece.Color <> FState.CurrentPlayerColor) then
+    begin
+      Indice := Length(Result);
+      SetLength(Result, Indice + 1);
+      Result[Indice] := Point;
+    end;
   end;
 
   if (FCoordinates.X + 1 <= 7) and (FCoordinates.Y + 1 <= 7) then
   begin
-    Indice := Length(Result);
-    SetLength(Result, Indice + 1);
+    Point := TPoint.Create(FCoordinates.X + 1, FCoordinates.Y + 1);
+    Piece := FState.GetPieceAt(Point);
 
-    Result[Indice] := TPoint.Create(FCoordinates.X + 1, FCoordinates.Y + 1);
+    if Assigned(Piece) and (Piece.Color <> FState.CurrentPlayerColor) then
+    begin
+      Indice := Length(Result);
+      SetLength(Result, Indice + 1);
+      Result[Indice] := Point;
+    end;
   end;
 end;
 
