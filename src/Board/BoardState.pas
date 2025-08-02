@@ -23,11 +23,13 @@ type
     procedure SetSelectedPiece(const Value: IPiece);
     function GetCurrentPlayerColor: TPieceColor;
     procedure SetCurrentPlayerColor(const Value: TPieceColor);
+    function GetCurrentTurnColor: TPieceColor;
     function GetPieceAt(const Coordinates: TPoint): IPiece;
     procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
     procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
+    property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
   end;
 
   TBoardState = class(TInterfacedObject, IBoardState)
@@ -36,11 +38,14 @@ type
     FEvents: TList<TStateUpdateEvent>;
     FSelectedPiece: IPiece;
     FCurrentPlayerColor: TPieceColor;
+    FCurrentTurnColor: TPieceColor;
     function GetSelectedPiece: IPiece;
     procedure SetSelectedPiece(const Value: IPiece);
     procedure NotifyAll;
     function GetCurrentPlayerColor: TPieceColor;
     procedure SetCurrentPlayerColor(const Value: TPieceColor);
+    function GetCurrentTurnColor: TPieceColor;
+    procedure SetCurrentTurnColor;
   public
     constructor Create;
     destructor Destroy; override;
@@ -51,6 +56,7 @@ type
     procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
+    property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
 
     class var State: IBoardState;
   end;
@@ -61,6 +67,7 @@ implementation
 
 constructor TBoardState.Create;
 begin
+  FCurrentTurnColor := pcWhite;
   FEvents := TList<TStateUpdateEvent>.Create();
 end;
 
@@ -138,6 +145,19 @@ begin
   FCurrentPlayerColor := Value;
 end;
 
+function TBoardState.GetCurrentTurnColor: TPieceColor;
+begin
+  Result := FCurrentTurnColor;
+end;
+
+procedure TBoardState.SetCurrentTurnColor;
+begin
+  if FCurrentTurnColor = pcWhite then
+    FCurrentTurnColor := pcBlack
+  else
+    FCurrentTurnColor := pcWhite
+end;
+
 function TBoardState.GetPieceAt(const Coordinates: TPoint): IPiece;
 begin
   Result := FBoardMatrix[Coordinates.X, Coordinates.Y];
@@ -150,6 +170,7 @@ begin
   FBoardMatrix[ToCoordinates.X, ToCoordinates.Y].HasMoved := True;
   FBoardMatrix[FromCoordinates.X, FromCoordinates.Y] := nil;
 
+  SetCurrentTurnColor();
   NotifyAll();
 end;
 

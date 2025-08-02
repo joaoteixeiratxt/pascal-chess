@@ -113,12 +113,15 @@ procedure TBoard.OnPieceClick(Sender: TObject);
 var
   Piece: IPiece;
 begin
-  Piece := FPiecesMap[TComponent(Sender).Tag];
-
-  if Piece.Color <> TBoardState.State.CurrentPlayerColor then
+  if FState.CurrentPlayerColor <> FState.CurrentTurnColor  then
     Exit;
 
-  TBoardState.State.SelectedPiece := Piece;
+  Piece := FPiecesMap[TComponent(Sender).Tag];
+
+  if Piece.Color <> FState.CurrentPlayerColor then
+    Exit;
+
+  FState.SelectedPiece := Piece;
 
   HightLightLegalMoves(Piece.GetLegalMoves());
 end;
@@ -165,9 +168,11 @@ begin
       end;
 
       SquareImage := TImage(PiecePanel.FindComponent('Piece'));
+      SquareImage.Cursor := crDefault;
 
-      if Piece.Color = TBoardState.State.CurrentPlayerColor then
-        SquareImage.Cursor := crHandPoint;
+      if Piece.Color = FState.CurrentPlayerColor then
+        if Piece.Color = FState.CurrentTurnColor then
+          SquareImage.Cursor := crHandPoint;
 
       SquareImage.OnClick := OnPieceClick;
       SquareImage.Visible := True;
