@@ -123,18 +123,15 @@ procedure TBoard.OnLegalMoveClick(Sender: TObject);
 var
   SquarePanel: TPanel;
   Coordinates: string;
-  FromCol, FromRow, ToCol, ToRow: Integer;
+  ToCoordinates: TPoint;
 begin
   SquarePanel := TPanel(TComponent(Sender).Owner);
   Coordinates := SquarePanel.Name;
 
-  FromCol := FState.SelectedPiece.Coordinates.X;
-  FromRow := FState.SelectedPiece.Coordinates.Y;
+  ToCoordinates.X := Coordinates.Split(['_'])[0].Split(['X'])[1].ToInteger();
+  ToCoordinates.Y := Coordinates.Split(['_'])[1].Split(['Y'])[1].ToInteger();
 
-  ToCol := Coordinates.Split(['_'])[0].Split(['X'])[1].ToInteger();
-  ToRow := Coordinates.Split(['_'])[1].Split(['Y'])[1].ToInteger();
-
-  FState.MovePiece(FromCol, FromRow, ToCol, ToRow);
+  FState.MovePiece(FState.SelectedPiece.Coordinates, ToCoordinates);
 
   ClearHighlights();
 end;

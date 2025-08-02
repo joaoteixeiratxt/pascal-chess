@@ -23,9 +23,8 @@ type
     procedure SetSelectedPiece(const Value: IPiece);
     function GetCurrentPlayerColor: TPieceColor;
     procedure SetCurrentPlayerColor(const Value: TPieceColor);
-    function GetPieceAt(const Row, Col: Integer): IPiece;
-    procedure SetPieceAt(const Row, Col: Integer; const Value: IPiece);
-    procedure MovePiece(const FromCol, FromRow, ToCol, ToRow: Integer);
+    function GetPieceAt(const Coordinates: TPoint): IPiece;
+    procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
     procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
@@ -47,9 +46,8 @@ type
     destructor Destroy; override;
     procedure Initialize;
     function GetPieceMatrix: TPieceMatrix;
-    function GetPieceAt(const Row, Col: Integer): IPiece;
-    procedure SetPieceAt(const Row, Col: Integer; const Value: IPiece);
-    procedure MovePiece(const FromCol, FromRow, ToCol, ToRow: Integer);
+    function GetPieceAt(const Coordinates: TPoint): IPiece;
+    procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
     procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
@@ -76,9 +74,9 @@ procedure TBoardState.Initialize;
 var
   Row, Column: Integer;
 begin
-  for Row := Pred(BOARD_ROWS) downto 0 do
-    for Column := 0 to Pred(BOARD_COLUMNS) do
-      FBoardMatrix[Row, Column] := nil;
+  for Column := Pred(BOARD_COLUMNS) downto 0 do
+    for Row := 0 to Pred(BOARD_ROWS) do
+      FBoardMatrix[Column, Row] := nil;
 
   FBoardMatrix[0, 0] := TPieceFactory.New(ptRook, pcWhite);
   FBoardMatrix[1, 0] := TPieceFactory.New(ptKnight, pcWhite);
@@ -140,21 +138,16 @@ begin
   FCurrentPlayerColor := Value;
 end;
 
-function TBoardState.GetPieceAt(const Row, Col: Integer): IPiece;
+function TBoardState.GetPieceAt(const Coordinates: TPoint): IPiece;
 begin
-  Result := FBoardMatrix[Row, Col];
+  Result := FBoardMatrix[Coordinates.X, Coordinates.Y];
 end;
 
-procedure TBoardState.SetPieceAt(const Row, Col: Integer; const Value: IPiece);
+procedure TBoardState.MovePiece(const FromCoordinates, ToCoordinates: TPoint);
 begin
-  FBoardMatrix[Row, Col] := Value;
-end;
-
-procedure TBoardState.MovePiece(const FromCol, FromRow, ToCol, ToRow: Integer);
-begin
-  FBoardMatrix[ToCol, ToRow] := FBoardMatrix[FromCol, FromRow];
-  FBoardMatrix[ToCol, ToRow].Coordinates := TPoint.Create(ToCol, ToRow);
-  FBoardMatrix[FromCol, FromRow] := nil;
+  FBoardMatrix[ToCoordinates.X, ToCoordinates.Y] := FBoardMatrix[FromCoordinates.X, FromCoordinates.Y];
+  FBoardMatrix[ToCoordinates.X, ToCoordinates.Y].Coordinates := TPoint.Create(ToCoordinates.X, ToCoordinates.Y);
+  FBoardMatrix[FromCoordinates.X, FromCoordinates.Y] := nil;
 
   NotifyAll();
 end;

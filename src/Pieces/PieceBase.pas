@@ -11,6 +11,7 @@ type
     FColor: TPieceColor;
     FPieceType: TPieceType;
     FCoordinates: TPoint;
+    FHasMoved: Boolean;
     FStrategy: IStrategy;
   private
     function GetColor: TPieceColor;
@@ -19,12 +20,15 @@ type
     function GetImageName: string;
     function GetCoordinates: TPoint;
     procedure SetCoordinates(const Value: TPoint);
+    function GetHasMoved: Boolean;
+    procedure SetHasMoved(const Value: Boolean);
   public
     constructor Create(Color: TPieceColor); virtual;
     property Color: TPieceColor read GetColor;
     property PieceType: TPieceType read GetPieceType;
     property ImageName: string read GetImageName;
     property Coordinates: TPoint read GetCoordinates write SetCoordinates;
+    property HasMoved: Boolean read GetHasMoved write SetHasMoved;
     procedure SetStrategy(const Strategy: IStrategy);
     function GetLegalMoves: TLegalMoves;
   end;
@@ -32,6 +36,7 @@ type
   TStrategyBase = class(TInterfacedObject, IStrategy)
   protected
     FCoordinates: TPoint;
+    FState: IBoardState;
     FMatrix: TPieceMatrix;
     FCurrentPlayerColor: TPieceColor;
   public
@@ -78,6 +83,16 @@ begin
   Result := FCoordinates;
 end;
 
+procedure TPieceBase.SetHasMoved(const Value: Boolean);
+begin
+  FHasMoved := Value;
+end;
+
+function TPieceBase.GetHasMoved: Boolean;
+begin
+  Result := FHasMoved;
+end;
+
 procedure TPieceBase.SetStrategy(const Strategy: IStrategy);
 begin
   FStrategy := Strategy;
@@ -98,6 +113,7 @@ end;
 
 function TStrategyBase.GetLegalMoves: TLegalMoves;
 begin
+  FState := TBoardState.State;
   FMatrix := TBoardState.State.GetPieceMatrix();
   FCurrentPlayerColor := TBoardState.State.CurrentPlayerColor;
 end;

@@ -41,10 +41,13 @@ type
     function GetPieceType: TPieceType;
     function GetImageName: string;
     function GetCoordinates: TPoint;
+    function GetHasMoved: Boolean;
+    procedure SetHasMoved(const Value: Boolean);
     property Color: TPieceColor read GetColor;
     property PieceType: TPieceType read GetPieceType;
     property ImageName: string read GetImageName;
     property Coordinates: TPoint read GetCoordinates write SetCoordinates;
+    property HasMoved: Boolean read GetHasMoved write SetHasMoved;
     procedure SetStrategy(const Strategy: IStrategy);
   end;
 
