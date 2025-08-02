@@ -147,6 +147,7 @@ procedure TBoardState.MovePiece(const FromCoordinates, ToCoordinates: TPoint);
 begin
   FBoardMatrix[ToCoordinates.X, ToCoordinates.Y] := FBoardMatrix[FromCoordinates.X, FromCoordinates.Y];
   FBoardMatrix[ToCoordinates.X, ToCoordinates.Y].Coordinates := TPoint.Create(ToCoordinates.X, ToCoordinates.Y);
+  FBoardMatrix[ToCoordinates.X, ToCoordinates.Y].HasMoved := True;
   FBoardMatrix[FromCoordinates.X, FromCoordinates.Y] := nil;
 
   NotifyAll();
