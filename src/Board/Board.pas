@@ -114,6 +114,10 @@ var
   Piece: IPiece;
 begin
   Piece := FPiecesMap[TComponent(Sender).Tag];
+
+  if Piece.Color <> TBoardState.State.CurrentPlayerColor then
+    Exit;
+
   TBoardState.State.SelectedPiece := Piece;
 
   HightLightLegalMoves(Piece.GetLegalMoves());
@@ -161,7 +165,10 @@ begin
       end;
 
       SquareImage := TImage(PiecePanel.FindComponent('Piece'));
-      SquareImage.Cursor := crHandPoint;
+
+      if Piece.Color = TBoardState.State.CurrentPlayerColor then
+        SquareImage.Cursor := crHandPoint;
+
       SquareImage.OnClick := OnPieceClick;
       SquareImage.Visible := True;
 
