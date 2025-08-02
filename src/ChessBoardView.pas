@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage, Board, BoardState, BoardBuilder;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage, Board, BoardState, BoardBuilder,
+  Vcl.StdCtrls;
 
 type
   TBoardView = class(TForm)
@@ -24,6 +25,12 @@ type
     pnlExit: TPanel;
     pnlMessages: TPanel;
     pnlPrevious: TPanel;
+    lblOpponentName: TLabel;
+    lblPlayerName: TLabel;
+    imgNext: TImage;
+    imgPrevious: TImage;
+    imgMessages: TImage;
+    imgExit: TImage;
     procedure FormCreate(Sender: TObject);
   private
     FBoard: IBoard;
