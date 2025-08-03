@@ -46,6 +46,8 @@ type
     procedure SetCurrentPlayerColor(const Value: TPieceColor);
     function GetCurrentTurnColor: TPieceColor;
     procedure SetCurrentTurnColor;
+    procedure Clear;
+    procedure CreatePieces(Color: TPieceColor);
   public
     constructor Create;
     destructor Destroy; override;
@@ -77,47 +79,68 @@ begin
   inherited;
 end;
 
-procedure TBoardState.Initialize;
+procedure TBoardState.Clear;
 var
   Row, Column: Integer;
 begin
   for Column := Pred(BOARD_COLUMNS) downto 0 do
     for Row := 0 to Pred(BOARD_ROWS) do
       FBoardMatrix[Column, Row] := nil;
+end;
 
-  FBoardMatrix[0, 0] := TPieceFactory.New(ptRook, pcWhite);
-  FBoardMatrix[1, 0] := TPieceFactory.New(ptKnight, pcWhite);
-  FBoardMatrix[2, 0] := TPieceFactory.New(ptBishop, pcWhite);
-  FBoardMatrix[3, 0] := TPieceFactory.New(ptQueen, pcWhite);
-  FBoardMatrix[4, 0] := TPieceFactory.New(ptKing, pcWhite);
-  FBoardMatrix[5, 0] := TPieceFactory.New(ptBishop, pcWhite);
-  FBoardMatrix[6, 0] := TPieceFactory.New(ptKnight, pcWhite);
-  FBoardMatrix[7, 0] := TPieceFactory.New(ptRook, pcWhite);
+procedure TBoardState.CreatePieces(Color: TPieceColor);
+var
+  RowSpecialPieces, RowPawnPieces,
+  KingColumn, QueenColumn, Column: Integer;
+begin
+  if Color = FCurrentPlayerColor then
+  begin
+    RowSpecialPieces := 0;
+    RowPawnPieces := 1;
+  end
+  else
+  begin
+    RowSpecialPieces := 7;
+    RowPawnPieces := 6;
+  end;
+
+  if FCurrentPlayerColor = pcWhite then
+  begin
+    QueenColumn := 3;
+    KingColumn := 4;
+  end
+  else
+  begin
+    QueenColumn := 4;
+    KingColumn := 3;
+  end;
+
+  FBoardMatrix[0, RowSpecialPieces] := TPieceFactory.New(ptRook, Color);
+  FBoardMatrix[1, RowSpecialPieces] := TPieceFactory.New(ptKnight, Color);
+  FBoardMatrix[2, RowSpecialPieces] := TPieceFactory.New(ptBishop, Color);
+
+  FBoardMatrix[QueenColumn, RowSpecialPieces] := TPieceFactory.New(ptQueen, Color);
+  FBoardMatrix[KingColumn, RowSpecialPieces] := TPieceFactory.New(ptKing, Color);
+
+  FBoardMatrix[5, RowSpecialPieces] := TPieceFactory.New(ptBishop, Color);
+  FBoardMatrix[6, RowSpecialPieces] := TPieceFactory.New(ptKnight, Color);
+  FBoardMatrix[7, RowSpecialPieces] := TPieceFactory.New(ptRook, Color);
 
   for Column := 0 to Pred(BOARD_COLUMNS) do
   begin
-    FBoardMatrix[Column, 1] := TPieceFactory.New(ptPawn, pcWhite);
-    FBoardMatrix[Column, 1].Coordinates := TPoint.Create(Column, 1);
+    FBoardMatrix[Column, RowPawnPieces] := TPieceFactory.New(ptPawn, Color);
+    FBoardMatrix[Column, RowPawnPieces].Coordinates := TPoint.Create(Column, RowPawnPieces);
 
-    FBoardMatrix[Column, 0].Coordinates := TPoint.Create(Column, 0);
+    FBoardMatrix[Column, RowSpecialPieces].Coordinates := TPoint.Create(Column, RowSpecialPieces);
   end;
+end;
 
-  FBoardMatrix[0, 7] := TPieceFactory.New(ptRook, pcBlack);
-  FBoardMatrix[1, 7] := TPieceFactory.New(ptKnight, pcBlack);
-  FBoardMatrix[2, 7] := TPieceFactory.New(ptBishop, pcBlack);
-  FBoardMatrix[3, 7] := TPieceFactory.New(ptQueen, pcBlack);
-  FBoardMatrix[4, 7] := TPieceFactory.New(ptKing, pcBlack);
-  FBoardMatrix[5, 7] := TPieceFactory.New(ptBishop, pcBlack);
-  FBoardMatrix[6, 7] := TPieceFactory.New(ptKnight, pcBlack);
-  FBoardMatrix[7, 7] := TPieceFactory.New(ptRook, pcBlack);
 
-  for Column := 0 to Pred(BOARD_COLUMNS) do
-  begin
-    FBoardMatrix[Column, 6] := TPieceFactory.New(ptPawn, pcBlack);
-    FBoardMatrix[Column, 6].Coordinates := TPoint.Create(Column, 6);
-
-    FBoardMatrix[Column, 7].Coordinates := TPoint.Create(Column, 7);
-  end;
+procedure TBoardState.Initialize;
+begin
+  Clear();
+  CreatePieces(pcWhite);
+  CreatePieces(pcBlack);
 end;
 
 function TBoardState.GetSelectedPiece: IPiece;
@@ -188,10 +211,7 @@ begin
 end;
 
 initialization
-begin
   TBoardState.State := TBoardState.Create();
-  TBoardState.State.Initialize();
-end;
 
 end.
 

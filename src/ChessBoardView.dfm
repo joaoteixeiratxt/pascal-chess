@@ -44,9 +44,6 @@ object BoardView: TBoardView
       ParentBackground = False
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 480
-      ExplicitTop = 1
-      ExplicitHeight = 77
     end
     object pnlOpponentName: TPanel
       Left = 79
@@ -65,10 +62,6 @@ object BoardView: TBoardView
       ParentBackground = False
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 80
-      ExplicitTop = 1
-      ExplicitWidth = 400
-      ExplicitHeight = 77
       object lblOpponentName: TLabel
         Left = 6
         Top = 30
@@ -91,9 +84,6 @@ object BoardView: TBoardView
       Padding.Bottom = 5
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 1
-      ExplicitTop = 1
-      ExplicitHeight = 77
       object imgOpponentAvatar: TImage
         Left = 5
         Top = 5
@@ -2201,10 +2191,6 @@ object BoardView: TBoardView
       ParentBackground = False
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 80
-      ExplicitTop = 1
-      ExplicitWidth = 400
-      ExplicitHeight = 77
       object lblPlayerName: TLabel
         Left = 6
         Top = 30
@@ -2227,9 +2213,6 @@ object BoardView: TBoardView
       Padding.Bottom = 5
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 1
-      ExplicitTop = 1
-      ExplicitHeight = 77
       object imgPlayerAvatar: TImage
         Left = 5
         Top = 5
@@ -6038,9 +6021,6 @@ object BoardView: TBoardView
       ParentBackground = False
       ParentFont = False
       TabOrder = 2
-      ExplicitLeft = 480
-      ExplicitTop = 1
-      ExplicitHeight = 77
     end
   end
   object pnlControls: TPanel
@@ -6061,9 +6041,6 @@ object BoardView: TBoardView
       Color = 2829872
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 419
-      ExplicitTop = 1
-      ExplicitHeight = 61
       object imgNext: TImage
         Left = 0
         Top = 0
@@ -6101,9 +6078,6 @@ object BoardView: TBoardView
       Color = 2829872
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = -1
-      ExplicitTop = 1
-      ExplicitHeight = 61
       object imgExit: TImage
         Left = 0
         Top = 0
@@ -6139,9 +6113,6 @@ object BoardView: TBoardView
       Color = 2829872
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 139
-      ExplicitTop = 1
-      ExplicitHeight = 61
       object imgMessages: TImage
         Left = 0
         Top = 0
@@ -6186,9 +6157,6 @@ object BoardView: TBoardView
       Color = 2829872
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 279
-      ExplicitTop = 1
-      ExplicitHeight = 61
       object imgPrevious: TImage
         Left = 0
         Top = 0

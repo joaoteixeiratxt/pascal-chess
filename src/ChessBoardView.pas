@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage, Board, BoardState, BoardBuilder,
-  Vcl.StdCtrls;
+  Vcl.StdCtrls, BoardPiece;
 
 type
   TBoardView = class(TForm)
@@ -48,6 +48,9 @@ procedure TBoardView.FormCreate(Sender: TObject);
 var
   BoardBuilder: IBoardBuilder;
 begin
+  TBoardState.State.CurrentPlayerColor := pcWhite;
+  TBoardState.State.Initialize();
+
   BoardBuilder := TBoardBuilder.Create();
 
   FBoard := BoardBuilder
