@@ -3,19 +3,19 @@ unit BoardPiece;
 interface
 
 uses
-  System.TypInfo, System.SysUtils, System.Types;
+  System.TypInfo, System.SysUtils, System.Types, System.JSON;
 
 type
-  TPieceColor = (pcBlack, pcWhite);
+  TPieceColor = (pcBlack = 0, pcWhite = 1, pcNull = 2);
 
   TPieceType = (
-    ptNone,
-    ptPawn,
-    ptRook,
-    ptKnight,
-    ptBishop,
-    ptQueen,
-    ptKing
+    ptNone = 0,
+    ptPawn = 1,
+    ptRook = 2,
+    ptKnight = 3,
+    ptBishop = 4,
+    ptQueen = 5,
+    ptKing = 6
   );
 
   TLegalMoves = array of TPoint;
@@ -49,6 +49,8 @@ type
     property Coordinates: TPoint read GetCoordinates write SetCoordinates;
     property HasMoved: Boolean read GetHasMoved write SetHasMoved;
     procedure SetStrategy(const Strategy: IStrategy);
+    function ToJSON: TJSONObject;
+    procedure LoadFromJSON(const JSON: TJSONObject);
   end;
 
   TPieceFactory = class

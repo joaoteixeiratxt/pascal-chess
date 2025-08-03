@@ -3,7 +3,7 @@ unit PieceBase;
 interface
 
 uses
-  System.Classes, System.Types, BoardPiece, BoardState;
+  System.Classes, System.Types, System.JSON, BoardPiece, BoardState;
 
 type
   TPieceBase = class(TInterfacedObject, IPiece, IStrategy)
@@ -31,6 +31,8 @@ type
     property HasMoved: Boolean read GetHasMoved write SetHasMoved;
     procedure SetStrategy(const Strategy: IStrategy);
     function GetLegalMoves: TLegalMoves;
+    function ToJSON: TJSONObject;
+    procedure LoadFromJSON(const JSON: TJSONObject);
   end;
 
   TStrategyBase = class(TInterfacedObject, IStrategy)
@@ -102,6 +104,25 @@ function TPieceBase.GetLegalMoves: TLegalMoves;
 begin
   FStrategy.SetCoordinates(FCoordinates);
   Result := FStrategy.GetLegalMoves();
+end;
+
+function TPieceBase.ToJSON: TJSONObject;
+begin
+  Result := TJSONObject.Create();
+  Result.AddPair('type', TJSONNumber.Create(Integer(Self.PieceType)));
+  Result.AddPair('color', TJSONNumber.Create(Integer(Self.Color)));
+  Result.AddPair('hasMoved', TJSONBool.Create(Self.HasMoved));
+  Result.AddPair('x', TJSONNumber.Create(Self.Coordinates.X));
+  Result.AddPair('y', TJSONNumber.Create(Self.Coordinates.Y));
+end;
+
+procedure TPieceBase.LoadFromJSON(const JSON: TJSONObject);
+begin
+  FPieceType := TPieceType(JSON.GetValue<Integer>('type'));
+  FColor := TPieceColor(JSON.GetValue<Integer>('color'));
+  FHasMoved := JSON.GetValue<Boolean>('hasMoved');
+  FCoordinates.X := JSON.GetValue<Integer>('x');
+  FCoordinates.Y := JSON.GetValue<Integer>('y');
 end;
 
 { TStrategyBase }
