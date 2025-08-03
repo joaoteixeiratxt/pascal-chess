@@ -147,7 +147,7 @@ procedure TBoard.Render;
 var
   Piece: IPiece;
   PiecePanel: TPanel;
-  Row, Col, X, Y: Integer;
+  Row, Col: Integer;
   SquareImage: TImage;
   PieceMatrix: TPieceMatrix;
 begin
@@ -157,11 +157,8 @@ begin
   begin
     for Col := 0 to Pred(BOARD_COLUMNS) do
     begin
-      X := Col;
-      Y := Row;
-
-      Piece := PieceMatrix[X, Y];
-      PiecePanel := FBoardMatrix[X, Y];
+      Piece := PieceMatrix[Col, Row];
+      PiecePanel := FBoardMatrix[Col, Row];
 
       if not Assigned(Piece) then
       begin
@@ -170,13 +167,6 @@ begin
         Continue;
       end;
 
-      if FState.CurrentPlayerColor = pcBlack then
-      begin
-        X := 7 - Col;
-        Y := 7 - Row;
-      end;
-
-      PiecePanel := FBoardMatrix[X, Y];
       SquareImage := TImage(PiecePanel.FindComponent('Piece'));
       SquareImage.Cursor := crDefault;
 

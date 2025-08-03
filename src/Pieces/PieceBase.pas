@@ -112,8 +112,17 @@ begin
   Result.AddPair('type', TJSONNumber.Create(Integer(Self.PieceType)));
   Result.AddPair('color', TJSONNumber.Create(Integer(Self.Color)));
   Result.AddPair('hasMoved', TJSONBool.Create(Self.HasMoved));
-  Result.AddPair('x', TJSONNumber.Create(Self.Coordinates.X));
-  Result.AddPair('y', TJSONNumber.Create(Self.Coordinates.Y));
+
+  if TBoardState.State.CurrentPlayerColor = pcBlack then
+  begin
+    Result.AddPair('x', TJSONNumber.Create(7 - Self.Coordinates.X));
+    Result.AddPair('y', TJSONNumber.Create(7 - Self.Coordinates.Y));
+  end
+  else
+  begin
+    Result.AddPair('x', TJSONNumber.Create(Self.Coordinates.X));
+    Result.AddPair('y', TJSONNumber.Create(Self.Coordinates.Y));
+  end;
 end;
 
 procedure TPieceBase.LoadFromJSON(const JSON: TJSONObject);
@@ -123,6 +132,12 @@ begin
   FHasMoved := JSON.GetValue<Boolean>('hasMoved');
   FCoordinates.X := JSON.GetValue<Integer>('x');
   FCoordinates.Y := JSON.GetValue<Integer>('y');
+
+  if TBoardState.State.CurrentPlayerColor = pcBlack then
+  begin
+    FCoordinates.X := 7 - FCoordinates.X;
+    FCoordinates.Y := 7 - FCoordinates.Y;
+  end;
 end;
 
 { TStrategyBase }
