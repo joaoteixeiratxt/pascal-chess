@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.Types, System.SysUtils, System.Generics.Collections,
-  BoardPiece;
+  System.JSON, System.IOUtils,BoardPiece;
 
 const
   BOARD_ROWS = 8;
@@ -24,12 +24,22 @@ type
     function GetCurrentPlayerColor: TPieceColor;
     procedure SetCurrentPlayerColor(const Value: TPieceColor);
     function GetCurrentTurnColor: TPieceColor;
+    function GetPlayerID: string;
+    procedure SetPlayerID(const Value: string);
+    function GetOpponentColor: TPieceColor;
+    procedure SetOpponentColor(const Value: TPieceColor);
     function GetPieceAt(const Coordinates: TPoint): IPiece;
     procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
     procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
+
+    //TODO: Move to player class
     property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
+    property PlayerID: string read GetPlayerID write SetPlayerID;
+    property OpponentColor: TPieceColor read GetOpponentColor write SetOpponentColor;
+    function ToJSON: TJSONObject;
+    procedure LoadFromJSON(const JSON: TJSONObject);
   end;
 
   TBoardState = class(TInterfacedObject, IBoardState)
@@ -39,6 +49,8 @@ type
     FSelectedPiece: IPiece;
     FCurrentPlayerColor: TPieceColor;
     FCurrentTurnColor: TPieceColor;
+    FPlayerID: string;
+    FOpponentColor: TPieceColor;
     function GetSelectedPiece: IPiece;
     procedure SetSelectedPiece(const Value: IPiece);
     procedure NotifyAll;
@@ -48,6 +60,10 @@ type
     procedure SetCurrentTurnColor;
     procedure Clear;
     procedure CreatePieces(Color: TPieceColor);
+    function GetPlayerID: string;
+    procedure SetPlayerID(const Value: string);
+    function GetOpponentColor: TPieceColor;
+    procedure SetOpponentColor(const Value: TPieceColor);
   public
     constructor Create;
     destructor Destroy; override;
@@ -57,18 +73,34 @@ type
     procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
     procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
+    property PlayerID: string read GetPlayerID write SetPlayerID;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
     property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
+    property OpponentColor: TPieceColor read GetOpponentColor write SetOpponentColor;
+    function ToJSON: TJSONObject;
+    procedure LoadFromJSON(const JSON: TJSONObject);
 
     class var State: IBoardState;
   end;
 
+  TBoardStateController = class
+  public
+    class var FirstLoad: Boolean;
+    class procedure SaveJSONState;
+    class procedure LoadJSONState;
+  end;
+
 implementation
+
+const
+  TEMP_JSON_FILE = '\State.json';
 
 { TBoardState }
 
 constructor TBoardState.Create;
 begin
+  FCurrentPlayerColor := pcWhite;
+  FOpponentColor := pcBlack;
   FCurrentTurnColor := pcWhite;
   FEvents := TList<TStateUpdateEvent>.Create();
 end;
@@ -181,6 +213,26 @@ begin
     FCurrentTurnColor := pcWhite
 end;
 
+function TBoardState.GetPlayerID: string;
+begin
+  Result := FPlayerID;
+end;
+
+procedure TBoardState.SetPlayerID(const Value: string);
+begin
+  FPlayerID := Value;
+end;
+
+function TBoardState.GetOpponentColor: TPieceColor;
+begin
+  Result := FOpponentColor;
+end;
+
+procedure TBoardState.SetOpponentColor(const Value: TPieceColor);
+begin
+  FOpponentColor := Value;
+end;
+
 function TBoardState.GetPieceAt(const Coordinates: TPoint): IPiece;
 begin
   Result := FBoardMatrix[Coordinates.X, Coordinates.Y];
@@ -195,6 +247,8 @@ begin
 
   SetCurrentTurnColor();
   NotifyAll();
+
+  TBoardStateController.SaveJSONState();
 end;
 
 procedure TBoardState.NotifyAll;
@@ -210,8 +264,115 @@ begin
   FEvents.Add(Event);
 end;
 
+function TBoardState.ToJSON: TJSONObject;
+var
+  Point: TPoint;
+  Piece: IPiece;
+  Column, Row: Integer;
+  PiecesArray: TJSONArray;
+begin
+  Result := TJSONObject.Create();
+
+  Result.AddPair('currentTurnColor',TJSONNumber.Create(Integer(Self.CurrentTurnColor)));
+
+  PiecesArray := TJSONArray.Create();
+  Result.AddPair('pieces', PiecesArray);
+
+  for Column := 0 to Pred(BOARD_COLUMNS) do
+  begin
+    for Row := 0 to Pred(BOARD_ROWS) do
+    begin
+      Point := TPoint.Create(Column, Row);
+      Piece := GetPieceAt(Point);
+
+      if not Assigned(Piece) then
+        Continue;
+
+      PiecesArray.Add(Piece.ToJSON());
+    end;
+  end;
+end;
+
+procedure TBoardState.LoadFromJSON(const JSON: TJSONObject);
+var
+  I: Integer;
+  Piece: IPiece;
+  PieceType: TPieceType;
+  PieceColor: TPieceColor;
+  PieceInfo: TJSONObject;
+  PiecesArray: TJSONArray;
+begin
+  Clear();
+
+  FCurrentTurnColor := TPieceColor(JSON.GetValue<Integer>('currentTurnColor'));
+  PiecesArray := JSON.GetValue<TJSONArray>('pieces');
+
+  for I := 0 to Pred(PiecesArray.Count) do
+  begin
+    PieceInfo := TJSONObject(PiecesArray.Items[I]);
+
+    PieceType := TPieceType(PieceInfo.GetValue<Integer>('type'));
+    PieceColor := TPieceColor(PieceInfo.GetValue<Integer>('color'));
+
+    Piece := TPieceFactory.New(PieceType, PieceColor);
+    Piece.LoadFromJSON(PieceInfo);
+
+    FBoardMatrix[Piece.Coordinates.X, Piece.Coordinates.Y] := Piece;
+  end;
+end;
+
+{ TBoardStateController }
+
+class procedure TBoardStateController.SaveJSONState;
+var
+  BoadStateJSON: TJSONObject;
+begin
+  BoadStateJSON := TBoardState.State.ToJSON();
+  try
+    TFile.WriteAllText(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE, BoadStateJSON.ToString());
+  finally
+    BoadStateJSON.Free;
+  end;
+end;
+
+class procedure TBoardStateController.LoadJSONState;
+var
+  JSONString: string;
+  BoadStateJSON: TJSONObject;
+begin
+  //This is temporary, just to test
+
+  if not TFile.Exists(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE) then
+  begin
+    TBoardStateController.FirstLoad := False;
+    TBoardState.State.Initialize();
+    TBoardStateController.SaveJSONState();
+    Exit;
+  end;
+
+  if TBoardStateController.FirstLoad then
+  begin
+    TBoardState.State.CurrentPlayerColor := pcBlack;
+    TBoardState.State.OpponentColor := pcWhite;
+    TBoardStateController.FirstLoad := False;
+  end;
+
+  JSONString := TFile.ReadAllText(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE);
+  BoadStateJSON := TJSONObject(TJSONObject.ParseJSONValue(JSONString));
+  TBoardState.State.LoadFromJSON(BoadStateJSON);
+end;
+
 initialization
+begin
+  TBoardStateController.FirstLoad := True;
   TBoardState.State := TBoardState.Create();
+end;
+
+finalization
+begin
+  if TFile.Exists(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE) then
+    TFile.Delete(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE)
+end;
 
 end.
 
