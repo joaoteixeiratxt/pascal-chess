@@ -34,7 +34,6 @@ object BoardView: TBoardView
       Height = 79
       Align = alRight
       BevelOuter = bvNone
-      Caption = '01:00'
       Color = 2829872
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -44,6 +43,18 @@ object BoardView: TBoardView
       ParentBackground = False
       ParentFont = False
       TabOrder = 0
+      object lblOpponentTimer: TLabel
+        Left = 0
+        Top = 0
+        Width = 79
+        Height = 79
+        Align = alClient
+        Alignment = taCenter
+        Caption = '01:00'
+        Layout = tlCenter
+        ExplicitWidth = 40
+        ExplicitHeight = 21
+      end
     end
     object pnlOpponentName: TPanel
       Left = 79
@@ -6011,7 +6022,6 @@ object BoardView: TBoardView
       Height = 79
       Align = alRight
       BevelOuter = bvNone
-      Caption = '01:00'
       Color = 2829872
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -6021,6 +6031,18 @@ object BoardView: TBoardView
       ParentBackground = False
       ParentFont = False
       TabOrder = 2
+      object lblPlayerTimer: TLabel
+        Left = 0
+        Top = 0
+        Width = 79
+        Height = 79
+        Align = alClient
+        Alignment = taCenter
+        Caption = '01:00'
+        Layout = tlCenter
+        ExplicitWidth = 40
+        ExplicitHeight = 21
+      end
     end
   end
   object pnlControls: TPanel

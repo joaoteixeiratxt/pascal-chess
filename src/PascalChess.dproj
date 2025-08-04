@@ -144,6 +144,7 @@
         <DCCReference Include="Utils\ColorUtils.pas"/>
         <DCCReference Include="Board\Board.pas"/>
         <DCCReference Include="Pieces\PieceBase.pas"/>
+        <DCCReference Include="Board\BoardTimer.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

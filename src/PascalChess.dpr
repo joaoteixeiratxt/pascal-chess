@@ -15,7 +15,8 @@ uses
   ImageLoader in 'Images\ImageLoader.pas',
   ColorUtils in 'Utils\ColorUtils.pas',
   Board in 'Board\Board.pas',
-  PieceBase in 'Pieces\PieceBase.pas';
+  PieceBase in 'Pieces\PieceBase.pas',
+  BoardTimer in 'Board\BoardTimer.pas';
 
 {$R *.res}
 
