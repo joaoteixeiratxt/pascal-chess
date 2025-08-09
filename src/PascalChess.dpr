@@ -16,13 +16,14 @@ uses
   ColorUtils in 'Utils\ColorUtils.pas',
   Board in 'Board\Board.pas',
   PieceBase in 'Pieces\PieceBase.pas',
-  BoardTimer in 'Board\BoardTimer.pas';
+  BoardTimer in 'Board\BoardTimer.pas',
+  LobbyView in 'LobbyView.pas' {frmLobbyView};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TBoardView, BoardView);
+  Application.CreateForm(TfrmLobbyView, frmLobbyView);
   Application.Run;
 end.

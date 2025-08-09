@@ -145,6 +145,10 @@
         <DCCReference Include="Board\Board.pas"/>
         <DCCReference Include="Pieces\PieceBase.pas"/>
         <DCCReference Include="Board\BoardTimer.pas"/>
+        <DCCReference Include="LobbyView.pas">
+            <Form>frmLobbyView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
