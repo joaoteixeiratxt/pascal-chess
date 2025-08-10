@@ -19,7 +19,9 @@ uses
   BoardTimer in 'Board\BoardTimer.pas',
   LobbyView in 'LobbyView.pas' {frmLobbyView},
   RoomController in 'RoomController.pas',
-  HttpClient.IndyFacade in 'Utils\HttpClient.IndyFacade.pas';
+  HttpClient.IndyFacade in 'Utils\HttpClient.IndyFacade.pas',
+  ServerController in 'ServerController.pas',
+  BoardPlayer in 'Board\BoardPlayer.pas';
 
 {$R *.res}
 
