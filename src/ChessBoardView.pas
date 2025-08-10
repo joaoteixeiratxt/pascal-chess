@@ -34,6 +34,7 @@ type
     lblPlayerTimer: TLabel;
     lblOpponentTimer: TLabel;
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FBoard: IBoard;
     FHashState: string;
@@ -41,6 +42,8 @@ type
     FTimerPlayer2: TBoardTimer;
     procedure UpdateBoard;
     function ValidateHashState: Boolean;
+  public
+    class procedure StartGame; static;
   end;
 
 var
@@ -49,6 +52,25 @@ var
 implementation
 
 {$R *.dfm}
+
+class procedure TBoardView.StartGame;
+var
+  BoardView: TBoardView;
+begin
+  BoardView := TBoardView.Create(nil);
+  try
+    BoardView.ShowModal();
+  finally
+    BoardView.Free;
+  end;
+end;
+
+procedure TBoardView.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FTimerPlayer1);
+  FreeAndNil(FTimerPlayer2);
+  FBoard := nil;
+end;
 
 procedure TBoardView.FormCreate(Sender: TObject);
 const

@@ -42,6 +42,7 @@ end;
 
 destructor TBoardTimer.Destroy;
 begin
+  FTimer.Enabled := False;
   FreeAndNil(Ftimer);
   inherited;
 end;

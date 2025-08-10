@@ -16,6 +16,7 @@ object BoardView: TBoardView
   Font.Style = []
   Position = poOwnerFormCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   TextHeight = 15
   object pnlOpponent: TPanel
     Left = 0

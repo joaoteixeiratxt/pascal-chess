@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
-  Vcl.StdCtrls, Vcl.ComCtrls, ImageLoader;
+  Vcl.StdCtrls, Vcl.ComCtrls, ImageLoader, ChessBoardView;
 
 type
   TfrmLobbyView = class(TForm)
@@ -37,6 +37,7 @@ type
     FWaitingForPlayes: Boolean;
     procedure TogglePanels;
     procedure SetRolePanel;
+    procedure StartGame;
   end;
 
 var
@@ -55,6 +56,16 @@ begin
   TImageLoader.LoadGIF('Loading', imgLoading);
   
   SetRolePanel();
+end;
+
+procedure TfrmLobbyView.StartGame;
+begin
+  Self.Visible := False;
+  try
+    TBoardView.StartGame();
+  finally
+    Self.Visible := True;
+  end;
 end;
 
 procedure TfrmLobbyView.SetRolePanel;
@@ -84,8 +95,13 @@ end;
 procedure TfrmLobbyView.lblEnterClick(Sender: TObject);
 begin
   if FRoleAdmin then
+  begin
+    if FWaitingForPlayes then
+      StartGame();
+
     FWaitingForPlayes := True;
-  
+  end;
+
   TogglePanels();
 end;
 
