@@ -33,10 +33,7 @@ type
     procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
-
-    //TODO: Move to player class
     property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
-    property PlayerID: string read GetPlayerID write SetPlayerID;
     property OpponentColor: TPieceColor read GetOpponentColor write SetOpponentColor;
     function ToJSON: TJSONObject;
     procedure LoadFromJSON(const JSON: TJSONObject);
@@ -73,7 +70,6 @@ type
     procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
     procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
-    property PlayerID: string read GetPlayerID write SetPlayerID;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
     property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
     property OpponentColor: TPieceColor read GetOpponentColor write SetOpponentColor;

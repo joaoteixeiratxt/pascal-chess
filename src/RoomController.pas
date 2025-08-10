@@ -4,25 +4,85 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.JSON, System.Generics.Collections,
-  HttpClient.IndyFacade, BoardState;
+  HttpClient.IndyFacade, BoardState, BoardPlayer;
 
 type
-  TRoom = class
+  IRoom = interface
+  ['{BECBB98B-2043-441F-9743-37E9443B7333}']
+    function GetName: string;
+    procedure SetName(const Value: string);
+    function GetOwner: string;
+    procedure SetOwner(const Value: string);
+    function GetStatus: string;
+    procedure SetStatus(const Value: string);
+    function GetStarted: Boolean;
+    procedure SetStarted(const Value: Boolean);
+    function GetHasChanged: Boolean;
+    procedure SetHasChanged(const Value: Boolean);
+    function GetState: IBoardState;
+    procedure SetState(const Value: IBoardState);
+    function GetPlayers: TList<IBoardPlayer>;
+    procedure SetPlayers(const Value: TList<IBoardPlayer>);
+    function GetCurrentPlayerBlackPiece: Integer;
+    procedure SetCurrentPlayerBlackPiece(const Value: Integer);
+    function GetNextPlayersBlackPiece: TList<IBoardPlayer>;
+    procedure SetNextPlayersBlackPiece(const Value: TList<IBoardPlayer>);
+    property Name: string read GetName write SetName;
+    property Owner: string read GetOwner write SetOwner;
+    property Status: string read GetStatus write SetStatus;
+    property Started: Boolean read GetStarted write SetStarted;
+    property HasChanged: Boolean read GetHasChanged write SetHasChanged;
+    property Players: TList<IBoardPlayer> read GetPlayers write SetPlayers;
+    property CurrentPlayerBlackPiece: Integer read GetCurrentPlayerBlackPiece write SetCurrentPlayerBlackPiece;
+    property NextPlayersBlackPiece: TList<IBoardPlayer> read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
+    property State: IBoardState read GetState write SetState;
+    procedure Update;
+    function ToJSON: string;
+    procedure LoadFromJSON(const JSON: TJSONObject);
+  end;
+
+  TRoom = class(TInterfacedObject, IRoom)
   private
     FName: string;
+    FOwner: string;
     FStatus: string;
     FStarted: Boolean;
-    FJSONState: TJSONObject;
+    FHasChanged: Boolean;
+    FState: IBoardState;
+    FPlayers: TPlayerList;
+    FCurrentPlayerBlackPiece: Integer;
+    FNextPlayersBlackPiece: TPlayerList;
+    function GetName: string;
+    procedure SetName(const Value: string);
+    function GetOwner: string;
+    procedure SetOwner(const Value: string);
+    function GetStatus: string;
+    procedure SetStatus(const Value: string);
+    function GetStarted: Boolean;
+    procedure SetStarted(const Value: Boolean);
+    function GetHasChanged: Boolean;
+    procedure SetHasChanged(const Value: Boolean);
+    function GetState: IBoardState;
+    procedure SetState(const Value: IBoardState);
+    function GetPlayers: TPlayerList;
+    procedure SetPlayers(const Value: TPlayerList);
+    function GetNextPlayersBlackPiece: TPlayerList;
+    procedure SetNextPlayersBlackPiece(const Value: TPlayerList);
+    function GetCurrentPlayerBlackPiece: Integer;
+    procedure SetCurrentPlayerBlackPiece(const Value: Integer);
   public
     constructor Create;
     destructor Destroy; override;
-    property Name: string read FName write FName;
-    property Status: string read FStatus write FStatus;
-    property Started: Boolean read FStarted write FStarted;
-    property JSONState: TJSONObject read FJSONState write FJSONState;
-    procedure GetPlayers(out PlayersList: TStringList);
-    function GetCurrentPlayerBlackPiece: string;
-    procedure GetNextPlayersBlackPiece(out PlayersList: TStringList);
+    procedure Update;
+    property Name: string read GetName write SetName;
+    property Owner: string read GetOwner write SetOwner;
+    property Status: string read GetStatus write SetStatus;
+    property Started: Boolean read GetStarted write SetStarted;
+    property HasChanged: Boolean read GetHasChanged write SetHasChanged;
+    property Players: TPlayerList read GetPlayers write SetPlayers;
+    property CurrentPlayerBlackPiece: Integer read GetCurrentPlayerBlackPiece write SetCurrentPlayerBlackPiece;
+    property NextPlayersBlackPiece: TPlayerList read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
+    property State: IBoardState read GetState write SetState;
     function ToJSON: string;
     procedure LoadFromJSON(const JSON: TJSONObject);
   end;
@@ -33,9 +93,9 @@ type
   public
     class constructor Create;
     class destructor Destroy;
-    class function CreateRoom(const Name, Owner: string): TRoom; static;
-    class function GetRoom(const RoomName: string): TRoom; static;
-    class procedure UpdateRoom(const Room: TRoom);
+    class function CreateRoom(const Name, Owner: string): IRoom; static;
+    class function GetRoom(const RoomName: string): IRoom; static;
+    class procedure UpdateRoom(const Room: IRoom);
   end;
 
 implementation
@@ -50,72 +110,38 @@ begin
   FName := '';
   FStatus := '';
   FStarted := False;
-  FJSONState := nil;
+  FCurrentPlayerBlackPiece := -1;
+  FPlayers := TPlayerList.Create();
+  FNextPlayersBlackPiece := TPlayerList.Create();
+  FState := TBoardState.Create();
 end;
 
 destructor TRoom.Destroy;
 begin
-  if Assigned(FJSONState) then
-    FreeAndNil(FJSONState);
-
+  FreeAndNil(FPlayers);
+  FreeAndNil(FNextPlayersBlackPiece);
   inherited;
 end;
 
-procedure TRoom.GetPlayers(out PlayersList: TStringList);
-var
-  I: Integer;
-  Player: string;
-  PlayerArray: TJSONArray;
+procedure TRoom.Update;
 begin
-  if not Assigned(PlayersList) then
-    Exit;
-
-  PlayersList.Clear();
-  PlayerArray := FJSONState.GetValue<TJSONArray>('players');
-
-  for I := 0 to Pred(PlayerArray.Count) do
-  begin
-    Player := PlayerArray.Items[I].ToString();
-    PlayersList.Add(Player);
-  end;
-end;
-
-function TRoom.GetCurrentPlayerBlackPiece: string;
-begin
-  Result := FJSONState.GetValue<string>('currentPlayerBlackPiece');
-end;
-
-procedure TRoom.GetNextPlayersBlackPiece(out PlayersList: TStringList);
-var
-  I: Integer;
-  Player: string;
-  PlayerArray: TJSONArray;
-begin
-  if not Assigned(PlayersList) then
-    Exit;
-
-  PlayersList.Clear();
-  PlayerArray := FJSONState.GetValue<TJSONArray>('nextPlayersBlackPiece');
-
-  for I := 0 to Pred(PlayerArray.Count) do
-  begin
-    Player := PlayerArray.Items[I].ToString();
-    PlayersList.Add(Player);
-  end;
+  TRoomController.UpdateRoom(Self);
 end;
 
 function TRoom.ToJSON: string;
 var
-  JSON, CloneState: TJSONObject;
+  JSON: TJSONObject;
 begin
   JSON := TJSONObject.Create();
   try
-    CloneState := TJSONObject(TJSONObject.ParseJSONValue(FJSONState.ToJSON()));
-
-    JSON.AddPair('roomName', FName);
+    JSON.AddPair('name', FName);
     JSON.AddPair('status', FStatus);
     JSON.AddPair('started', FStarted);
-    JSON.AddPair('state', CloneState);
+    JSON.AddPair('hasChanged', FHasChanged);
+    JSON.AddPair('players', FPlayers.ToJSON());
+    JSON.AddPair('nextPlayersBlackPiece', FNextPlayersBlackPiece.ToJSON());
+    JSON.AddPair('currentPlayerBlackPiece', TJSONNumber.Create(FCurrentPlayerBlackPiece));
+    JSON.AddPair('state', FState.ToJSON());
 
     Result := JSON.ToJSON();
   finally
@@ -124,11 +150,114 @@ begin
 end;
 
 procedure TRoom.LoadFromJSON(const JSON: TJSONObject);
+var
+  JSONRoom: TJSONObject;
+  JSONPlayers: TJSONArray;
 begin
-  FName := JSON.GetValue<string>('roomName');
+  FName := JSON.GetValue<string>('name');
   FStatus := JSON.GetValue<string>('status');
   FStarted := JSON.GetValue<Boolean>('started');
-  FJSONState := JSON.GetValue<TJSONObject>('state');
+  FHasChanged := JSON.GetValue<Boolean>('hasChanged');
+  FCurrentPlayerBlackPiece := JSON.GetValue<Integer>('currentPlayerBlackPiece');
+
+  JSONPlayers := JSON.GetValue<TJSONArray>('players');
+  FPlayers.LoadFromJSON(JSONPlayers);
+
+  JSONPlayers := JSON.GetValue<TJSONArray>('nextPlayersBlackPiece');
+  FNextPlayersBlackPiece.LoadFromJSON(JSONPlayers);
+
+  JSONRoom := JSON.GetValue<TJSONObject>('state');
+  FState.LoadFromJSON(JSONRoom);
+end;
+
+function TRoom.GetName: string;
+begin
+  Result := FName;
+end;
+
+procedure TRoom.SetName(const Value: string);
+begin
+  FName := Value;
+end;
+
+function TRoom.GetOwner: string;
+begin
+  Result := FOwner;
+end;
+
+procedure TRoom.SetOwner(const Value: string);
+begin
+  FOwner := Value;
+end;
+
+function TRoom.GetStatus: string;
+begin
+  Result := FStatus;
+end;
+
+procedure TRoom.SetStatus(const Value: string);
+begin
+  FStatus := Value;
+end;
+
+function TRoom.GetStarted: Boolean;
+begin
+  Result := FStarted;
+end;
+
+procedure TRoom.SetStarted(const Value: Boolean);
+begin
+  FStarted := Value;
+end;
+
+function TRoom.GetHasChanged: Boolean;
+begin
+  Result := FHasChanged;
+end;
+
+procedure TRoom.SetHasChanged(const Value: Boolean);
+begin
+  FHasChanged := Value;
+end;
+
+function TRoom.GetPlayers: TPlayerList;
+begin
+  Result := FPlayers;
+end;
+
+procedure TRoom.SetPlayers(const Value: TPlayerList);
+begin
+  FPlayers := Value;
+end;
+
+function TRoom.GetCurrentPlayerBlackPiece: Integer;
+begin
+  Result := FCurrentPlayerBlackPiece;
+end;
+
+procedure TRoom.SetCurrentPlayerBlackPiece(const Value: Integer);
+begin
+  FCurrentPlayerBlackPiece := Value;
+end;
+
+function TRoom.GetNextPlayersBlackPiece: TPlayerList;
+begin
+  Result := FNextPlayersBlackPiece;
+end;
+
+procedure TRoom.SetNextPlayersBlackPiece(const Value: TPlayerList);
+begin
+  FNextPlayersBlackPiece := Value;
+end;
+
+function TRoom.GetState: IBoardState;
+begin
+  Result := FState;
+end;
+
+procedure TRoom.SetState(const Value: IBoardState);
+begin
+  FState := Value;
 end;
 
 { TServerController }
@@ -143,12 +272,13 @@ begin
   FHttpClient := nil;
 end;
 
-class function TRoomController.CreateRoom(const Name, Owner: string): TRoom;
+class function TRoomController.CreateRoom(const Name, Owner: string): IRoom;
 var
   URL: string;
-  PlayerArray: TJSONArray;
+  Player: IBoardPlayer;
   Response: IHttpResponse;
   DefaultState: IBoardState;
+  DefaultPlayerList: TPlayerList;
   JSON, JSONDefaultState: TJSONObject;
 begin
   Result := nil;
@@ -159,16 +289,29 @@ begin
     DefaultState.Initialize();
     JSONDefaultState := DefaultState.ToJSON();
 
-    PlayerArray := TJSONArray.Create();
-    PlayerArray.Add(Owner);
-
-    JSONDefaultState.AddPair('players', PlayerArray);
-    JSONDefaultState.AddPair('nextPlayersBlackPiece', TJSONArray.Create());
-    JSONDefaultState.AddPair('currentPlayerBlackPieceplayers', '');
-
-    JSON.AddPair('roomName', Name);
+    JSON.AddPair('name', Name);
+    JSON.AddPair('owner', Owner);
     JSON.AddPair('status', 'on');
     JSON.AddPair('started', TJSONBool.Create(False));
+    JSON.AddPair('hasChanged', TJSONBool.Create(True));
+    JSON.AddPair('currentPlayerBlackPiece', TJSONNumber.Create(-1));
+
+    DefaultPlayerList := TPlayerList.Create();
+    try
+      Player := TBoardPlayer.Create();
+      Player.Id := 1;
+      Player.Name := Owner;
+      Player.IconIndex := 0;
+
+      DefaultPlayerList.Add(Player);
+      JSON.AddPair('players', DefaultPlayerList.ToJSON);
+
+      DefaultPlayerList.Clear();
+      JSON.AddPair('nextPlayersBlackPiece', DefaultPlayerList.ToJSON);
+    finally
+      DefaultPlayerList.Free;
+    end;
+
     JSON.AddPair('state', JSONDefaultState);
 
     URL := Format('%s/rooms', [SERVER_ENDPOINT]);
@@ -184,7 +327,7 @@ begin
   end;
 end;
 
-class function TRoomController.GetRoom(const RoomName: string): TRoom;
+class function TRoomController.GetRoom(const RoomName: string): IRoom;
 var
   URL: string;
   JSON: TJSONObject;
@@ -208,15 +351,20 @@ begin
   end;
 end;
 
-class procedure TRoomController.UpdateRoom(const Room: TRoom);
+class procedure TRoomController.UpdateRoom(const Room: IRoom);
 var
   URL: string;
 begin
   if not Assigned(Room) then
     Exit;
 
-  URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Room.Name]);
-  FHttpClient.Post(URL, Room.ToJSON());
+  Room.HasChanged := True;
+  try
+    URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Room.Name]);
+    FHttpClient.Post(URL, Room.ToJSON());
+  finally
+    Room.HasChanged := False;
+  end;
 end;
 
 end.
