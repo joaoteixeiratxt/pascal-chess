@@ -94,14 +94,16 @@ type
     class constructor Create;
     class destructor Destroy;
     class function CreateRoom(const Name, Owner: string): IRoom; static;
-    class function GetRoom(const RoomName: string): IRoom; static;
+    class function GetRoom(const Name: string): IRoom; static;
+    class procedure DeleteRoom(const Name: string); static;
+    class procedure GetRooms(out RoomsList: TStringList); static;
     class procedure UpdateRoom(const Room: IRoom);
   end;
 
 implementation
 
 const
-  SERVER_ENDPOINT = 'localhost:3000';
+  SERVER_ENDPOINT = 'http://localhost:3000';
 
 { TRoom }
 
@@ -314,7 +316,7 @@ begin
 
     JSON.AddPair('state', JSONDefaultState);
 
-    URL := Format('%s/rooms', [SERVER_ENDPOINT]);
+    URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Name]);
     Response := FHttpClient.Post(URL, JSON.ToJSON());
 
     if (Response.StatusCode = 201) then
@@ -327,7 +329,7 @@ begin
   end;
 end;
 
-class function TRoomController.GetRoom(const RoomName: string): IRoom;
+class function TRoomController.GetRoom(const Name: string): IRoom;
 var
   URL: string;
   JSON: TJSONObject;
@@ -335,7 +337,7 @@ var
 begin
   Result := nil;
 
-  URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, RoomName]);
+  URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Name]);
   Response := FHttpClient.Get(URL);
 
   if (Response.StatusCode <> 200) or Response.BodyAsString.IsEmpty then
@@ -348,6 +350,37 @@ begin
   finally
     if Assigned(JSON) then
       JSON.Free;
+  end;
+end;
+
+class procedure TRoomController.DeleteRoom(const Name: string);
+var
+  URL: string;
+begin
+  URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Name]);
+  FHttpClient.Delete(URL);
+end;
+
+class procedure TRoomController.GetRooms(out RoomsList: TStringList);
+var
+  I: Integer;
+  URL: string;
+  Response: IHttpResponse;
+  RoomsArray: TJSONArray;
+begin
+  URL := Format('%s/rooms', [SERVER_ENDPOINT]);
+
+  Response := FHttpClient.Get(URL);
+  RoomsArray := TJSONArray(TJSONObject.ParseJSONValue(Response.BodyAsString));
+  try
+    if not Assigned(RoomsArray) then
+      Exit;
+
+    for I := 0 to Pred(RoomsArray.Count) do
+      RoomsList.Add(TJSONString(RoomsArray.Items[I]).Value);
+  finally
+    if Assigned(RoomsArray) then
+      RoomsArray.Free;
   end;
 end;
 

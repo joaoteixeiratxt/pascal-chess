@@ -5796,6 +5796,7 @@ object frmLobbyView: TfrmLobbyView
       Style = csOwnerDrawFixed
       ItemHeight = 24
       TabOrder = 0
+      OnDropDown = cbbRoomsDropDown
     end
     object edtPlayerName: TEdit
       Left = 0

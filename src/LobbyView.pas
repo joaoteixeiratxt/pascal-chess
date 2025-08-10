@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
-  Vcl.StdCtrls, Vcl.ComCtrls, ImageLoader, ChessBoardView;
+  Vcl.StdCtrls, Vcl.ComCtrls, ImageLoader, ChessBoardView, RoomController;
 
 type
   TfrmLobbyView = class(TForm)
@@ -31,6 +31,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure lblEnterClick(Sender: TObject);
     procedure lblCancelRoomClick(Sender: TObject);
+    procedure cbbRoomsDropDown(Sender: TObject);
   private
     FLoading: Boolean;
     FRoleAdmin: Boolean;
@@ -46,6 +47,21 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmLobbyView.cbbRoomsDropDown(Sender: TObject);
+var
+  Rooms: TStringList;
+begin
+  cbbRooms.Items.Clear();
+
+  Rooms := TStringList.Create();
+  try
+    TRoomController.GetRooms(Rooms);
+    cbbRooms.Items.Assign(Rooms);
+  finally
+    Rooms.Free;
+  end;
+end;
 
 procedure TfrmLobbyView.FormCreate(Sender: TObject);
 begin
@@ -97,7 +113,9 @@ begin
   if FRoleAdmin then
   begin
     if FWaitingForPlayes then
-      StartGame();
+      StartGame()
+    else
+      TRoomController.CreateRoom(edtRoomName.Text, edtPlayerName.Text);
 
     FWaitingForPlayes := True;
   end;
@@ -108,7 +126,10 @@ end;
 procedure TfrmLobbyView.lblCancelRoomClick(Sender: TObject);
 begin
   if FRoleAdmin then
+  begin
     FWaitingForPlayes := False;
+    TRoomController.DeleteRoom(edtRoomName.Text);
+  end;
 
   TogglePanels();
 end;
