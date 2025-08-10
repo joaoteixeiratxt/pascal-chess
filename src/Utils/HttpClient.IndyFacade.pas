@@ -31,6 +31,7 @@ type
       AHeaders: TStrings = nil): IHttpResponse;
     function PostStream(const AUrl: string; AStream: TStream;
       const AContentType: string; AHeaders: TStrings = nil): IHttpResponse;
+    function Delete(const AUrl: string; AHeaders: TStrings = nil): IHttpResponse;
   end;
 
 function NewIndyHttpClient: IHttpClient;
@@ -73,6 +74,7 @@ type
       AHeaders: TStrings = nil): IHttpResponse;
     function PostStream(const AUrl: string; AStream: TStream;
       const AContentType: string; AHeaders: TStrings = nil): IHttpResponse;
+    function Delete(const AUrl: string; AHeaders: TStrings = nil): IHttpResponse;
   end;
 
 function NewIndyHttpClient: IHttpClient;
@@ -219,7 +221,7 @@ begin
         LBody := E.ErrorMessage;
       end;
       on E: Exception do
-        raise EHttpClientException.CreateFmt('GET falhou: %s', [E.Message]);
+        raise EHttpClientException.CreateFmt('GET failed: %s', [E.Message]);
     end;
     Result := THttpResponse.Create(LCode, LBody, FHTTP.Response.RawHeaders);
   finally
@@ -273,6 +275,34 @@ begin
     Result := THttpResponse.Create(LCode, LBody, FHTTP.Response.RawHeaders);
   finally
     LRespStream.Free;
+  end;
+end;
+
+function TIndyHttpClient.Delete(const AUrl: string; AHeaders: TStrings): IHttpResponse;
+var
+  LUrl: string;
+  LCode: Integer;
+  LBody: string;
+begin
+  LUrl := BuildUrl(AUrl);
+  ApplyHeaders(AHeaders);
+  ResetResponse(LCode, LBody);
+  try
+    try
+      LBody := FHTTP.Delete(LUrl);
+      LCode := FHTTP.Response.ResponseCode;
+    except
+      on E: EIdHTTPProtocolException do
+      begin
+        LCode := E.ErrorCode;
+        LBody := E.ErrorMessage;
+      end;
+      on E: Exception do
+        raise EHttpClientException.CreateFmt('DELETE failed: %s', [E.Message]);
+    end;
+    Result := THttpResponse.Create(LCode, LBody, FHTTP.Response.RawHeaders);
+  except
+    raise;
   end;
 end;
 
