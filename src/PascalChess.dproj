@@ -149,6 +149,8 @@
             <Form>frmLobbyView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="ServerController.pas"/>
+        <DCCReference Include="Utils\HttpClient.IndyFacade.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
