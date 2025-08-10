@@ -140,7 +140,7 @@ var
 begin
   Self.Clear();
 
-  for I := 0 to JSON.Count do
+  for I := 0 to Pred(JSON.Count) do
   begin
     Player := TBoardPlayer.Create();
     Player.LoadFromJSON(TJSONObject(JSON.Items[I]));
