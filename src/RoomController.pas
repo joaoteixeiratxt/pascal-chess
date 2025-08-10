@@ -1,4 +1,4 @@
-unit ServerController;
+unit RoomController;
 
 interface
 
@@ -14,6 +14,8 @@ type
     FStarted: Boolean;
     FJSONState: TJSONObject;
   public
+    constructor Create;
+    destructor Destroy; override;
     property Name: string read FName write FName;
     property Status: string read FStatus write FStatus;
     property Started: Boolean read FStarted write FStarted;
@@ -23,18 +25,17 @@ type
     procedure GetNextPlayersBlackPiece(out PlayersList: TStringList);
     function ToJSON: string;
     procedure LoadFromJSON(const JSON: TJSONObject);
-    constructor Create;
-    destructor Destroy; override;
   end;
 
-  TServerController = class
+  TRoomController = class
   private
     class var FHttpClient: IHttpClient;
   public
     class constructor Create;
     class destructor Destroy;
-    class function CreateRoom(const Name: string): TRoom; static;
+    class function CreateRoom(const Name, Owner: string): TRoom; static;
     class function GetRoom(const RoomName: string): TRoom; static;
+    class procedure UpdateRoom(const Room: TRoom);
   end;
 
 implementation
@@ -132,22 +133,23 @@ end;
 
 { TServerController }
 
-class constructor TServerController.Create;
+class constructor TRoomController.Create;
 begin
   FHttpClient := NewIndyHttpClient();
 end;
 
-class destructor TServerController.Destroy;
+class destructor TRoomController.Destroy;
 begin
   FHttpClient := nil;
 end;
 
-class function TServerController.CreateRoom(const Name: string): TRoom;
+class function TRoomController.CreateRoom(const Name, Owner: string): TRoom;
 var
   URL: string;
+  PlayerArray: TJSONArray;
+  Response: IHttpResponse;
   DefaultState: IBoardState;
   JSON, JSONDefaultState: TJSONObject;
-  Response: IHttpResponse;
 begin
   Result := nil;
 
@@ -157,7 +159,10 @@ begin
     DefaultState.Initialize();
     JSONDefaultState := DefaultState.ToJSON();
 
-    JSONDefaultState.AddPair('players', TJSONArray.Create());
+    PlayerArray := TJSONArray.Create();
+    PlayerArray.Add(Owner);
+
+    JSONDefaultState.AddPair('players', PlayerArray);
     JSONDefaultState.AddPair('nextPlayersBlackPiece', TJSONArray.Create());
     JSONDefaultState.AddPair('currentPlayerBlackPieceplayers', '');
 
@@ -179,7 +184,7 @@ begin
   end;
 end;
 
-class function TServerController.GetRoom(const RoomName: string): TRoom;
+class function TRoomController.GetRoom(const RoomName: string): TRoom;
 var
   URL: string;
   JSON: TJSONObject;
@@ -201,6 +206,17 @@ begin
     if Assigned(JSON) then
       JSON.Free;
   end;
+end;
+
+class procedure TRoomController.UpdateRoom(const Room: TRoom);
+var
+  URL: string;
+begin
+  if not Assigned(Room) then
+    Exit;
+
+  URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Room.Name]);
+  FHttpClient.Post(URL, Room.ToJSON());
 end;
 
 end.

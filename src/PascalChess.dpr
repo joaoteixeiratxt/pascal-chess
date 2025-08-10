@@ -18,7 +18,7 @@ uses
   PieceBase in 'Pieces\PieceBase.pas',
   BoardTimer in 'Board\BoardTimer.pas',
   LobbyView in 'LobbyView.pas' {frmLobbyView},
-  ServerController in 'ServerController.pas',
+  RoomController in 'RoomController.pas',
   HttpClient.IndyFacade in 'Utils\HttpClient.IndyFacade.pas';
 
 {$R *.res}
