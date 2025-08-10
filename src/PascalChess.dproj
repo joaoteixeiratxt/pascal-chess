@@ -149,10 +149,10 @@
             <Form>frmLobbyView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="RoomController.pas"/>
         <DCCReference Include="Utils\HttpClient.IndyFacade.pas"/>
-        <DCCReference Include="ServerController.pas"/>
         <DCCReference Include="Board\BoardPlayer.pas"/>
+        <DCCReference Include="Controllers\RoomController.pas"/>
+        <DCCReference Include="Controllers\ServerController.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

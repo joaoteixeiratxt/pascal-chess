@@ -18,10 +18,10 @@ uses
   PieceBase in 'Pieces\PieceBase.pas',
   BoardTimer in 'Board\BoardTimer.pas',
   LobbyView in 'LobbyView.pas' {frmLobbyView},
-  RoomController in 'RoomController.pas',
   HttpClient.IndyFacade in 'Utils\HttpClient.IndyFacade.pas',
-  ServerController in 'ServerController.pas',
-  BoardPlayer in 'Board\BoardPlayer.pas';
+  BoardPlayer in 'Board\BoardPlayer.pas',
+  RoomController in 'Controllers\RoomController.pas',
+  ServerController in 'Controllers\ServerController.pas';
 
 {$R *.res}
 
