@@ -20,11 +20,23 @@ type
     edtPlayerName: TEdit;
     pnlLoading: TPanel;
     imgLoading: TImage;
+    pnlWaitingPlayers: TPanel;
+    lblPlayers: TLabel;
+    lstPlayers: TListBox;
+    pnlHideScroll: TPanel;
+    edtRoomName: TEdit;
+    pnlCancelRoom: TPanel;
+    imgCancelRoom: TImage;
+    lblCancelRoom: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure lblEnterClick(Sender: TObject);
+    procedure lblCancelRoomClick(Sender: TObject);
   private
     FLoading: Boolean;
-    procedure ToggleLoading;
+    FRoleAdmin: Boolean;
+    FWaitingForPlayes: Boolean;
+    procedure TogglePanels;
+    procedure SetRolePanel;
   end;
 
 var
@@ -37,28 +49,84 @@ implementation
 procedure TfrmLobbyView.FormCreate(Sender: TObject);
 begin
   FLoading := False;
+  FRoleAdmin := False;
+  FWaitingForPlayes := False;
+  
   TImageLoader.LoadGIF('Loading', imgLoading);
+  
+  SetRolePanel();
+end;
+
+procedure TfrmLobbyView.SetRolePanel;
+var
+  Param, Role: string;
+begin
+  if ParamCount = 0 then
+    Exit;
+
+  Param := ParamStr(1);
+
+  if not Param.Contains('/role') then
+    Exit;
+
+  Role := Param.Split([':'])[1];
+
+  if not (Role = 'admin') then
+    Exit;
+
+  FRoleAdmin := True;
+    
+  lblRooms.Caption := 'Insira um nome para a sala:';
+  lblEnter.Caption := 'Criar sala';
+  edtRoomName.BringToFront();
 end;
 
 procedure TfrmLobbyView.lblEnterClick(Sender: TObject);
 begin
-  ToggleLoading();
+  if FRoleAdmin then
+    FWaitingForPlayes := True;
+  
+  TogglePanels();
 end;
 
-procedure TfrmLobbyView.ToggleLoading;
+procedure TfrmLobbyView.lblCancelRoomClick(Sender: TObject);
 begin
+  if FRoleAdmin then
+    FWaitingForPlayes := False;
+
+  TogglePanels();
+end;
+
+procedure TfrmLobbyView.TogglePanels;
+begin
+  if FRoleAdmin then
+  begin
+    if FWaitingForPlayes then
+    begin
+      pnlWaitingPlayers.BringToFront();
+      lblEnter.Caption := 'Começar';
+      pnlCancelRoom.Visible := True;
+    end
+    else
+    begin
+      pnlPlayerInfo.BringToFront();
+      lblEnter.Caption := 'Criar sala';
+      pnlCancelRoom.Visible := False;
+    end;
+
+    Exit;
+  end;
+
   FLoading := not FLoading;
 
   if FLoading then
   begin
     pnlLoading.BringToFront();
-    pnlPlayerInfo.SendToBack();
     lblEnter.Caption := 'Cancelar';
   end
   else
   begin
     pnlLoading.SendToBack();
-    pnlPlayerInfo.BringToFront();
     lblEnter.Caption := 'Entrar';
   end;
 end;
