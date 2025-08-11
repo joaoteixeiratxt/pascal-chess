@@ -90,14 +90,17 @@ type
   TRoomController = class
   private
     class var FHttpClient: IHttpClient;
+    class var FCurrent: IRoom;
   public
     class constructor Create;
     class destructor Destroy;
-    class function CreateRoom(const Name, Owner: string): IRoom; static;
+    class procedure Enter(const Name: string); static;
+    class procedure CreateRoom(const Name, Owner: string); static;
     class function GetRoom(const Name: string): IRoom; static;
     class procedure DeleteRoom(const Name: string); static;
     class procedure GetRooms(out RoomsList: TStringList); static;
-    class procedure UpdateRoom(const Room: IRoom);
+    class procedure UpdateRoom(const Room: IRoom); static;
+    class property Current: IRoom read FCurrent write FCurrent;
   end;
 
 implementation
@@ -274,23 +277,24 @@ begin
   FHttpClient := nil;
 end;
 
-class function TRoomController.CreateRoom(const Name, Owner: string): IRoom;
+class procedure TRoomController.Enter(const Name: string);
+begin
+  FCurrent := GetRoom(Name);
+end;
+
+class procedure TRoomController.CreateRoom(const Name, Owner: string);
 var
   URL: string;
+  JSON: TJSONObject;
   Player: IBoardPlayer;
   Response: IHttpResponse;
-  DefaultState: IBoardState;
   DefaultPlayerList: TPlayerList;
-  JSON, JSONDefaultState: TJSONObject;
 begin
-  Result := nil;
+  FCurrent := TRoom.Create();
+  FCurrent.State.Initialize();
 
   JSON := TJSONObject.Create();
   try
-    DefaultState := TBoardState.Create();
-    DefaultState.Initialize();
-    JSONDefaultState := DefaultState.ToJSON();
-
     JSON.AddPair('name', Name);
     JSON.AddPair('owner', Owner);
     JSON.AddPair('status', 'on');
@@ -314,16 +318,13 @@ begin
       DefaultPlayerList.Free;
     end;
 
-    JSON.AddPair('state', JSONDefaultState);
+    JSON.AddPair('state', FCurrent.State.ToJSON());
 
     URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Name]);
     Response := FHttpClient.Post(URL, JSON.ToJSON());
 
     if (Response.StatusCode = 201) then
-    begin
-      Result := TRoom.Create();
-      Result.LoadFromJSON(JSON);
-    end;
+      FCurrent.LoadFromJSON(JSON);
   finally
     JSON.Free;
   end;
@@ -346,6 +347,7 @@ begin
   JSON := TJSONObject(TJSONObject.ParseJSONValue(Response.BodyAsString));
   try
     Result := TRoom.Create();
+    Result.State.Initialize();
     Result.LoadFromJSON(JSON);
   finally
     if Assigned(JSON) then

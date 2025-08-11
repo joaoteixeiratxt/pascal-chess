@@ -3,11 +3,13 @@ unit PieceBase;
 interface
 
 uses
-  System.Classes, System.Types, System.JSON, BoardPiece, BoardState;
+  System.Classes, System.Types, System.JSON, BoardPiece,
+  BoardState, RoomController;
 
 type
   TPieceBase = class(TInterfacedObject, IPiece, IStrategy)
   protected
+    FState: IBoardState;
     FColor: TPieceColor;
     FPieceType: TPieceType;
     FCoordinates: TPoint;
@@ -113,7 +115,7 @@ begin
   Result.AddPair('color', TJSONNumber.Create(Integer(Self.Color)));
   Result.AddPair('hasMoved', TJSONBool.Create(Self.HasMoved));
 
-  if TBoardState.State.CurrentPlayerColor = pcBlack then
+  if TRoomController.Current.State.CurrentPlayerColor = pcBlack then
   begin
     Result.AddPair('x', TJSONNumber.Create(7 - Self.Coordinates.X));
     Result.AddPair('y', TJSONNumber.Create(7 - Self.Coordinates.Y));
@@ -133,7 +135,7 @@ begin
   FCoordinates.X := JSON.GetValue<Integer>('x');
   FCoordinates.Y := JSON.GetValue<Integer>('y');
 
-  if TBoardState.State.CurrentPlayerColor = pcBlack then
+  if TRoomController.Current.State.CurrentPlayerColor = pcBlack then
   begin
     FCoordinates.X := 7 - FCoordinates.X;
     FCoordinates.Y := 7 - FCoordinates.Y;
@@ -149,9 +151,9 @@ end;
 
 function TStrategyBase.GetLegalMoves: TLegalMoves;
 begin
-  FState := TBoardState.State;
-  FMatrix := TBoardState.State.GetPieceMatrix();
-  FCurrentPlayerColor := TBoardState.State.CurrentPlayerColor;
+  FState := TRoomController.Current.State;
+  FMatrix := FState.GetPieceMatrix();
+  FCurrentPlayerColor := FState.CurrentPlayerColor;
 end;
 
 end.

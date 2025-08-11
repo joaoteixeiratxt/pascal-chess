@@ -75,21 +75,12 @@ type
     property OpponentColor: TPieceColor read GetOpponentColor write SetOpponentColor;
     function ToJSON: TJSONObject;
     procedure LoadFromJSON(const JSON: TJSONObject);
-
-    class var State: IBoardState;
-  end;
-
-  TBoardStateController = class
-  public
-    class var FirstLoad: Boolean;
-    class procedure SaveJSONState;
-    class procedure LoadJSONState;
   end;
 
 implementation
 
-const
-  TEMP_JSON_FILE = '\State.json';
+uses
+  RoomController;
 
 { TBoardState }
 
@@ -162,7 +153,6 @@ begin
     FBoardMatrix[Column, RowSpecialPieces].Coordinates := TPoint.Create(Column, RowSpecialPieces);
   end;
 end;
-
 
 procedure TBoardState.Initialize;
 begin
@@ -244,7 +234,7 @@ begin
   SetCurrentTurnColor();
   NotifyAll();
 
-  TBoardStateController.SaveJSONState();
+  TRoomController.Current.Update();
 end;
 
 procedure TBoardState.NotifyAll;
@@ -315,59 +305,6 @@ begin
 
     FBoardMatrix[Piece.Coordinates.X, Piece.Coordinates.Y] := Piece;
   end;
-end;
-
-{ TBoardStateController }
-
-class procedure TBoardStateController.SaveJSONState;
-var
-  BoadStateJSON: TJSONObject;
-begin
-  BoadStateJSON := TBoardState.State.ToJSON();
-  try
-    TFile.WriteAllText(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE, BoadStateJSON.ToString());
-  finally
-    BoadStateJSON.Free;
-  end;
-end;
-
-class procedure TBoardStateController.LoadJSONState;
-var
-  JSONString: string;
-  BoadStateJSON: TJSONObject;
-begin
-  //This is temporary, just to test
-
-  if not TFile.Exists(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE) then
-  begin
-    TBoardStateController.FirstLoad := False;
-    TBoardState.State.Initialize();
-    TBoardStateController.SaveJSONState();
-    Exit;
-  end;
-
-  if TBoardStateController.FirstLoad then
-  begin
-    TBoardState.State.CurrentPlayerColor := pcBlack;
-    TBoardState.State.OpponentColor := pcWhite;
-    TBoardStateController.FirstLoad := False;
-  end;
-
-  JSONString := TFile.ReadAllText(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE);
-  BoadStateJSON := TJSONObject(TJSONObject.ParseJSONValue(JSONString));
-  TBoardState.State.LoadFromJSON(BoadStateJSON);
-end;
-
-initialization
-begin
-  TBoardStateController.FirstLoad := True;
-  TBoardState.State := TBoardState.Create();
-end;
-
-finalization
-begin
-  if TFile.Exists(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE) then
-    TFile.Delete(GetEnvironmentVariable('USERPROFILE') + TEMP_JSON_FILE)
 end;
 
 end.

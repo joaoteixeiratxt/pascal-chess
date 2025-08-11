@@ -118,6 +118,10 @@ begin
       TRoomController.CreateRoom(edtRoomName.Text, edtPlayerName.Text);
 
     FWaitingForPlayes := True;
+  end
+  else
+  begin
+    TRoomController.Enter(cbbRooms.Text);
   end;
 
   TogglePanels();

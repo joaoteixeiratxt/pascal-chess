@@ -17,6 +17,7 @@ type
   private
     FRoom: IRoom;
     FTimer: TTimer;
+    FHashRoom: string;
     FHttpClient: IHttpClient;
     procedure OnTimer(Sender: TObject);
   public
@@ -51,20 +52,24 @@ end;
 
 procedure TServerController.OnTimer(Sender: TObject);
 var
+  Hash: string;
   NewRoom: IRoom;
   JSONRoom: TJSONObject;
 begin
   NewRoom := TRoomController.GetRoom(FRoom.Name);
 
-  if NewRoom.HasChanged then
-  begin
-    JSONRoom := TJSONObject(TJSONObject.ParseJSONValue(NewRoom.ToJSON()));
-    try
+  JSONRoom := TJSONObject(TJSONObject.ParseJSONValue(NewRoom.ToJSON()));
+  try
+    Hash := JSONRoom.ToString();
+
+    if Hash <> FHashRoom then
+    begin
       FRoom.LoadFromJSON(JSONRoom);
-    finally
-      if Assigned(JSONRoom) then
-        JSONRoom.Free;
+      FHashRoom := Hash;
     end;
+  finally
+    if Assigned(JSONRoom) then
+      JSONRoom.Free;
   end;
 end;
 
