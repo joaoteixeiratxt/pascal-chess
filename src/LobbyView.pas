@@ -121,7 +121,7 @@ begin
   end
   else
   begin
-    TRoomController.Enter(cbbRooms.Text);
+    TRoomController.Enter(edtPlayerName.Text, cbbRooms.Text);
   end;
 
   TogglePanels();

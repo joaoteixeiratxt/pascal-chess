@@ -21,20 +21,20 @@ type
     procedure SetHasChanged(const Value: Boolean);
     function GetState: IBoardState;
     procedure SetState(const Value: IBoardState);
-    function GetPlayers: TList<IBoardPlayer>;
-    procedure SetPlayers(const Value: TList<IBoardPlayer>);
+    function GetPlayers: TPlayerList;
+    procedure SetPlayers(const Value: TPlayerList);
     function GetCurrentPlayerBlackPiece: Integer;
     procedure SetCurrentPlayerBlackPiece(const Value: Integer);
-    function GetNextPlayersBlackPiece: TList<IBoardPlayer>;
-    procedure SetNextPlayersBlackPiece(const Value: TList<IBoardPlayer>);
+    function GetNextPlayersBlackPiece: TPlayerList;
+    procedure SetNextPlayersBlackPiece(const Value: TPlayerList);
     property Name: string read GetName write SetName;
     property Owner: string read GetOwner write SetOwner;
     property Status: string read GetStatus write SetStatus;
     property Started: Boolean read GetStarted write SetStarted;
     property HasChanged: Boolean read GetHasChanged write SetHasChanged;
-    property Players: TList<IBoardPlayer> read GetPlayers write SetPlayers;
+    property Players: TPlayerList read GetPlayers write SetPlayers;
     property CurrentPlayerBlackPiece: Integer read GetCurrentPlayerBlackPiece write SetCurrentPlayerBlackPiece;
-    property NextPlayersBlackPiece: TList<IBoardPlayer> read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
+    property NextPlayersBlackPiece: TPlayerList read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
     property State: IBoardState read GetState write SetState;
     procedure Update;
     function ToJSON: string;
@@ -94,7 +94,7 @@ type
   public
     class constructor Create;
     class destructor Destroy;
-    class procedure Enter(const Name: string); static;
+    class procedure Enter(const PlayerName, RoomName: string); static;
     class procedure CreateRoom(const Name, Owner: string); static;
     class function GetRoom(const Name: string): IRoom; static;
     class procedure DeleteRoom(const Name: string); static;
@@ -288,16 +288,20 @@ begin
   FHttpClient := nil;
 end;
 
-class procedure TRoomController.Enter(const Name: string);
+class procedure TRoomController.Enter(const PlayerName, RoomName: string);
+var
+  Player: IBoardPlayer;
 begin
-  FCurrent := GetRoom(Name);
+  FCurrent := GetRoom(RoomName);
+  Player := FCurrent.Players.AddNewPlayer(PlayerName, 0);
+  FCurrent.NextPlayersBlackPiece.Add(Player);
+  FCurrent.Update();
 end;
 
 class procedure TRoomController.CreateRoom(const Name, Owner: string);
 var
   URL: string;
   JSON: TJSONObject;
-  Player: IBoardPlayer;
   Response: IHttpResponse;
   DefaultPlayerList: TPlayerList;
 begin
@@ -315,12 +319,7 @@ begin
 
     DefaultPlayerList := TPlayerList.Create();
     try
-      Player := TBoardPlayer.Create();
-      Player.Id := 1;
-      Player.Name := Owner;
-      Player.IconIndex := 0;
-
-      DefaultPlayerList.Add(Player);
+      DefaultPlayerList.AddNewPlayer(Owner, 0);
       JSON.AddPair('players', DefaultPlayerList.ToJSON);
 
       DefaultPlayerList.Clear();

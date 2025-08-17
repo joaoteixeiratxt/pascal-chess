@@ -12,9 +12,9 @@ type
     procedure SetName(const Value: string);
     function GetIconIndex: Integer;
     procedure SetIconIndex(const Value: Integer);
-    function GetId: Integer;
-    procedure SetId(const Value: Integer);
-    property Id: Integer read GetId write SetId;
+    function GetId: string;
+    procedure SetId(const Value: string);
+    property Id: string read GetId write SetId;
     property Name: string read GetName write SetName;
     property IconIndex: Integer read GetIconIndex write SetIconIndex;
     function ToJSON: TJSONObject;
@@ -25,17 +25,17 @@ type
 
   TBoardPlayer = class(TInterfacedObject, IBoardPlayer)
   private
-    FId: Integer;
+    FId: string;
     FName: string;
     FIconIndex: Integer;
     function GetName: string;
     procedure SetName(const Value: string);
     function GetIconIndex: Integer;
     procedure SetIconIndex(const Value: Integer);
-    function GetId: Integer;
-    procedure SetId(const Value: Integer);
+    function GetId: string;
+    procedure SetId(const Value: string);
   public
-    property Id: Integer read GetId write SetId;
+    property Id: string read GetId write SetId;
     property Name: string read GetName write SetName;
     property IconIndex: Integer read GetIconIndex write SetIconIndex;
     function ToJSON: TJSONObject;
@@ -44,7 +44,8 @@ type
 
    TPlayerListHelper = class helper for TPlayerList
    public
-    function FindById(const Id: Integer): IBoardPlayer;
+    function AddNewPlayer(const Name: string; const IconIndex: Integer): IBoardPlayer;
+    function FindById(const Id: string): IBoardPlayer;
     function FindByName(const Name: string): IBoardPlayer;
     function ToJSON: TJSONArray;
     procedure LoadFromJSON(const JSON: TJSONArray);
@@ -54,12 +55,12 @@ implementation
 
 { TBoardPlayer }
 
-function TBoardPlayer.GetId: Integer;
+function TBoardPlayer.GetId: string;
 begin
   Result := FId;
 end;
 
-procedure TBoardPlayer.SetId(const Value: Integer);
+procedure TBoardPlayer.SetId(const Value: string);
 begin
   FId := Value;
 end;
@@ -87,21 +88,31 @@ end;
 function TBoardPlayer.ToJSON: TJSONObject;
 begin
   Result := TJSONObject.Create();
-  Result.AddPair('id', TJSONNumber.Create(FId));
+  Result.AddPair('id', FId);
   Result.AddPair('name', FName);
   Result.AddPair('iconIndex', TJSONNumber.Create(FIconIndex));
 end;
 
 procedure TBoardPlayer.LoadFromJSON(const JSON: TJSONObject);
 begin
-  FId := JSON.GetValue<Integer>('id');
+  FId := JSON.GetValue<string>('id');
   FName := JSON.GetValue<string>('name');
   FIconIndex := JSON.GetValue<Integer>('iconIndex');
 end;
 
 { TPlayerListHelper }
 
-function TPlayerListHelper.FindById(const Id: Integer): IBoardPlayer;
+function TPlayerListHelper.AddNewPlayer(const Name: string; const IconIndex: Integer): IBoardPlayer;
+begin
+  Result := TBoardPlayer.Create();
+  Result.Id := GUIDToString(TGUID.NewGuid);
+  Result.Name := Name;
+  Result.IconIndex := IconIndex;
+
+  Self.Add(Result);
+end;
+
+function TPlayerListHelper.FindById(const Id: string): IBoardPlayer;
 var
   Player: IBoardPlayer;
 begin
