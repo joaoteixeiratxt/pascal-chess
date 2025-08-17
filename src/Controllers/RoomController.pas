@@ -99,7 +99,7 @@ type
     class function GetRoom(const Name: string): IRoom; static;
     class procedure DeleteRoom(const Name: string); static;
     class procedure GetRooms(out RoomsList: TStringList); static;
-    class procedure UpdateRoom(const Room: IRoom); static;
+    class procedure UpdateState(const Room: IRoom); static;
     class property Current: IRoom read FCurrent write FCurrent;
   end;
 
@@ -129,8 +129,19 @@ begin
 end;
 
 procedure TRoom.Update;
+var
+  URL: string;
+  HttpClient: IHttpClient;
 begin
-  TRoomController.UpdateRoom(Self);
+  Self.HasChanged := True;
+  try
+    URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Self.Name]);
+
+    HttpClient := NewIndyHttpClient();
+    HttpClient.Post(URL, Self.ToJSON());
+  finally
+    Self.HasChanged := False;
+  end;
 end;
 
 function TRoom.ToJSON: string;
@@ -386,20 +397,35 @@ begin
   end;
 end;
 
-class procedure TRoomController.UpdateRoom(const Room: IRoom);
+class procedure TRoomController.UpdateState(const Room: IRoom);
 var
-  URL: string;
+  JSON: TJSONObject;
+  Response: IHttpResponse;
+  URL, CurrentState, NewState: string;
 begin
-  if not Assigned(Room) then
+  URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Room.Name]);
+  Response := FHttpClient.Get(URL);
+
+  if (Response.StatusCode <> 200) or Response.BodyAsString.IsEmpty then
     Exit;
 
-  Room.HasChanged := True;
+  CurrentState := Room.ToJSON();
+  NewState := Response.BodyAsString;
+
+  if (CurrentState = NewState) then
+    Exit;
+
+  JSON := TJSONObject(TJSONObject.ParseJSONValue(Response.BodyAsString));
   try
-    URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Room.Name]);
-    FHttpClient.Post(URL, Room.ToJSON());
+    Room.LoadFromJSON(JSON);
   finally
-    Room.HasChanged := False;
+    if Assigned(JSON) then
+      JSON.Free;
   end;
 end;
+
+initialization
+  TRoomController.Current := TRoom.Create();
+  TRoomController.Current.State.Initialize();
 
 end.
