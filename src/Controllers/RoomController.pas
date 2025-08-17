@@ -36,6 +36,7 @@ type
     property CurrentPlayerBlackPiece: Integer read GetCurrentPlayerBlackPiece write SetCurrentPlayerBlackPiece;
     property NextPlayersBlackPiece: TPlayerList read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
     property State: IBoardState read GetState write SetState;
+    procedure Pull;
     procedure Update;
     function ToJSON: string;
     procedure LoadFromJSON(const JSON: TJSONObject);
@@ -73,6 +74,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Pull;
     procedure Update;
     property Name: string read GetName write SetName;
     property Owner: string read GetOwner write SetOwner;
@@ -126,6 +128,22 @@ begin
   FreeAndNil(FPlayers);
   FreeAndNil(FNextPlayersBlackPiece);
   inherited;
+end;
+
+procedure TRoom.Pull;
+var
+  NewRoom: IRoom;
+  JSON: TJSONObject;
+begin
+  NewRoom := TRoomController.GetRoom(FName);
+
+  JSON := TJSONObject(TJSONObject.ParseJSONValue(NewRoom.ToJSON()));
+  try
+    Self.LoadFromJSON(JSON);
+  finally
+    if Assigned(JSON) then
+      JSON.Free;
+  end;
 end;
 
 procedure TRoom.Update;

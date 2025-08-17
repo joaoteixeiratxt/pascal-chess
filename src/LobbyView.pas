@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
-  Vcl.StdCtrls, Vcl.ComCtrls, ImageLoader, ChessBoardView, RoomController;
+  Vcl.StdCtrls, Vcl.ComCtrls, ImageLoader, ChessBoardView, RoomController,
+  BoardPlayer, BoardPiece;
 
 type
   TfrmLobbyView = class(TForm)
@@ -28,10 +29,14 @@ type
     pnlCancelRoom: TPanel;
     imgCancelRoom: TImage;
     lblCancelRoom: TLabel;
+    TimerWaitingPlayers: TTimer;
+    TimerWaitingRoom: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure lblEnterClick(Sender: TObject);
     procedure lblCancelRoomClick(Sender: TObject);
     procedure cbbRoomsDropDown(Sender: TObject);
+    procedure TimerWaitingPlayersTimer(Sender: TObject);
+    procedure TimerWaitingRoomTimer(Sender: TObject);
   private
     FLoading: Boolean;
     FRoleAdmin: Boolean;
@@ -113,15 +118,22 @@ begin
   if FRoleAdmin then
   begin
     if FWaitingForPlayes then
-      StartGame()
+    begin
+      TRoomController.Current.Started := True;
+      TRoomController.Current.Update();
+      TRoomController.Current.Pull();
+      StartGame();
+    end
     else
       TRoomController.CreateRoom(edtRoomName.Text, edtPlayerName.Text);
 
     FWaitingForPlayes := True;
+    TimerWaitingPlayers.Enabled := True;
   end
   else
   begin
     TRoomController.Enter(edtPlayerName.Text, cbbRooms.Text);
+    TimerWaitingRoom.Enabled := True;
   end;
 
   TogglePanels();
@@ -136,6 +148,37 @@ begin
   end;
 
   TogglePanels();
+end;
+
+procedure TfrmLobbyView.TimerWaitingPlayersTimer(Sender: TObject);
+var
+  Player: IBoardPlayer;
+  Players: TStringList;
+begin
+  TRoomController.UpdateState(TRoomController.Current);
+
+  Players := TStringList.Create();
+  try
+    for Player in TRoomController.Current.Players do
+      Players.Add(Player.Name);
+
+    if lstPlayers.Items.Text <> Players.Text then
+      lstPlayers.Items.Assign(Players);
+  finally
+    Players.Free;
+  end;
+end;
+
+procedure TfrmLobbyView.TimerWaitingRoomTimer(Sender: TObject);
+begin
+  TRoomController.Current.State.CurrentPlayerColor := pcBlack;
+  TRoomController.Current.Pull();
+
+  if TRoomController.Current.Started then
+  begin
+    TimerWaitingRoom.Enabled := False;
+    StartGame();
+  end;
 end;
 
 procedure TfrmLobbyView.TogglePanels;

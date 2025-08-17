@@ -6019,4 +6019,16 @@ object frmLobbyView: TfrmLobbyView
       ExplicitTop = 8
     end
   end
+  object TimerWaitingPlayers: TTimer
+    Enabled = False
+    OnTimer = TimerWaitingPlayersTimer
+    Left = 72
+    Top = 448
+  end
+  object TimerWaitingRoom: TTimer
+    Enabled = False
+    OnTimer = TimerWaitingRoomTimer
+    Left = 272
+    Top = 448
+  end
 end
