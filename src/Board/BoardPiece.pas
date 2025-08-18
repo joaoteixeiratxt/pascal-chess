@@ -49,6 +49,7 @@ type
     property Coordinates: TPoint read GetCoordinates write SetCoordinates;
     property HasMoved: Boolean read GetHasMoved write SetHasMoved;
     procedure SetStrategy(const Strategy: IStrategy);
+    function GetPseudoLegalMoves: TLegalMoves;
     function ToJSON: TJSONObject;
     procedure LoadFromJSON(const JSON: TJSONObject);
   end;

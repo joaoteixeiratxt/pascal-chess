@@ -32,6 +32,7 @@ type
     property Coordinates: TPoint read GetCoordinates write SetCoordinates;
     property HasMoved: Boolean read GetHasMoved write SetHasMoved;
     procedure SetStrategy(const Strategy: IStrategy);
+    function GetPseudoLegalMoves: TLegalMoves;
     function GetLegalMoves: TLegalMoves;
     function ToJSON: TJSONObject;
     procedure LoadFromJSON(const JSON: TJSONObject);
@@ -102,10 +103,32 @@ begin
   FStrategy := Strategy;
 end;
 
-function TPieceBase.GetLegalMoves: TLegalMoves;
+function TPieceBase.GetPseudoLegalMoves: TLegalMoves;
 begin
   FStrategy.SetCoordinates(FCoordinates);
   Result := FStrategy.GetLegalMoves();
+end;
+
+function TPieceBase.GetLegalMoves: TLegalMoves;
+var
+  Move: TPoint;
+  Indice: Integer;
+  State: IBoardState;
+  Moves: TLegalMoves;
+begin
+  State := TRoomController.Current.State;
+  Moves := GetPseudoLegalMoves();
+
+  Indice := 0;
+  for Move in Moves do
+  begin
+    if not State.MoveLeavesKingInCheck(FCoordinates, Move, FColor) then
+    begin
+      SetLength(Result, Indice + 1);
+      Result[Indice] := Move;
+      Inc(Indice);
+    end;
+  end;
 end;
 
 function TPieceBase.ToJSON: TJSONObject;
