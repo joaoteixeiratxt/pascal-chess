@@ -1,0 +1,5 @@
+node_modules
+**/__history/
+*.local
+*.identcache
+src/Dist
