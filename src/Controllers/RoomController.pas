@@ -7,6 +7,8 @@ uses
   HttpClient.IndyFacade, BoardState, BoardPlayer;
 
 type
+  TRoomUpdateEvent = procedure of object;
+
   IRoom = interface
   ['{BECBB98B-2043-441F-9743-37E9443B7333}']
     function GetName: string;
@@ -38,6 +40,7 @@ type
     property State: IBoardState read GetState write SetState;
     procedure Pull;
     procedure Update;
+    procedure RegisterObserver(const Event: TRoomUpdateEvent);
     function ToJSON: string;
     procedure LoadFromJSON(const JSON: TJSONObject);
   end;
@@ -51,6 +54,7 @@ type
     FHasChanged: Boolean;
     FState: IBoardState;
     FPlayers: TPlayerList;
+    FEvents: TList<TRoomUpdateEvent>;
     FCurrentPlayerBlackPiece: Integer;
     FNextPlayersBlackPiece: TPlayerList;
     function GetName: string;
@@ -71,11 +75,13 @@ type
     procedure SetNextPlayersBlackPiece(const Value: TPlayerList);
     function GetCurrentPlayerBlackPiece: Integer;
     procedure SetCurrentPlayerBlackPiece(const Value: Integer);
+    procedure NotifyAll;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Pull;
     procedure Update;
+    procedure RegisterObserver(const Event: TRoomUpdateEvent);
     property Name: string read GetName write SetName;
     property Owner: string read GetOwner write SetOwner;
     property Status: string read GetStatus write SetStatus;
@@ -119,12 +125,14 @@ begin
   FStarted := False;
   FCurrentPlayerBlackPiece := -1;
   FPlayers := TPlayerList.Create();
+  FEvents := TList<TRoomUpdateEvent>.Create();
   FNextPlayersBlackPiece := TPlayerList.Create();
   FState := TBoardState.Create();
 end;
 
 destructor TRoom.Destroy;
 begin
+  FreeAndNil(FEvents);
   FreeAndNil(FPlayers);
   FreeAndNil(FNextPlayersBlackPiece);
   inherited;
@@ -160,6 +168,21 @@ begin
   finally
     Self.HasChanged := False;
   end;
+
+  NotifyAll();
+end;
+
+procedure TRoom.RegisterObserver(const Event: TRoomUpdateEvent);
+begin
+  FEvents.Add(Event);
+end;
+
+procedure TRoom.NotifyAll;
+var
+  Event: TRoomUpdateEvent;
+begin
+  for Event in FEvents do
+    Event();
 end;
 
 function TRoom.ToJSON: string;

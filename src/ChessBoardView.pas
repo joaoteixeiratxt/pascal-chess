@@ -89,7 +89,7 @@ begin
               .SetState(TRoomController.Current.State)
               .Build();
 
-  TRoomController.Current.State.RegisterObserver(UpdateBoard);
+  TRoomController.Current.RegisterObserver(UpdateBoard);
 
   FBoard.Render();
 

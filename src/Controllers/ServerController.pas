@@ -66,6 +66,8 @@ begin
     begin
       FRoom.LoadFromJSON(JSONRoom);
       FHashRoom := Hash;
+
+      FRoom.Update();
     end;
   finally
     if Assigned(JSONRoom) then

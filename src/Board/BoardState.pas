@@ -13,8 +13,6 @@ const
 type
   TPieceMatrix = array[0..7, 0..7] of IPiece;
 
-  TStateUpdateEvent = procedure of object;
-
   IBoardState = interface
   ['{984AB04C-D208-47A0-8A1C-71634201AB3B}']
     procedure Initialize;
@@ -30,7 +28,6 @@ type
     procedure SetOpponentColor(const Value: TPieceColor);
     function GetPieceAt(const Coordinates: TPoint): IPiece;
     procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
-    procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
     property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
@@ -42,7 +39,6 @@ type
   TBoardState = class(TInterfacedObject, IBoardState)
   private
     FBoardMatrix: TPieceMatrix;
-    FEvents: TList<TStateUpdateEvent>;
     FSelectedPiece: IPiece;
     FCurrentPlayerColor: TPieceColor;
     FCurrentTurnColor: TPieceColor;
@@ -50,7 +46,6 @@ type
     FOpponentColor: TPieceColor;
     function GetSelectedPiece: IPiece;
     procedure SetSelectedPiece(const Value: IPiece);
-    procedure NotifyAll;
     function GetCurrentPlayerColor: TPieceColor;
     procedure SetCurrentPlayerColor(const Value: TPieceColor);
     function GetCurrentTurnColor: TPieceColor;
@@ -63,12 +58,10 @@ type
     procedure SetOpponentColor(const Value: TPieceColor);
   public
     constructor Create;
-    destructor Destroy; override;
     procedure Initialize;
     function GetPieceMatrix: TPieceMatrix;
     function GetPieceAt(const Coordinates: TPoint): IPiece;
     procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
-    procedure RegisterObserver(const Event: TStateUpdateEvent);
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
     property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
@@ -89,13 +82,6 @@ begin
   FCurrentPlayerColor := pcWhite;
   FOpponentColor := pcBlack;
   FCurrentTurnColor := pcWhite;
-  FEvents := TList<TStateUpdateEvent>.Create();
-end;
-
-destructor TBoardState.Destroy;
-begin
-  FreeAndNil(FEvents);
-  inherited;
 end;
 
 procedure TBoardState.Clear;
@@ -232,22 +218,7 @@ begin
   FBoardMatrix[FromCoordinates.X, FromCoordinates.Y] := nil;
 
   SetCurrentTurnColor();
-  NotifyAll();
-
   TRoomController.Current.Update();
-end;
-
-procedure TBoardState.NotifyAll;
-var
-  Event: TStateUpdateEvent;
-begin
-  for Event in FEvents do
-    Event();
-end;
-
-procedure TBoardState.RegisterObserver(const Event: TStateUpdateEvent);
-begin
-  FEvents.Add(Event);
 end;
 
 function TBoardState.ToJSON: TJSONObject;
