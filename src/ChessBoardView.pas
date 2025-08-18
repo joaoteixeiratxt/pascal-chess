@@ -41,6 +41,9 @@ type
     FTimerPlayer2: TBoardTimer;
     FServerController: IServerController;
     procedure UpdateBoard;
+    procedure UpdateTimers;
+    procedure OnPlayer1TimeExpired;
+    procedure OnPlayer2TimeExpired;
   public
     class procedure StartGame; static;
   end;
@@ -79,8 +82,8 @@ const
 var
   BoardBuilder: IBoardBuilder;
 begin
-  FTimerPlayer1 := TBoardTimer.Create(TIME, lblPlayerTimer);
-  FTimerPlayer2 := TBoardTimer.Create(TIME, lblOpponentTimer);
+  FTimerPlayer1 := TBoardTimer.Create(TIME, lblPlayerTimer, OnPlayer1TimeExpired);
+  FTimerPlayer2 := TBoardTimer.Create(TIME, lblOpponentTimer, OnPlayer2TimeExpired);
 
   BoardBuilder := TBoardBuilder.Create();
 
@@ -93,16 +96,47 @@ begin
 
   FBoard.Render();
 
-  FTimerPlayer1.Play();
-  FTimerPlayer2.Play();
-
   FServerController := TServerController.Create(TRoomController.Current);
   FServerController.Start();
+
+  UpdateTimers();
 end;
 
 procedure TBoardView.UpdateBoard;
 begin
   FBoard.Render();
+  UpdateTimers();
+end;
+
+procedure TBoardView.UpdateTimers;
+var
+  State: IBoardState;
+begin
+  State := TRoomController.Current.State;
+  if State.CurrentTurnColor = State.CurrentPlayerColor then
+  begin
+    FTimerPlayer1.Play();
+    FTimerPlayer2.Pause();
+  end
+  else
+  begin
+    FTimerPlayer1.Pause();
+    FTimerPlayer2.Play();
+  end;
+end;
+
+procedure TBoardView.OnPlayer1TimeExpired;
+begin
+  FTimerPlayer1.Pause();
+  FTimerPlayer2.Pause();
+  ShowMessage('Time''s up! You lost.');
+end;
+
+procedure TBoardView.OnPlayer2TimeExpired;
+begin
+  FTimerPlayer1.Pause();
+  FTimerPlayer2.Pause();
+  ShowMessage('Time''s up! You win.');
 end;
 
 end.
