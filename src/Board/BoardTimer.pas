@@ -6,18 +6,22 @@ uses
   System.Classes, System.SysUtils, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
+  TTimeExpiredEvent = procedure of object;
+
   TBoardTimer = class
   private
     FLabel: TLabel;
     FTimer: TTimer;
     FTimeRemaining: Integer;
+    FOnTimeExpired: TTimeExpiredEvent;
     procedure OnTimer(Sender: TObject);
     procedure UpdateLabel;
   public
-    constructor Create(Seconds: Integer; ALabel: TLabel);
+    constructor Create(Seconds: Integer; ALabel: TLabel; AOnTimeExpired: TTimeExpiredEvent);
     destructor Destroy; override;
     procedure Play;
     procedure Pause;
+    property OnTimeExpired: TTimeExpiredEvent read FOnTimeExpired write FOnTimeExpired;
   end;
 
 implementation
@@ -27,10 +31,11 @@ const
 
 { TBoardTimer }
 
-constructor TBoardTimer.Create(Seconds: Integer; ALabel: TLabel);
+constructor TBoardTimer.Create(Seconds: Integer; ALabel: TLabel; AOnTimeExpired: TTimeExpiredEvent);
 begin
   FLabel := ALabel;
   FTimeRemaining := Seconds;
+  FOnTimeExpired := AOnTimeExpired;
 
   FTimer := TTimer.Create(nil);
   FTimer.OnTimer := OnTimer;
@@ -52,7 +57,12 @@ begin
   Dec(FTimeRemaining);
   UpdateLabel();
 
-  FTimer.Enabled := (FTimeRemaining > 0);
+  if FTimeRemaining <= 0 then
+  begin
+    FTimer.Enabled := False;
+    if Assigned(FOnTimeExpired) then
+      FOnTimeExpired();
+  end;
 end;
 
 procedure TBoardTimer.Play;
