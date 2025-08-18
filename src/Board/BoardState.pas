@@ -28,6 +28,9 @@ type
     procedure SetOpponentColor(const Value: TPieceColor);
     function GetPieceAt(const Coordinates: TPoint): IPiece;
     procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
+    function IsInCheck(Color: TPieceColor): Boolean;
+    function IsCheckMate(Color: TPieceColor): Boolean;
+    function MoveLeavesKingInCheck(const FromCoordinates, ToCoordinates: TPoint; const Color: TPieceColor): Boolean;
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
     property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
@@ -56,12 +59,16 @@ type
     procedure SetPlayerID(const Value: string);
     function GetOpponentColor: TPieceColor;
     procedure SetOpponentColor(const Value: TPieceColor);
+    function FindKingPosition(Color: TPieceColor): TPoint;
   public
     constructor Create;
     procedure Initialize;
     function GetPieceMatrix: TPieceMatrix;
     function GetPieceAt(const Coordinates: TPoint): IPiece;
     procedure MovePiece(const FromCoordinates, ToCoordinates: TPoint);
+    function IsInCheck(Color: TPieceColor): Boolean;
+    function IsCheckMate(Color: TPieceColor): Boolean;
+    function MoveLeavesKingInCheck(const FromCoordinates, ToCoordinates: TPoint; const Color: TPieceColor): Boolean;
     property SelectedPiece: IPiece read GetSelectedPiece write SetSelectedPiece;
     property CurrentPlayerColor: TPieceColor read GetCurrentPlayerColor write SetCurrentPlayerColor;
     property CurrentTurnColor: TPieceColor read GetCurrentTurnColor;
@@ -73,7 +80,7 @@ type
 implementation
 
 uses
-  RoomController;
+  RoomController, Dialogs;
 
 { TBoardState }
 
@@ -210,6 +217,111 @@ begin
   Result := FBoardMatrix[Coordinates.X, Coordinates.Y];
 end;
 
+function TBoardState.FindKingPosition(Color: TPieceColor): TPoint;
+var
+  Row, Column: Integer;
+  Piece: IPiece;
+begin
+  Result := TPoint.Create(-1, -1);
+  for Column := 0 to Pred(BOARD_COLUMNS) do
+    for Row := 0 to Pred(BOARD_ROWS) do
+    begin
+      Piece := FBoardMatrix[Column, Row];
+      if Assigned(Piece) and (Piece.PieceType = ptKing) and (Piece.Color = Color) then
+        Exit(TPoint.Create(Column, Row));
+    end;
+end;
+
+function TBoardState.MoveLeavesKingInCheck(const FromCoordinates, ToCoordinates: TPoint; const Color: TPieceColor): Boolean;
+var
+  Piece, Captured: IPiece;
+  OriginalFrom, OriginalTo: TPoint;
+begin
+  Piece := FBoardMatrix[FromCoordinates.X, FromCoordinates.Y];
+  Captured := FBoardMatrix[ToCoordinates.X, ToCoordinates.Y];
+
+  OriginalFrom := FromCoordinates;
+  OriginalTo := ToCoordinates;
+
+  FBoardMatrix[OriginalTo.X, OriginalTo.Y] := Piece;
+  FBoardMatrix[OriginalFrom.X, OriginalFrom.Y] := nil;
+  Piece.Coordinates := OriginalTo;
+
+  Result := IsInCheck(Color);
+
+  Piece.Coordinates := OriginalFrom;
+  FBoardMatrix[OriginalFrom.X, OriginalFrom.Y] := Piece;
+  FBoardMatrix[OriginalTo.X, OriginalTo.Y] := Captured;
+end;
+
+function TBoardState.IsInCheck(Color: TPieceColor): Boolean;
+var
+  KingPos, Move: TPoint;
+  Row, Column: Integer;
+  Piece: IPiece;
+  OpponentColor, SaveColor: TPieceColor;
+  Moves: TLegalMoves;
+begin
+  KingPos := FindKingPosition(Color);
+  if (KingPos.X = -1) or (KingPos.Y = -1) then
+    Exit(False);
+
+  if Color = pcWhite then
+    OpponentColor := pcBlack
+  else
+    OpponentColor := pcWhite;
+
+  SaveColor := FCurrentPlayerColor;
+  for Column := 0 to Pred(BOARD_COLUMNS) do
+    for Row := 0 to Pred(BOARD_ROWS) do
+    begin
+      Piece := FBoardMatrix[Column, Row];
+      if Assigned(Piece) and (Piece.Color = OpponentColor) then
+      begin
+        FCurrentPlayerColor := OpponentColor;
+        Moves := Piece.GetPseudoLegalMoves();
+        for Move in Moves do
+          if (Move.X = KingPos.X) and (Move.Y = KingPos.Y) then
+          begin
+            FCurrentPlayerColor := SaveColor;
+            Exit(True);
+          end;
+      end;
+    end;
+  FCurrentPlayerColor := SaveColor;
+  Result := False;
+end;
+
+function TBoardState.IsCheckMate(Color: TPieceColor): Boolean;
+var
+  Row, Column: Integer;
+  Piece: IPiece;
+  Moves: TLegalMoves;
+  SaveColor: TPieceColor;
+begin
+  if not IsInCheck(Color) then
+    Exit(False);
+
+  SaveColor := FCurrentPlayerColor;
+  FCurrentPlayerColor := Color;
+  for Column := 0 to Pred(BOARD_COLUMNS) do
+    for Row := 0 to Pred(BOARD_ROWS) do
+    begin
+      Piece := FBoardMatrix[Column, Row];
+      if Assigned(Piece) and (Piece.Color = Color) then
+      begin
+        Moves := Piece.GetLegalMoves();
+        if Length(Moves) > 0 then
+        begin
+          FCurrentPlayerColor := SaveColor;
+          Exit(False);
+        end;
+      end;
+    end;
+  FCurrentPlayerColor := SaveColor;
+  Result := True;
+end;
+
 procedure TBoardState.MovePiece(const FromCoordinates, ToCoordinates: TPoint);
 begin
   FBoardMatrix[ToCoordinates.X, ToCoordinates.Y] := FBoardMatrix[FromCoordinates.X, FromCoordinates.Y];
@@ -218,6 +330,10 @@ begin
   FBoardMatrix[FromCoordinates.X, FromCoordinates.Y] := nil;
 
   SetCurrentTurnColor();
+  if IsCheckMate(FCurrentTurnColor) then
+    ShowMessage('Checkmate!')
+  else if IsInCheck(FCurrentTurnColor) then
+    ShowMessage('Check!');
   TRoomController.Current.Update();
 end;
 
