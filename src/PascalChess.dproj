@@ -154,6 +154,10 @@
         <DCCReference Include="Board\BoardPlayer.pas"/>
         <DCCReference Include="Controllers\RoomController.pas"/>
         <DCCReference Include="Controllers\ServerController.pas"/>
+        <DCCReference Include="CheckMateView.pas">
+            <Form>frmCheckMateView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

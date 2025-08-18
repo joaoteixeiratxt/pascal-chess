@@ -21,7 +21,8 @@ uses
   HttpClient.IndyFacade in 'Utils\HttpClient.IndyFacade.pas',
   BoardPlayer in 'Board\BoardPlayer.pas',
   RoomController in 'Controllers\RoomController.pas',
-  ServerController in 'Controllers\ServerController.pas';
+  ServerController in 'Controllers\ServerController.pas',
+  CheckMateView in 'CheckMateView.pas' {frmCheckMateView};
 
 {$R *.res}
 
