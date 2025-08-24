@@ -325,7 +325,7 @@ begin
       Piece := FBoardMatrix[Column, Row];
       if Assigned(Piece) and (Piece.Color = Color) then
       begin
-        Moves := Piece.GetPseudoLegalMoves();
+        Moves := Piece.GetLegalMoves();
         if Length(Moves) > 0 then
         begin
           FCurrentPlayerColor := SaveColor;
