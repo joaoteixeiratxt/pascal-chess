@@ -27,10 +27,14 @@ type
     lblPlayerName: TLabel;
     Label1: TLabel;
     cbbRoom: TComboBox;
+    TimerRooms: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure lblNextClick(Sender: TObject);
     procedure lblPreviousClick(Sender: TObject);
     procedure lblPlayClick(Sender: TObject);
+    procedure TimerRoomsTimer(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     FAvatarIndex: Integer;
     procedure LoadAvatar;
@@ -65,6 +69,16 @@ begin
   finally
     Self.Show();
   end;
+end;
+
+procedure TfrmPlayerLobbyView.FormShow(Sender: TObject);
+begin
+  TimerRooms.Enabled := True;
+end;
+
+procedure TfrmPlayerLobbyView.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  TimerRooms.Enabled := False;
 end;
 
 procedure TfrmPlayerLobbyView.lblNextClick(Sender: TObject);
@@ -110,6 +124,26 @@ begin
     View.ShowModal();
   finally
     View.Free;
+  end;
+end;
+
+procedure TfrmPlayerLobbyView.TimerRoomsTimer(Sender: TObject);
+var
+  CurrentRoom: string;
+  Rooms: TStringList;
+begin
+  Rooms := TStringList.Create();
+  try
+    TRoomController.GetRooms(Rooms);
+
+    CurrentRoom := cbbRoom.Text;
+
+    if cbbRoom.Items.Text <> Rooms.Text then
+      cbbRoom.Items.Assign(Rooms);
+
+    cbbRoom.Text := CurrentRoom;
+  finally
+    Rooms.Free;
   end;
 end;
 

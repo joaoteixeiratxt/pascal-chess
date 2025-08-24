@@ -15,7 +15,9 @@ object frmPlayerLobbyView: TfrmPlayerLobbyView
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poOwnerFormCenter
+  OnClose = FormClose
   OnCreate = FormCreate
+  OnShow = FormShow
   TextHeight = 15
   object lblTitle: TLabel
     Left = 31
@@ -757,5 +759,11 @@ object frmPlayerLobbyView: TfrmPlayerLobbyView
     Style = csOwnerDrawFixed
     ItemHeight = 24
     TabOrder = 5
+  end
+  object TimerRooms: TTimer
+    Enabled = False
+    OnTimer = TimerRoomsTimer
+    Left = 152
+    Top = 352
   end
 end
