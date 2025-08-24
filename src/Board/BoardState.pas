@@ -186,6 +186,7 @@ end;
 
 procedure TBoardState.SetCurrentTurnColor;
 var
+  Player: IBoardPlayer;
   NextPlayersBlackPiece: TPlayerList;
 begin
   if FCurrentTurnColor = pcWhite then
@@ -201,8 +202,9 @@ begin
   if (NextPlayersBlackPiece.Count = 1) then
     Exit;
 
-  NextPlayersBlackPiece.Add(NextPlayersBlackPiece[0]);
-  NextPlayersBlackPiece[0] := NextPlayersBlackPiece[1];
+  Player := NextPlayersBlackPiece[0];
+  NextPlayersBlackPiece.Delete(0);
+  NextPlayersBlackPiece.Add(Player);
 end;
 
 function TBoardState.GetPlayerID: string;
