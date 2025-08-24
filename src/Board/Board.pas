@@ -5,7 +5,7 @@ interface
 uses
   System.Classes, System.Types, System.SysUtils, Vcl.ExtCtrls, Winapi.Windows,
   Vcl.Controls, Vcl.Graphics, BoardState, BoardPiece, ImageLoader, Dialogs,
-  System.Generics.Collections;
+  System.Generics.Collections, RoomController, BoardPlayer;
 
 const
   PRIMARY_SQUARE_COLOR = 'EBECD0';
@@ -24,6 +24,7 @@ type
 
   TBoard = class(TInterfacedObject, IBoard)
   private
+    FRoom: IRoom;
     FState: IBoardState;
     FBoardPanel: TPanel;
     FBoardMatrix: TBoardMatrix;
@@ -47,6 +48,7 @@ implementation
 
 constructor TBoard.Create;
 begin
+  FRoom := TRoomController.Current;
   FPiecesMap := TDictionary<Integer,IPiece>.Create();
 end;
 
@@ -112,9 +114,18 @@ end;
 procedure TBoard.OnPieceClick(Sender: TObject);
 var
   Piece: IPiece;
+  CurrentPlayerBlackPiece: IBoardPlayer;
 begin
   if FState.CurrentPlayerColor <> FState.CurrentTurnColor  then
     Exit;
+
+  if FState.CurrentPlayerColor = pcBlack then
+  begin
+    CurrentPlayerBlackPiece := FRoom.NextPlayersBlackPiece[FRoom.CurrentPlayerBlackPiece];
+
+    if TRoomController.Player.Id <> CurrentPlayerBlackPiece.Id then
+      Exit;
+  end;
 
   Piece := FPiecesMap[TComponent(Sender).Tag];
 
