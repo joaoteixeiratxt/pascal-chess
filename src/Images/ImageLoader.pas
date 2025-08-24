@@ -6,6 +6,9 @@ uses
   System.Classes, System.Types, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
   Vcl.Imaging.GIFImg;
 
+const
+  AVATARS_COUNT = 5;
+
 type
   TImageLoader = class
   public
@@ -16,6 +19,7 @@ type
 implementation
 
 {$R ./Icons/Icons.RES}
+{$R ./Avatars/Avatars.RES}
 
 { TImageLoader }
 

@@ -158,6 +158,14 @@
             <Form>frmCheckMateView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="PlayerLobbyView.pas">
+            <Form>frmPlayerLobbyView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="AdminLobbyView.pas">
+            <Form>frmAdminLobbyView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

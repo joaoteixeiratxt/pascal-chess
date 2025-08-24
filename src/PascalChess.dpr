@@ -22,7 +22,9 @@ uses
   BoardPlayer in 'Board\BoardPlayer.pas',
   RoomController in 'Controllers\RoomController.pas',
   ServerController in 'Controllers\ServerController.pas',
-  CheckMateView in 'CheckMateView.pas' {frmCheckMateView};
+  CheckMateView in 'CheckMateView.pas' {frmCheckMateView},
+  PlayerLobbyView in 'PlayerLobbyView.pas' {frmPlayerLobbyView},
+  AdminLobbyView in 'AdminLobbyView.pas' {frmAdminLobbyView};
 
 {$R *.res}
 

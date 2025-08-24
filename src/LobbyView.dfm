@@ -2,20 +2,15 @@ object frmLobbyView: TfrmLobbyView
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]
-  ClientHeight = 497
+  ClientHeight = 325
   ClientWidth = 360
   Color = 2829872
-  Constraints.MaxHeight = 536
-  Constraints.MaxWidth = 376
-  Constraints.MinHeight = 536
-  Constraints.MinWidth = 376
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poOwnerFormCenter
-  OnCreate = FormCreate
   TextHeight = 15
   object imgLogo: TImage
     Left = 0
@@ -5457,15 +5452,15 @@ object frmLobbyView: TfrmLobbyView
       1C1C1C1C9611FF1FA113C013FCEDC8420000000049454E44AE426082}
     Proportional = True
   end
-  object pnlEnter: TPanel
+  object pnlPlay: TPanel
     Left = 64
-    Top = 358
+    Top = 212
     Width = 240
     Height = 40
     BevelOuter = bvNone
     TabOrder = 0
     TabStop = True
-    object imgEnter: TImage
+    object imgPlay: TImage
       Left = 0
       Top = 0
       Width = 240
@@ -5638,7 +5633,7 @@ object frmLobbyView: TfrmLobbyView
         82}
       Stretch = True
     end
-    object lblEnter: TLabel
+    object lblPlay: TLabel
       Left = 0
       Top = 0
       Width = 240
@@ -5647,7 +5642,7 @@ object frmLobbyView: TfrmLobbyView
       Align = alClient
       Alignment = taCenter
       AutoSize = False
-      Caption = 'Entrar'
+      Caption = 'jogar'
       Font.Charset = ANSI_CHARSET
       Font.Color = 1557246
       Font.Height = -16
@@ -5655,177 +5650,19 @@ object frmLobbyView: TfrmLobbyView
       Font.Style = [fsBold]
       ParentFont = False
       Layout = tlCenter
-      OnClick = lblEnterClick
-      ExplicitTop = -16
+      OnClick = lblPlayClick
+      ExplicitTop = -24
     end
   end
-  object pnlLoading: TPanel
+  object pnlCreateRoom: TPanel
     Left = 64
-    Top = 207
-    Width = 240
-    Height = 130
-    BevelOuter = bvNone
-    Color = 2829872
-    ParentBackground = False
-    TabOrder = 2
-    object imgLoading: TImage
-      Left = 0
-      Top = 0
-      Width = 240
-      Height = 130
-      Align = alClient
-      Center = True
-      Transparent = True
-      ExplicitLeft = 96
-      ExplicitTop = 56
-      ExplicitWidth = 105
-      ExplicitHeight = 105
-    end
-  end
-  object pnlWaitingPlayers: TPanel
-    Left = 64
-    Top = 207
-    Width = 240
-    Height = 130
-    BevelOuter = bvNone
-    Color = 2829872
-    ParentBackground = False
-    TabOrder = 3
-    object lblPlayers: TLabel
-      Left = 8
-      Top = 8
-      Width = 148
-      Height = 17
-      Caption = 'Jogadores na fila:'
-      Font.Charset = ANSI_CHARSET
-      Font.Color = 1557246
-      Font.Height = -13
-      Font.Name = 'Showcard Gothic'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object lstPlayers: TListBox
-      Left = 8
-      Top = 31
-      Width = 217
-      Height = 97
-      BorderStyle = bsNone
-      Color = 2829872
-      Ctl3D = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -12
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ItemHeight = 15
-      ParentCtl3D = False
-      ParentFont = False
-      ScrollWidth = 2
-      TabOrder = 0
-      StyleElements = []
-    end
-    object pnlHideScroll: TPanel
-      Left = 208
-      Top = 0
-      Width = 32
-      Height = 130
-      Align = alRight
-      BevelOuter = bvNone
-      Color = 2829872
-      ParentBackground = False
-      TabOrder = 1
-    end
-  end
-  object pnlPlayerInfo: TPanel
-    Left = 64
-    Top = 207
-    Width = 240
-    Height = 130
-    BevelOuter = bvNone
-    Color = 2829872
-    ParentBackground = False
-    TabOrder = 1
-    object lblPlayerName: TLabel
-      Left = 0
-      Top = 0
-      Width = 113
-      Height = 17
-      Caption = 'Nome de jogador:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -13
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object lblRooms: TLabel
-      Left = 0
-      Top = 73
-      Width = 109
-      Height = 17
-      Caption = 'Escolha uma sala:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -13
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object edtRoomName: TEdit
-      Left = 0
-      Top = 96
-      Width = 240
-      Height = 30
-      Alignment = taCenter
-      AutoSize = False
-      BevelInner = bvNone
-      BevelOuter = bvNone
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 2
-    end
-    object cbbRooms: TComboBox
-      Left = 0
-      Top = 96
-      Width = 240
-      Height = 30
-      Style = csOwnerDrawFixed
-      ItemHeight = 24
-      TabOrder = 0
-      OnDropDown = cbbRoomsDropDown
-    end
-    object edtPlayerName: TEdit
-      Left = 0
-      Top = 23
-      Width = 240
-      Height = 30
-      Alignment = taCenter
-      AutoSize = False
-      BevelInner = bvNone
-      BevelOuter = bvNone
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 1
-    end
-  end
-  object pnlCancelRoom: TPanel
-    Left = 64
-    Top = 404
+    Top = 258
     Width = 240
     Height = 40
     BevelOuter = bvNone
-    TabOrder = 4
+    TabOrder = 1
     TabStop = True
-    Visible = False
-    object imgCancelRoom: TImage
+    object imgCreateRoom: TImage
       Left = 0
       Top = 0
       Width = 240
@@ -5998,7 +5835,7 @@ object frmLobbyView: TfrmLobbyView
         82}
       Stretch = True
     end
-    object lblCancelRoom: TLabel
+    object lblCreateRoom: TLabel
       Left = 0
       Top = 0
       Width = 240
@@ -6007,7 +5844,7 @@ object frmLobbyView: TfrmLobbyView
       Align = alClient
       Alignment = taCenter
       AutoSize = False
-      Caption = 'Cancelar'
+      Caption = 'Criar uma sala'
       Font.Charset = ANSI_CHARSET
       Font.Color = 1557246
       Font.Height = -16
@@ -6015,20 +5852,8 @@ object frmLobbyView: TfrmLobbyView
       Font.Style = [fsBold]
       ParentFont = False
       Layout = tlCenter
-      OnClick = lblCancelRoomClick
+      OnClick = lblCreateRoomClick
       ExplicitTop = 8
     end
-  end
-  object TimerWaitingPlayers: TTimer
-    Enabled = False
-    OnTimer = TimerWaitingPlayersTimer
-    Left = 72
-    Top = 448
-  end
-  object TimerWaitingRoom: TTimer
-    Enabled = False
-    OnTimer = TimerWaitingRoomTimer
-    Left = 272
-    Top = 448
   end
 end

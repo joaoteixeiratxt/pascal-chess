@@ -6,6 +6,9 @@ uses
   System.Classes, Winapi.Windows, System.StrUtils,
   System.SysUtils, Vcl.Controls, Vcl.Graphics;
 
+const
+  DEFAULT_COLOR = $0017C2FE;
+
 type
   TColorUtils = class
   private
