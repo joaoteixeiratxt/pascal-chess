@@ -47,14 +47,12 @@ object BoardView: TBoardView
       object lblOpponentTimer: TLabel
         Left = 0
         Top = 0
-        Width = 79
-        Height = 79
+        Width = 40
+        Height = 21
         Align = alClient
         Alignment = taCenter
         Caption = '00:00'
         Layout = tlCenter
-        ExplicitWidth = 40
-        ExplicitHeight = 21
       end
     end
     object pnlOpponentName: TPanel
@@ -205,14 +203,12 @@ object BoardView: TBoardView
       object lblPlayerTimer: TLabel
         Left = 0
         Top = 0
-        Width = 79
-        Height = 79
+        Width = 40
+        Height = 21
         Align = alClient
         Alignment = taCenter
         Caption = '00:00'
         Layout = tlCenter
-        ExplicitWidth = 40
-        ExplicitHeight = 21
       end
     end
   end

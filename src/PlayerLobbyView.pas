@@ -61,11 +61,18 @@ var
 begin
   Self.Hide();
   try
-    Player := TBoardPlayer.Create(edtPlayerName.Text, FAvatarIndex);
+    TimerRooms.Enabled := False;
+    try
+      Player := TBoardPlayer.Create(edtPlayerName.Text, FAvatarIndex);
 
-    TRoomController.Enter(Player,cbbRoom.Text);
+      TRoomController.Enter(Player,cbbRoom.Text);
 
-    TfrmWaitingRoomView.ShowView();
+      TfrmWaitingRoomView.ShowView();
+
+      cbbRoom.Text := '';
+    finally
+      TimerRooms.Enabled := True;
+    end;
   finally
     Self.Show();
   end;

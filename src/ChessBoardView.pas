@@ -83,6 +83,7 @@ end;
 
 procedure TBoardView.FormCreate(Sender: TObject);
 var
+  OnError: TOnErrorCallback;
   BoardBuilder: IBoardBuilder;
 begin
   FRoom := TRoomController.Current;
@@ -103,7 +104,15 @@ begin
 
   FBoard.Render();
 
-  FServerController := TServerController.Create(FRoom);
+  OnError := procedure(E: ExceptClass)
+  begin
+    if E = EDeletedRoom then
+      ShowMessage('You WON');
+
+    Self.Close;
+  end;
+
+  FServerController := TServerController.Create(FRoom, OnError);
   FServerController.Start();
 
   UpdateTimers();

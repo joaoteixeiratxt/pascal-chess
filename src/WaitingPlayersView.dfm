@@ -457,7 +457,6 @@ object frmWaitingPlayersView: TfrmWaitingPlayersView
   end
   object TimerWaitingPlayers: TTimer
     Enabled = False
-    Interval = 3000
     OnTimer = TimerWaitingPlayersTimer
     Left = 152
     Top = 136

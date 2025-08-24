@@ -314,7 +314,7 @@ begin
   FState := Value;
 end;
 
-{ TServerController }
+{ TRoomController }
 
 class constructor TRoomController.Create;
 begin

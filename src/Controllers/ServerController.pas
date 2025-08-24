@@ -7,6 +7,8 @@ uses
   System.Generics.Collections, HttpClient.IndyFacade, RoomController;
 
 type
+  TOnErrorCallback = TProc<ExceptClass>;
+
   IServerController = interface
   ['{6B6A01E0-8138-4F06-BCCA-83B67F3F59CE}']
     procedure Start;
@@ -17,11 +19,12 @@ type
   private
     FRoom: IRoom;
     FTimer: TTimer;
+    FOnError: TOnErrorCallback;
     FHashRoom: string;
     FHttpClient: IHttpClient;
     procedure OnTimer(Sender: TObject);
   public
-    constructor Create(const Room: IRoom);
+    constructor Create(const Room: IRoom; const OnError: TOnErrorCallback);
     destructor Destroy; override;
     procedure Start;
     procedure Finalize;
@@ -31,9 +34,10 @@ implementation
 
 { TServerController }
 
-constructor TServerController.Create(const Room: IRoom);
+constructor TServerController.Create(const Room: IRoom; const OnError: TOnErrorCallback);
 begin
   FRoom := Room;
+  FOnError := OnError;
   FHttpClient := NewIndyHttpClient();
 
   FTimer := TTimer.Create(nil);
@@ -57,6 +61,16 @@ var
   JSONRoom: TJSONObject;
 begin
   NewRoom := TRoomController.GetRoom(FRoom.Name);
+
+  if not Assigned(NewRoom) then
+  begin
+    FTimer.Enabled := False;
+
+    if Assigned(FOnError) then
+      FOnError(EDeletedRoom);
+
+    Exit;
+  end;
 
   JSONRoom := TJSONObject(TJSONObject.ParseJSONValue(NewRoom.ToJSON()));
   try

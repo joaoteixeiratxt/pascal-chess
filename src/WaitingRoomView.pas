@@ -74,8 +74,10 @@ begin
   except
     on E: EDeletedRoom do
     begin
+      TimerWaitingRoom.Enabled := False;
       ShowMessage('A sala foi excluída.');
       Self.Close;
+      Exit;
     end;
   end;
 
