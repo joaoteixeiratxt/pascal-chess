@@ -78,6 +78,8 @@ begin
     TRoomController.CreateRoom(edtRoomName.Text, FRoomTime, Player);
 
     TfrmWaitingPlayersView.ShowView();
+
+    TRoomController.DeleteRoom(edtRoomName.Text);
   finally
     Self.Show();
   end;

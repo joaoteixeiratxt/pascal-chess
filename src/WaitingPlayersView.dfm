@@ -15,6 +15,8 @@ object frmWaitingPlayersView: TfrmWaitingPlayersView
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poOwnerFormCenter
+  OnClose = FormClose
+  OnShow = FormShow
   TextHeight = 15
   object lblTitle: TLabel
     Left = 31
@@ -231,6 +233,7 @@ object frmWaitingPlayersView: TfrmWaitingPlayersView
       Font.Style = [fsBold]
       ParentFont = False
       Layout = tlCenter
+      OnClick = lblPlayClick
       ExplicitTop = -24
     end
   end
@@ -448,7 +451,15 @@ object frmWaitingPlayersView: TfrmWaitingPlayersView
       Font.Style = [fsBold]
       ParentFont = False
       Layout = tlCenter
+      OnClick = lblCancelClick
       ExplicitTop = -24
     end
+  end
+  object TimerWaitingPlayers: TTimer
+    Enabled = False
+    Interval = 3000
+    OnTimer = TimerWaitingPlayersTimer
+    Left = 152
+    Top = 136
   end
 end

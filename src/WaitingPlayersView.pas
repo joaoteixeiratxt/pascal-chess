@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.pngimage,
-  Vcl.ExtCtrls;
+  Vcl.ExtCtrls, RoomController, BoardPlayer, ChessBoardView;
 
 type
   TfrmWaitingPlayersView = class(TForm)
@@ -17,6 +17,12 @@ type
     pnlCancel: TPanel;
     imgCancel: TImage;
     lblCancel: TLabel;
+    TimerWaitingPlayers: TTimer;
+    procedure TimerWaitingPlayersTimer(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure lblPlayClick(Sender: TObject);
+    procedure lblCancelClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -42,6 +48,55 @@ begin
   finally
     View.Free;
   end;
+end;
+
+procedure TfrmWaitingPlayersView.lblPlayClick(Sender: TObject);
+begin
+  TimerWaitingPlayers.Enabled := False;
+
+  TRoomController.Current.Started := True;
+  TRoomController.Current.Update();
+
+  Self.Hide();
+  try
+    TBoardView.StartGame();
+  finally
+    Self.Close();
+  end;
+end;
+
+procedure TfrmWaitingPlayersView.lblCancelClick(Sender: TObject);
+begin
+  TimerWaitingPlayers.Enabled := False;
+
+  TRoomController.Current.Started := False;
+  TRoomController.Current.Update();
+
+  TRoomController.DeleteRoom(TRoomController.Current.Name);
+
+  Self.Close();
+end;
+
+procedure TfrmWaitingPlayersView.FormShow(Sender: TObject);
+begin
+  TimerWaitingPlayers.Enabled := True;
+end;
+
+procedure TfrmWaitingPlayersView.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  TimerWaitingPlayers.Enabled := False;
+end;
+
+procedure TfrmWaitingPlayersView.TimerWaitingPlayersTimer(Sender: TObject);
+var
+  Player: IBoardPlayer;
+begin
+  TRoomController.Current.Pull();
+
+  lstPlayers.Clear();
+
+  for Player in TRoomController.Current.Players do
+    lstPlayers.Items.Add(Player.Name);
 end;
 
 end.
