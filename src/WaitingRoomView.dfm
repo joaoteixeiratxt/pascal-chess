@@ -15,7 +15,9 @@ object frmWaitingRoomView: TfrmWaitingRoomView
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poOwnerFormCenter
+  OnClose = FormClose
   OnCreate = FormCreate
+  OnShow = FormShow
   TextHeight = 15
   object lblTitle: TLabel
     Left = 31
@@ -240,7 +242,14 @@ object frmWaitingRoomView: TfrmWaitingRoomView
       Font.Style = [fsBold]
       ParentFont = False
       Layout = tlCenter
+      OnClick = lblCancelClick
       ExplicitTop = -24
     end
+  end
+  object TimerWaitingRoom: TTimer
+    Enabled = False
+    OnTimer = TimerWaitingRoomTimer
+    Left = 152
+    Top = 128
   end
 end
