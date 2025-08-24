@@ -36,6 +36,7 @@ type
     lblOpponentTimer: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure imgExitClick(Sender: TObject);
   private
     FBoard: IBoard;
     FRoom: IRoom;
@@ -110,6 +111,12 @@ begin
   FServerController.Start();
 
   UpdateTimers();
+end;
+
+procedure TBoardView.imgExitClick(Sender: TObject);
+begin
+  TRoomController.Leave();
+  Self.Close();
 end;
 
 procedure TBoardView.SetPlayer;
@@ -190,6 +197,13 @@ begin
   end;
 
   if FRoom.State.IsCheckMate(FRoom.State.OpponentColor) then
+  begin
+    TCheckMateView.ShowView(FRoom.State.CurrentPlayerColor);
+    Self.Close();
+    Abort;
+  end;
+
+  if (FRoom.Players.Count = 1) then
   begin
     TCheckMateView.ShowView(FRoom.State.CurrentPlayerColor);
     Self.Close();

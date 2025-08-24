@@ -47,12 +47,14 @@ object BoardView: TBoardView
       object lblOpponentTimer: TLabel
         Left = 0
         Top = 0
-        Width = 40
-        Height = 21
+        Width = 79
+        Height = 79
         Align = alClient
         Alignment = taCenter
         Caption = '00:00'
         Layout = tlCenter
+        ExplicitWidth = 40
+        ExplicitHeight = 21
       end
     end
     object pnlOpponentName: TPanel
@@ -203,12 +205,14 @@ object BoardView: TBoardView
       object lblPlayerTimer: TLabel
         Left = 0
         Top = 0
-        Width = 40
-        Height = 21
+        Width = 79
+        Height = 79
         Align = alClient
         Alignment = taCenter
         Caption = '00:00'
         Layout = tlCenter
+        ExplicitWidth = 40
+        ExplicitHeight = 21
       end
     end
   end
@@ -286,6 +290,7 @@ object BoardView: TBoardView
           F5821CD681CF029A47327D9329921AAA6534628A8A08A01A05AAFA801C40570B
           7E00297628F70BD0025EAA5A0004B5409C09723D104F04E26E6A5B401340730B
           00E2C59719FDBD6AA50000000049454E44AE426082}
+        OnClick = imgExitClick
         ExplicitLeft = 80
         ExplicitTop = 16
         ExplicitWidth = 105

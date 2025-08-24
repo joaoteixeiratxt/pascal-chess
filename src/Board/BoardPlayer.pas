@@ -48,6 +48,7 @@ type
     function AddNewPlayer(const Name: string; const IconIndex: Integer): IBoardPlayer;
     function FindById(const Id: string): IBoardPlayer;
     function FindByName(const Name: string): IBoardPlayer;
+    procedure DeleteById(const Id: string);
     function ToJSON: TJSONArray;
     procedure LoadFromJSON(const JSON: TJSONArray);
    end;
@@ -136,6 +137,23 @@ begin
   for Player in Self do
     if (Player.Name = Name) then
       Exit(Player);
+end;
+
+procedure TPlayerListHelper.DeleteById(const Id: string);
+var
+  I: Integer;
+  Player: IBoardPlayer;
+begin
+  for I := 0 to Pred(Self.Count) do
+  begin
+    Player := Self[I];
+
+    if (Player.Id = Id) then
+    begin
+      Self.Delete(I);
+      Exit;
+    end;
+  end;
 end;
 
 function TPlayerListHelper.ToJSON: TJSONArray;

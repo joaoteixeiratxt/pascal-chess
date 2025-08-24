@@ -113,6 +113,7 @@ type
     class procedure DeleteRoom(const Name: string); static;
     class procedure GetRooms(out RoomsList: TStringList); static;
     class procedure UpdateState(const Room: IRoom); static;
+    class procedure Leave; static;
     class property Current: IRoom read FCurrent write FCurrent;
     class property Player: IBoardPlayer read FPlayer write FPlayer;
   end;
@@ -445,6 +446,19 @@ begin
     if Assigned(RoomsArray) then
       RoomsArray.Free;
   end;
+end;
+
+class procedure TRoomController.Leave;
+begin
+  FCurrent.State.CurrentPlayerColor := pcBlack;
+  FCurrent.State.OpponentColor := pcWhite;
+
+  FCurrent := GetRoom(FCurrent.Name);
+  FCurrent.Players.DeleteById(FPlayer.Id);
+  FCurrent.NextPlayersBlackPiece.DeleteById(FPlayer.Id);
+  FCurrent.Push();
+
+  TRoomController.Current.Update();
 end;
 
 class procedure TRoomController.UpdateState(const Room: IRoom);
