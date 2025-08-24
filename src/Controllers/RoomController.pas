@@ -99,6 +99,7 @@ type
   private
     class var FHttpClient: IHttpClient;
     class var FCurrent: IRoom;
+    class var FPlayer: IBoardPlayer;
   public
     class constructor Create;
     class destructor Destroy;
@@ -109,6 +110,7 @@ type
     class procedure GetRooms(out RoomsList: TStringList); static;
     class procedure UpdateState(const Room: IRoom); static;
     class property Current: IRoom read FCurrent write FCurrent;
+    class property Player: IBoardPlayer read FPlayer write FPlayer;
   end;
 
 implementation
@@ -326,6 +328,7 @@ end;
 
 class procedure TRoomController.Enter(const Player: IBoardPlayer; const RoomName: string);
 begin
+  FPlayer := Player;
   FCurrent := GetRoom(RoomName);
   FCurrent.Players.Add(Player);
   FCurrent.NextPlayersBlackPiece.Add(Player);
@@ -339,6 +342,7 @@ var
   Response: IHttpResponse;
   DefaultPlayerList: TPlayerList;
 begin
+  FPlayer := Owner;
   FCurrent := TRoom.Create();
   FCurrent.State.Initialize();
 
