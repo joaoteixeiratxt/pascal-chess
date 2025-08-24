@@ -128,7 +128,7 @@ begin
 
   TLabel(Sender).Font.Color := clGray;
 
-  FRoomTime := StrToInt(TLabel(Sender).Caption);
+  FRoomTime := StrToInt(TLabel(Sender).Caption) * 60;
 end;
 
 class procedure TfrmAdminLobbyView.ShowView;

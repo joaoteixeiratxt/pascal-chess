@@ -77,13 +77,11 @@ begin
 end;
 
 procedure TBoardView.FormCreate(Sender: TObject);
-const
-  TIME = 1 * 60;
 var
   BoardBuilder: IBoardBuilder;
 begin
-  FTimerPlayer1 := TBoardTimer.Create(TIME, lblPlayerTimer, OnPlayer1TimeExpired);
-  FTimerPlayer2 := TBoardTimer.Create(TIME, lblOpponentTimer, OnPlayer2TimeExpired);
+  FTimerPlayer1 := TBoardTimer.Create(TRoomController.Current.Time, lblPlayerTimer, OnPlayer1TimeExpired);
+  FTimerPlayer2 := TBoardTimer.Create(TRoomController.Current.Time, lblOpponentTimer, OnPlayer2TimeExpired);
 
   BoardBuilder := TBoardBuilder.Create();
 
