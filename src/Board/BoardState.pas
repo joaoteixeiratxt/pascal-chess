@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.Types, System.SysUtils, System.Generics.Collections,
-  System.JSON, System.IOUtils,BoardPiece;
+  System.JSON, System.IOUtils, BoardPiece, BoardPlayer;
 
 const
   BOARD_ROWS = 8;
@@ -185,11 +185,24 @@ begin
 end;
 
 procedure TBoardState.SetCurrentTurnColor;
+var
+  NextPlayersBlackPiece: TPlayerList;
 begin
   if FCurrentTurnColor = pcWhite then
     FCurrentTurnColor := pcBlack
   else
-    FCurrentTurnColor := pcWhite
+    FCurrentTurnColor := pcWhite;
+
+  if FCurrentPlayerColor = pcBlack then
+    Exit;
+
+  NextPlayersBlackPiece := TRoomController.Current.NextPlayersBlackPiece;
+
+  if (NextPlayersBlackPiece.Count = 1) then
+    Exit;
+
+  NextPlayersBlackPiece.Add(NextPlayersBlackPiece[0]);
+  NextPlayersBlackPiece[0] := NextPlayersBlackPiece[1];
 end;
 
 function TBoardState.GetPlayerID: string;
@@ -330,6 +343,7 @@ begin
   FBoardMatrix[FromCoordinates.X, FromCoordinates.Y] := nil;
 
   SetCurrentTurnColor();
+  TRoomController.Current.Push();
   TRoomController.Current.Update();
 end;
 

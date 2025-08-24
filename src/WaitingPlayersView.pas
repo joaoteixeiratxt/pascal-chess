@@ -58,7 +58,7 @@ begin
   TimerWaitingPlayers.Enabled := False;
 
   TRoomController.Current.Started := True;
-  TRoomController.Current.Update();
+  TRoomController.Current.Push();
 
   Self.Hide();
   try
@@ -73,7 +73,7 @@ begin
   TimerWaitingPlayers.Enabled := False;
 
   TRoomController.Current.Started := False;
-  TRoomController.Current.Update();
+  TRoomController.Current.Push();
 
   TRoomController.DeleteRoom(TRoomController.Current.Name);
 

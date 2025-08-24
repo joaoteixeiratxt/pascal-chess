@@ -41,6 +41,7 @@ type
     property NextPlayersBlackPiece: TPlayerList read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
     property State: IBoardState read GetState write SetState;
     procedure Pull;
+    procedure Push;
     procedure Update;
     procedure RegisterObserver(const Event: TRoomUpdateEvent);
     function ToJSON: string;
@@ -82,6 +83,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Pull;
+    procedure Push;
     procedure Update;
     procedure RegisterObserver(const Event: TRoomUpdateEvent);
     property Name: string read GetName write SetName;
@@ -162,7 +164,7 @@ begin
   end;
 end;
 
-procedure TRoom.Update;
+procedure TRoom.Push;
 var
   URL: string;
   HttpClient: IHttpClient;
@@ -171,7 +173,10 @@ begin
 
   HttpClient := NewIndyHttpClient();
   HttpClient.Post(URL, Self.ToJSON());
+end;
 
+procedure TRoom.Update;
+begin
   NotifyAll();
 end;
 
@@ -336,7 +341,7 @@ begin
   FCurrent := GetRoom(RoomName);
   FCurrent.Players.Add(Player);
   FCurrent.NextPlayersBlackPiece.Add(Player);
-  FCurrent.Update();
+  FCurrent.Push();
 end;
 
 class procedure TRoomController.CreateRoom(const Name: string; Time: Integer; Owner: IBoardPlayer);
