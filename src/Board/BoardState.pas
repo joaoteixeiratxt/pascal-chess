@@ -330,10 +330,6 @@ begin
   FBoardMatrix[FromCoordinates.X, FromCoordinates.Y] := nil;
 
   SetCurrentTurnColor();
-  if IsCheckMate(FCurrentTurnColor) then
-    ShowMessage('Checkmate!')
-  else if IsInCheck(FCurrentTurnColor) then
-    ShowMessage('Check!');
   TRoomController.Current.Update();
 end;
 

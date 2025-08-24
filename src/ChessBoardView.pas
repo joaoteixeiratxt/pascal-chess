@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage, Board, BoardState, BoardBuilder,
   Vcl.StdCtrls, System.Threading, BoardPiece, System.JSON, BoardTimer, RoomController, ServerController, ImageLoader,
-  BoardPlayer;
+  BoardPlayer, CheckMateView;
 
 type
   TBoardView = class(TForm)
@@ -47,6 +47,8 @@ type
     procedure UpdateBoard;
     procedure UpdateTimers;
     procedure UpdatePlayers;
+    procedure ValidateCheckMate;
+    procedure OnError(E: ExceptClass);
     procedure OnPlayer1TimeExpired;
     procedure OnPlayer2TimeExpired;
   public
@@ -83,7 +85,6 @@ end;
 
 procedure TBoardView.FormCreate(Sender: TObject);
 var
-  OnError: TOnErrorCallback;
   BoardBuilder: IBoardBuilder;
 begin
   FRoom := TRoomController.Current;
@@ -101,16 +102,9 @@ begin
               .Build();
 
   FRoom.RegisterObserver(UpdateBoard);
+  FRoom.RegisterObserver(ValidateCheckMate);
 
   FBoard.Render();
-
-  OnError := procedure(E: ExceptClass)
-  begin
-    if E = EDeletedRoom then
-      ShowMessage('You WON');
-
-    Self.Close;
-  end;
 
   FServerController := TServerController.Create(FRoom, OnError);
   FServerController.Start();
@@ -186,6 +180,33 @@ begin
   end;
 end;
 
+procedure TBoardView.ValidateCheckMate;
+begin
+  if FRoom.State.IsCheckMate(FRoom.State.CurrentPlayerColor) then
+  begin
+    TCheckMateView.ShowView(FRoom.State.OpponentColor);
+    Self.Close();
+    Abort;
+  end;
+
+  if FRoom.State.IsCheckMate(FRoom.State.OpponentColor) then
+  begin
+    TCheckMateView.ShowView(FRoom.State.CurrentPlayerColor);
+    Self.Close();
+    Abort;
+  end;
+end;
+
+procedure TBoardView.OnError(E: ExceptClass);
+begin
+  if E = EDeletedRoom then
+    TCheckMateView.ShowView(FRoom.State.CurrentTurnColor);
+
+  Self.Close();
+  Abort;
+end;
+
+
 procedure TBoardView.UpdatePlayers;
 begin
   SetCurrentPlayerBlackPiece();
@@ -195,14 +216,20 @@ procedure TBoardView.OnPlayer1TimeExpired;
 begin
   FTimerPlayer1.Pause();
   FTimerPlayer2.Pause();
-  ShowMessage('Time''s up! You lost.');
+
+  TCheckMateView.ShowView(FRoom.State.OpponentColor);
+
+  Self.Close();
 end;
 
 procedure TBoardView.OnPlayer2TimeExpired;
 begin
   FTimerPlayer1.Pause();
   FTimerPlayer2.Pause();
-  ShowMessage('Time''s up! You win.');
+
+  TCheckMateView.ShowView(FRoom.State.CurrentPlayerColor);
+
+  Self.Close();
 end;
 
 end.

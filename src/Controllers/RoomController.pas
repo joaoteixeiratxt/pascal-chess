@@ -329,7 +329,10 @@ end;
 class procedure TRoomController.Enter(const Player: IBoardPlayer; const RoomName: string);
 begin
   FPlayer := Player;
+
   FCurrent.State.CurrentPlayerColor := pcBlack;
+  FCurrent.State.OpponentColor := pcWhite;
+
   FCurrent := GetRoom(RoomName);
   FCurrent.Players.Add(Player);
   FCurrent.NextPlayersBlackPiece.Add(Player);
@@ -398,6 +401,7 @@ begin
     Result := TRoom.Create();
 
     Result.State.CurrentPlayerColor := FCurrent.State.CurrentPlayerColor;
+    Result.State.OpponentColor := FCurrent.State.OpponentColor;
 
     Result.State.Initialize();
     Result.LoadFromJSON(JSON);
