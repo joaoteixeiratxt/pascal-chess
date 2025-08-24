@@ -19,8 +19,8 @@ type
     procedure SetStatus(const Value: string);
     function GetStarted: Boolean;
     procedure SetStarted(const Value: Boolean);
-    function GetHasChanged: Boolean;
-    procedure SetHasChanged(const Value: Boolean);
+    function GetTime: Integer;
+    procedure SetTime(const Value: Integer);
     function GetState: IBoardState;
     procedure SetState(const Value: IBoardState);
     function GetPlayers: TPlayerList;
@@ -33,7 +33,7 @@ type
     property Owner: string read GetOwner write SetOwner;
     property Status: string read GetStatus write SetStatus;
     property Started: Boolean read GetStarted write SetStarted;
-    property HasChanged: Boolean read GetHasChanged write SetHasChanged;
+    property Time: Integer read GetTime write SetTime;
     property Players: TPlayerList read GetPlayers write SetPlayers;
     property CurrentPlayerBlackPiece: Integer read GetCurrentPlayerBlackPiece write SetCurrentPlayerBlackPiece;
     property NextPlayersBlackPiece: TPlayerList read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
@@ -51,7 +51,7 @@ type
     FOwner: string;
     FStatus: string;
     FStarted: Boolean;
-    FHasChanged: Boolean;
+    FTime: Integer;
     FState: IBoardState;
     FPlayers: TPlayerList;
     FEvents: TList<TRoomUpdateEvent>;
@@ -65,8 +65,8 @@ type
     procedure SetStatus(const Value: string);
     function GetStarted: Boolean;
     procedure SetStarted(const Value: Boolean);
-    function GetHasChanged: Boolean;
-    procedure SetHasChanged(const Value: Boolean);
+    function GetTime: Integer;
+    procedure SetTime(const Value: Integer);
     function GetState: IBoardState;
     procedure SetState(const Value: IBoardState);
     function GetPlayers: TPlayerList;
@@ -86,7 +86,7 @@ type
     property Owner: string read GetOwner write SetOwner;
     property Status: string read GetStatus write SetStatus;
     property Started: Boolean read GetStarted write SetStarted;
-    property HasChanged: Boolean read GetHasChanged write SetHasChanged;
+    property Time: Integer read GetTime write SetTime;
     property Players: TPlayerList read GetPlayers write SetPlayers;
     property CurrentPlayerBlackPiece: Integer read GetCurrentPlayerBlackPiece write SetCurrentPlayerBlackPiece;
     property NextPlayersBlackPiece: TPlayerList read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
@@ -102,8 +102,8 @@ type
   public
     class constructor Create;
     class destructor Destroy;
-    class procedure Enter(const PlayerName, RoomName: string); static;
-    class procedure CreateRoom(const Name, Owner: string); static;
+    class procedure Enter(const Player: IBoardPlayer; const RoomName: string); static;
+    class procedure CreateRoom(const Name: string; Time: Integer; Owner: IBoardPlayer); static;
     class function GetRoom(const Name: string): IRoom; static;
     class procedure DeleteRoom(const Name: string); static;
     class procedure GetRooms(out RoomsList: TStringList); static;
@@ -159,15 +159,10 @@ var
   URL: string;
   HttpClient: IHttpClient;
 begin
-  Self.HasChanged := True;
-  try
-    URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Self.Name]);
+  URL := Format('%s/rooms/%s', [SERVER_ENDPOINT, Self.Name]);
 
-    HttpClient := NewIndyHttpClient();
-    HttpClient.Post(URL, Self.ToJSON());
-  finally
-    Self.HasChanged := False;
-  end;
+  HttpClient := NewIndyHttpClient();
+  HttpClient.Post(URL, Self.ToJSON());
 
   NotifyAll();
 end;
@@ -194,7 +189,7 @@ begin
     JSON.AddPair('name', FName);
     JSON.AddPair('status', FStatus);
     JSON.AddPair('started', FStarted);
-    JSON.AddPair('hasChanged', FHasChanged);
+    JSON.AddPair('time', TJSONNumber.Create(FTime));
     JSON.AddPair('players', FPlayers.ToJSON());
     JSON.AddPair('nextPlayersBlackPiece', FNextPlayersBlackPiece.ToJSON());
     JSON.AddPair('currentPlayerBlackPiece', TJSONNumber.Create(FCurrentPlayerBlackPiece));
@@ -214,7 +209,7 @@ begin
   FName := JSON.GetValue<string>('name');
   FStatus := JSON.GetValue<string>('status');
   FStarted := JSON.GetValue<Boolean>('started');
-  FHasChanged := JSON.GetValue<Boolean>('hasChanged');
+  FTime := JSON.GetValue<Integer>('time');
   FCurrentPlayerBlackPiece := JSON.GetValue<Integer>('currentPlayerBlackPiece');
 
   JSONPlayers := JSON.GetValue<TJSONArray>('players');
@@ -267,14 +262,14 @@ begin
   FStarted := Value;
 end;
 
-function TRoom.GetHasChanged: Boolean;
+function TRoom.GetTime: Integer;
 begin
-  Result := FHasChanged;
+  Result := FTime;
 end;
 
-procedure TRoom.SetHasChanged(const Value: Boolean);
+procedure TRoom.SetTime(const Value: Integer);
 begin
-  FHasChanged := Value;
+  FTime := Value;
 end;
 
 function TRoom.GetPlayers: TPlayerList;
@@ -329,17 +324,15 @@ begin
   FHttpClient := nil;
 end;
 
-class procedure TRoomController.Enter(const PlayerName, RoomName: string);
-var
-  Player: IBoardPlayer;
+class procedure TRoomController.Enter(const Player: IBoardPlayer; const RoomName: string);
 begin
   FCurrent := GetRoom(RoomName);
-  Player := FCurrent.Players.AddNewPlayer(PlayerName, 0);
+  FCurrent.Players.Add(Player);
   FCurrent.NextPlayersBlackPiece.Add(Player);
   FCurrent.Update();
 end;
 
-class procedure TRoomController.CreateRoom(const Name, Owner: string);
+class procedure TRoomController.CreateRoom(const Name: string; Time: Integer; Owner: IBoardPlayer);
 var
   URL: string;
   JSON: TJSONObject;
@@ -352,15 +345,15 @@ begin
   JSON := TJSONObject.Create();
   try
     JSON.AddPair('name', Name);
-    JSON.AddPair('owner', Owner);
+    JSON.AddPair('owner', Owner.Name);
     JSON.AddPair('status', 'on');
     JSON.AddPair('started', TJSONBool.Create(False));
-    JSON.AddPair('hasChanged', TJSONBool.Create(True));
+    JSON.AddPair('time', TJSONNumber.Create(Time));
     JSON.AddPair('currentPlayerBlackPiece', TJSONNumber.Create(-1));
 
     DefaultPlayerList := TPlayerList.Create();
     try
-      DefaultPlayerList.AddNewPlayer(Owner, 0);
+      DefaultPlayerList.Add(Owner);
       JSON.AddPair('players', DefaultPlayerList.ToJSON);
 
       DefaultPlayerList.Clear();

@@ -35,6 +35,7 @@ type
     function GetId: string;
     procedure SetId(const Value: string);
   public
+    constructor Create(const Name: string = ''; const IconIndex: Integer = -1);
     property Id: string read GetId write SetId;
     property Name: string read GetName write SetName;
     property IconIndex: Integer read GetIconIndex write SetIconIndex;
@@ -54,6 +55,13 @@ type
 implementation
 
 { TBoardPlayer }
+
+constructor TBoardPlayer.Create(const Name: string; const IconIndex: Integer);
+begin
+  FName := Name;
+  FIconIndex := IconIndex;
+  FId := GUIDToString(TGUID.NewGuid);
+end;
 
 function TBoardPlayer.GetId: string;
 begin
@@ -104,11 +112,7 @@ end;
 
 function TPlayerListHelper.AddNewPlayer(const Name: string; const IconIndex: Integer): IBoardPlayer;
 begin
-  Result := TBoardPlayer.Create();
-  Result.Id := GUIDToString(TGUID.NewGuid);
-  Result.Name := Name;
-  Result.IconIndex := IconIndex;
-
+  Result := TBoardPlayer.Create(Name, IconIndex);
   Self.Add(Result);
 end;
 

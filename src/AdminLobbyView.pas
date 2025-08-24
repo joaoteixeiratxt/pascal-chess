@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.ImageList, Vcl.ImgList,
-  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Imaging.pngimage, ImageLoader, ColorUtils, WaitingPlayersView;
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Imaging.pngimage, ImageLoader, ColorUtils, WaitingPlayersView,
+  BoardPlayer, RoomController;
 
 type
   TfrmAdminLobbyView = class(TForm)
@@ -45,7 +46,8 @@ type
     procedure TimeClick(Sender: TObject);
     procedure lblPlayClick(Sender: TObject);
   private
-    FIndex: Integer;
+    FAvatarIndex: Integer;
+    FRoomTime: Integer;
     procedure LoadAvatar;
   public
     class procedure ShowView;
@@ -60,15 +62,21 @@ implementation
 
 procedure TfrmAdminLobbyView.FormCreate(Sender: TObject);
 begin
-  FIndex := 0;
+  FAvatarIndex := 0;
   LoadAvatar();
   TimeClick(lbl1Min);
 end;
 
 procedure TfrmAdminLobbyView.lblPlayClick(Sender: TObject);
+var
+  Player: IBoardPlayer;
 begin
   Self.Hide();
   try
+    Player := TBoardPlayer.Create(edtPlayerName.Text, FAvatarIndex);
+
+    TRoomController.CreateRoom(edtRoomName.Text, FRoomTime, Player);
+
     TfrmWaitingPlayersView.ShowView();
   finally
     Self.Show();
@@ -77,33 +85,33 @@ end;
 
 procedure TfrmAdminLobbyView.lblNextClick(Sender: TObject);
 begin
-  if (FIndex + 1) >= AVATARS_COUNT then
+  if (FAvatarIndex + 1) >= AVATARS_COUNT then
     Exit;
 
-  Inc(FIndex);
+  Inc(FAvatarIndex);
   LoadAvatar();
 end;
 
 procedure TfrmAdminLobbyView.lblPreviousClick(Sender: TObject);
 begin
-  if (FIndex - 1) < 0 then
+  if (FAvatarIndex - 1) < 0 then
     Exit;
 
-  Dec(FIndex);
+  Dec(FAvatarIndex);
   LoadAvatar();
 end;
 
 procedure TfrmAdminLobbyView.LoadAvatar;
 begin
-  TImageLoader.Load(('a' + FIndex.ToString), imgAvatar);
+  TImageLoader.Load(('a' + FAvatarIndex.ToString), imgAvatar);
   imgAvatar.Repaint();
 
-  if FIndex = Pred(AVATARS_COUNT) then
+  if FAvatarIndex = Pred(AVATARS_COUNT) then
     lblNext.Font.Color := clGray
   else
     lblNext.Font.Color := DEFAULT_COLOR;
 
-  if FIndex = 0 then
+  if FAvatarIndex = 0 then
     lblPrevious.Font.Color := clGray
   else
     lblPrevious.Font.Color := DEFAULT_COLOR;
@@ -117,6 +125,8 @@ begin
   lbl10Min.Font.Color := DEFAULT_COLOR;
 
   TLabel(Sender).Font.Color := clGray;
+
+  FRoomTime := StrToInt(TLabel(Sender).Caption);
 end;
 
 class procedure TfrmAdminLobbyView.ShowView;
