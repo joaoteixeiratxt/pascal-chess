@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.pngimage,
-  Vcl.ExtCtrls, RoomController, BoardPlayer, ChessBoardView;
+  Vcl.ExtCtrls, RoomController, BoardPlayer, ChessBoardView, BoardPiece;
 
 type
   TfrmWaitingPlayersView = class(TForm)
@@ -52,6 +52,9 @@ end;
 
 procedure TfrmWaitingPlayersView.lblPlayClick(Sender: TObject);
 begin
+  if (lstPlayers.Count = 1) then
+    Exit;
+
   TimerWaitingPlayers.Enabled := False;
 
   TRoomController.Current.Started := True;

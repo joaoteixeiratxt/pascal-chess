@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.JSON, System.Generics.Collections,
-  HttpClient.IndyFacade, BoardState, BoardPlayer;
+  HttpClient.IndyFacade, BoardState, BoardPlayer, BoardPiece;
 
 type
   EDeletedRoom = class(Exception);
@@ -127,6 +127,7 @@ begin
   FName := '';
   FStatus := '';
   FStarted := False;
+  FOwner := TBoardPlayer.Create('', 0);
   FCurrentPlayerBlackPiece := -1;
   FPlayers := TPlayerList.Create();
   FEvents := TList<TRoomUpdateEvent>.Create();
@@ -194,6 +195,7 @@ begin
   JSON := TJSONObject.Create();
   try
     JSON.AddPair('name', FName);
+    JSON.AddPair('owner', FOwner.ToJSON());
     JSON.AddPair('status', FStatus);
     JSON.AddPair('started', FStarted);
     JSON.AddPair('time', TJSONNumber.Create(FTime));
@@ -209,9 +211,6 @@ begin
 end;
 
 procedure TRoom.LoadFromJSON(const JSON: TJSONObject);
-var
-  JSONRoom: TJSONObject;
-  JSONPlayers: TJSONArray;
 begin
   FName := JSON.GetValue<string>('name');
   FStatus := JSON.GetValue<string>('status');
@@ -219,14 +218,10 @@ begin
   FTime := JSON.GetValue<Integer>('time');
   FCurrentPlayerBlackPiece := JSON.GetValue<Integer>('currentPlayerBlackPiece');
 
-  JSONPlayers := JSON.GetValue<TJSONArray>('players');
-  FPlayers.LoadFromJSON(JSONPlayers);
-
-  JSONPlayers := JSON.GetValue<TJSONArray>('nextPlayersBlackPiece');
-  FNextPlayersBlackPiece.LoadFromJSON(JSONPlayers);
-
-  JSONRoom := JSON.GetValue<TJSONObject>('state');
-  FState.LoadFromJSON(JSONRoom);
+  FOwner.LoadFromJSON(JSON.GetValue<TJSONObject>('owner'));
+  FPlayers.LoadFromJSON(JSON.GetValue<TJSONArray>('players'));
+  FNextPlayersBlackPiece.LoadFromJSON(JSON.GetValue<TJSONArray>('nextPlayersBlackPiece'));
+  FState.LoadFromJSON(JSON.GetValue<TJSONObject>('state'));
 end;
 
 function TRoom.GetName: string;
@@ -334,6 +329,7 @@ end;
 class procedure TRoomController.Enter(const Player: IBoardPlayer; const RoomName: string);
 begin
   FPlayer := Player;
+  FCurrent.State.CurrentPlayerColor := pcBlack;
   FCurrent := GetRoom(RoomName);
   FCurrent.Players.Add(Player);
   FCurrent.NextPlayersBlackPiece.Add(Player);
@@ -354,11 +350,11 @@ begin
   JSON := TJSONObject.Create();
   try
     JSON.AddPair('name', Name);
-    JSON.AddPair('owner', Owner.Name);
+    JSON.AddPair('owner', Owner.ToJSON());
     JSON.AddPair('status', 'on');
     JSON.AddPair('started', TJSONBool.Create(False));
     JSON.AddPair('time', TJSONNumber.Create(Time));
-    JSON.AddPair('currentPlayerBlackPiece', TJSONNumber.Create(-1));
+    JSON.AddPair('currentPlayerBlackPiece', TJSONNumber.Create(0));
 
     DefaultPlayerList := TPlayerList.Create();
     try
@@ -400,6 +396,9 @@ begin
   JSON := TJSONObject(TJSONObject.ParseJSONValue(Response.BodyAsString));
   try
     Result := TRoom.Create();
+
+    Result.State.CurrentPlayerColor := FCurrent.State.CurrentPlayerColor;
+
     Result.State.Initialize();
     Result.LoadFromJSON(JSON);
   finally
