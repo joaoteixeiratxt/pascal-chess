@@ -69,7 +69,15 @@ end;
 
 procedure TfrmWaitingRoomView.TimerWaitingRoomTimer(Sender: TObject);
 begin
-  TRoomController.Current.Pull();
+  try
+    TRoomController.Current.Pull();
+  except
+    on E: EDeletedRoom do
+    begin
+      ShowMessage('A sala foi excluída.');
+      Self.Close;
+    end;
+  end;
 
   if TRoomController.Current.Started then
   begin

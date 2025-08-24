@@ -7,6 +7,8 @@ uses
   HttpClient.IndyFacade, BoardState, BoardPlayer;
 
 type
+  EDeletedRoom = class(Exception);
+
   TRoomUpdateEvent = procedure of object;
 
   IRoom = interface
@@ -146,6 +148,9 @@ var
   JSON: TJSONObject;
 begin
   NewRoom := TRoomController.GetRoom(FName);
+
+  if not Assigned(NewRoom) then
+    raise EDeletedRoom.Create('The room was deleted');
 
   JSON := TJSONObject(TJSONObject.ParseJSONValue(NewRoom.ToJSON()));
   try
