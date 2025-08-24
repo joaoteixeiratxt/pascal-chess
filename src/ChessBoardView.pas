@@ -118,7 +118,7 @@ begin
     ImageName := 'a' + FRoom.Owner.IconIndex.ToString;
 
     TImageLoader.Load(ImageName, imgOpponentAvatar);
-    lblOpponentName.Caption := TRoomController.Player.Name;
+    lblOpponentName.Caption := FRoom.Owner.Name;
 
     SetCurrentPlayerBlackPiece();
     Exit;
@@ -137,19 +137,19 @@ var
   ImageName: string;
   CurrentPlayerBlackPiece: IBoardPlayer;
 begin
-  CurrentPlayerBlackPiece := FRoom.Players[FRoom.CurrentPlayerBlackPiece];
+  CurrentPlayerBlackPiece := FRoom.NextPlayersBlackPiece[FRoom.CurrentPlayerBlackPiece];
 
   ImageName := 'a' + CurrentPlayerBlackPiece.IconIndex.ToString;
 
   if FRoom.State.CurrentPlayerColor = pcBlack then
   begin
     TImageLoader.Load(ImageName, imgPlayerAvatar);
-    lblPlayerName.Caption := TRoomController.Player.Name;
+    lblPlayerName.Caption := CurrentPlayerBlackPiece.Name;
   end
   else
   begin
     TImageLoader.Load(ImageName, imgOpponentAvatar);
-    lblOpponentName.Caption := TRoomController.Player.Name;
+    lblOpponentName.Caption := CurrentPlayerBlackPiece.Name;
   end;
 end;
 
