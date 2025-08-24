@@ -121,7 +121,7 @@ type
 implementation
 
 const
-  SERVER_ENDPOINT = 'http://localhost:3000';
+  SERVER_ENDPOINT = 'https://pascal-chess.onrender.com';
 
 { TRoom }
 
