@@ -147,6 +147,9 @@ var
   ImageName: string;
   CurrentPlayerBlackPiece: IBoardPlayer;
 begin
+  if (FRoom.NextPlayersBlackPiece.Count = 0) then
+    Exit;
+
   CurrentPlayerBlackPiece := FRoom.NextPlayersBlackPiece[FRoom.CurrentPlayerBlackPiece];
 
   ImageName := 'a' + CurrentPlayerBlackPiece.IconIndex.ToString;
