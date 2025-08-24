@@ -325,7 +325,7 @@ begin
       Piece := FBoardMatrix[Column, Row];
       if Assigned(Piece) and (Piece.Color = Color) then
       begin
-        Moves := Piece.GetLegalMoves();
+        Moves := Piece.GetPseudoLegalMoves();
         if Length(Moves) > 0 then
         begin
           FCurrentPlayerColor := SaveColor;
@@ -338,8 +338,37 @@ begin
 end;
 
 procedure TBoardState.MovePiece(const FromCoordinates, ToCoordinates: TPoint);
+var
+  Piece, Rook: IPiece;
+  RookFrom, RookTo: TPoint;
 begin
-  FBoardMatrix[ToCoordinates.X, ToCoordinates.Y] := FBoardMatrix[FromCoordinates.X, FromCoordinates.Y];
+  Piece := FBoardMatrix[FromCoordinates.X, FromCoordinates.Y];
+
+  if (Piece.PieceType = ptKing) and
+     ((ToCoordinates.X = FromCoordinates.X + 2) or (ToCoordinates.X = FromCoordinates.X - 2)) then
+  begin
+    if ToCoordinates.X > FromCoordinates.X then
+    begin
+      RookFrom := TPoint.Create(7, FromCoordinates.Y);
+      RookTo := TPoint.Create(ToCoordinates.X - 1, FromCoordinates.Y);
+    end
+    else
+    begin
+      RookFrom := TPoint.Create(0, FromCoordinates.Y);
+      RookTo := TPoint.Create(ToCoordinates.X + 1, FromCoordinates.Y);
+    end;
+
+    Rook := FBoardMatrix[RookFrom.X, RookFrom.Y];
+    if Assigned(Rook) then
+    begin
+      FBoardMatrix[RookTo.X, RookTo.Y] := Rook;
+      FBoardMatrix[RookTo.X, RookTo.Y].Coordinates := RookTo;
+      FBoardMatrix[RookTo.X, RookTo.Y].HasMoved := True;
+      FBoardMatrix[RookFrom.X, RookFrom.Y] := nil;
+    end;
+  end;
+
+  FBoardMatrix[ToCoordinates.X, ToCoordinates.Y] := Piece;
   FBoardMatrix[ToCoordinates.X, ToCoordinates.Y].Coordinates := TPoint.Create(ToCoordinates.X, ToCoordinates.Y);
   FBoardMatrix[ToCoordinates.X, ToCoordinates.Y].HasMoved := True;
   FBoardMatrix[FromCoordinates.X, FromCoordinates.Y] := nil;
