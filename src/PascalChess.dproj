@@ -170,6 +170,10 @@
             <Form>frmWaitingPlayersView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="WaitingRoomView.pas">
+            <Form>frmWaitingRoomView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

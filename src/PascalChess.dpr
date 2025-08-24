@@ -25,7 +25,8 @@ uses
   CheckMateView in 'CheckMateView.pas' {frmCheckMateView},
   PlayerLobbyView in 'PlayerLobbyView.pas' {frmPlayerLobbyView},
   AdminLobbyView in 'AdminLobbyView.pas' {frmAdminLobbyView},
-  WaitingPlayersView in 'WaitingPlayersView.pas' {frmWaitingPlayersView};
+  WaitingPlayersView in 'WaitingPlayersView.pas' {frmWaitingPlayersView},
+  WaitingRoomView in 'WaitingRoomView.pas' {frmWaitingRoomView};
 
 {$R *.res}
 

@@ -737,6 +737,7 @@ object frmPlayerLobbyView: TfrmPlayerLobbyView
       Font.Style = [fsBold]
       ParentFont = False
       Layout = tlCenter
+      OnClick = lblPlayClick
       ExplicitTop = -24
     end
   end
