@@ -15,8 +15,8 @@ type
   ['{BECBB98B-2043-441F-9743-37E9443B7333}']
     function GetName: string;
     procedure SetName(const Value: string);
-    function GetOwner: string;
-    procedure SetOwner(const Value: string);
+    function GetOwner: IBoardPlayer;
+    procedure SetOwner(const Value: IBoardPlayer);
     function GetStatus: string;
     procedure SetStatus(const Value: string);
     function GetStarted: Boolean;
@@ -32,7 +32,7 @@ type
     function GetNextPlayersBlackPiece: TPlayerList;
     procedure SetNextPlayersBlackPiece(const Value: TPlayerList);
     property Name: string read GetName write SetName;
-    property Owner: string read GetOwner write SetOwner;
+    property Owner: IBoardPlayer read GetOwner write SetOwner;
     property Status: string read GetStatus write SetStatus;
     property Started: Boolean read GetStarted write SetStarted;
     property Time: Integer read GetTime write SetTime;
@@ -50,7 +50,7 @@ type
   TRoom = class(TInterfacedObject, IRoom)
   private
     FName: string;
-    FOwner: string;
+    FOwner: IBoardPlayer;
     FStatus: string;
     FStarted: Boolean;
     FTime: Integer;
@@ -61,8 +61,8 @@ type
     FNextPlayersBlackPiece: TPlayerList;
     function GetName: string;
     procedure SetName(const Value: string);
-    function GetOwner: string;
-    procedure SetOwner(const Value: string);
+    function GetOwner: IBoardPlayer;
+    procedure SetOwner(const Value: IBoardPlayer);
     function GetStatus: string;
     procedure SetStatus(const Value: string);
     function GetStarted: Boolean;
@@ -85,7 +85,7 @@ type
     procedure Update;
     procedure RegisterObserver(const Event: TRoomUpdateEvent);
     property Name: string read GetName write SetName;
-    property Owner: string read GetOwner write SetOwner;
+    property Owner: IBoardPlayer read GetOwner write SetOwner;
     property Status: string read GetStatus write SetStatus;
     property Started: Boolean read GetStarted write SetStarted;
     property Time: Integer read GetTime write SetTime;
@@ -239,12 +239,12 @@ begin
   FName := Value;
 end;
 
-function TRoom.GetOwner: string;
+function TRoom.GetOwner: IBoardPlayer;
 begin
   Result := FOwner;
 end;
 
-procedure TRoom.SetOwner(const Value: string);
+procedure TRoom.SetOwner(const Value: IBoardPlayer);
 begin
   FOwner := Value;
 end;
