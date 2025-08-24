@@ -5,6 +5,10 @@ object frmAdminLobbyView: TfrmAdminLobbyView
   ClientHeight = 474
   ClientWidth = 329
   Color = 2829872
+  Constraints.MaxHeight = 513
+  Constraints.MaxWidth = 345
+  Constraints.MinHeight = 513
+  Constraints.MinWidth = 345
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -750,6 +754,7 @@ object frmAdminLobbyView: TfrmAdminLobbyView
       Font.Style = [fsBold]
       ParentFont = False
       Layout = tlCenter
+      OnClick = lblPlayClick
       ExplicitTop = -24
     end
   end

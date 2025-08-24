@@ -33,7 +33,7 @@ type
     FIndex: Integer;
     procedure LoadAvatar;
   public
-    class procedure Show;
+    class procedure ShowView;
   end;
 
 var
@@ -83,7 +83,7 @@ begin
     lblPrevious.Font.Color := DEFAULT_COLOR;
 end;
 
-class procedure TfrmPlayerLobbyView.Show;
+class procedure TfrmPlayerLobbyView.ShowView;
 var
   View: TfrmPlayerLobbyView;
 begin

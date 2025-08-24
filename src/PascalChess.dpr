@@ -24,7 +24,8 @@ uses
   ServerController in 'Controllers\ServerController.pas',
   CheckMateView in 'CheckMateView.pas' {frmCheckMateView},
   PlayerLobbyView in 'PlayerLobbyView.pas' {frmPlayerLobbyView},
-  AdminLobbyView in 'AdminLobbyView.pas' {frmAdminLobbyView};
+  AdminLobbyView in 'AdminLobbyView.pas' {frmAdminLobbyView},
+  WaitingPlayersView in 'WaitingPlayersView.pas' {frmWaitingPlayersView};
 
 {$R *.res}
 

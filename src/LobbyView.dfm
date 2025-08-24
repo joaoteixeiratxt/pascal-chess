@@ -5,6 +5,10 @@ object frmLobbyView: TfrmLobbyView
   ClientHeight = 325
   ClientWidth = 360
   Color = 2829872
+  Constraints.MaxHeight = 364
+  Constraints.MaxWidth = 376
+  Constraints.MinHeight = 364
+  Constraints.MinWidth = 376
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12

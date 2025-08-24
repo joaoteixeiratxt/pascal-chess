@@ -29,12 +29,26 @@ implementation
 
 procedure TfrmLobbyView.lblPlayClick(Sender: TObject);
 begin
-  TfrmPlayerLobbyView.Show();
+  Self.Hide();
+  try
+    TfrmPlayerLobbyView.ShowView();
+  finally
+    Self.Show();
+    Self.BringToFront();
+    Self.SetFocus();
+  end;
 end;
 
 procedure TfrmLobbyView.lblCreateRoomClick(Sender: TObject);
 begin
-  TfrmAdminLobbyView.Show();
+  Self.Hide();
+  try
+    TfrmAdminLobbyView.ShowView();
+  finally
+    Self.Show();
+    Self.BringToFront();
+    Self.SetFocus();
+  end;
 end;
 
 end.

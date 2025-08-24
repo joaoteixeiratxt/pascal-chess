@@ -166,6 +166,10 @@
             <Form>frmAdminLobbyView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="WaitingPlayersView.pas">
+            <Form>frmWaitingPlayersView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

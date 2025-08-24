@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.ImageList, Vcl.ImgList,
-  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Imaging.pngimage, ImageLoader, ColorUtils;
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Imaging.pngimage, ImageLoader, ColorUtils, WaitingPlayersView;
 
 type
   TfrmAdminLobbyView = class(TForm)
@@ -43,11 +43,12 @@ type
     procedure lblNextClick(Sender: TObject);
     procedure lblPreviousClick(Sender: TObject);
     procedure TimeClick(Sender: TObject);
+    procedure lblPlayClick(Sender: TObject);
   private
     FIndex: Integer;
     procedure LoadAvatar;
   public
-    class procedure Show;
+    class procedure ShowView;
   end;
 
 var
@@ -62,6 +63,16 @@ begin
   FIndex := 0;
   LoadAvatar();
   TimeClick(lbl1Min);
+end;
+
+procedure TfrmAdminLobbyView.lblPlayClick(Sender: TObject);
+begin
+  Self.Hide();
+  try
+    TfrmWaitingPlayersView.ShowView();
+  finally
+    Self.Show();
+  end;
 end;
 
 procedure TfrmAdminLobbyView.lblNextClick(Sender: TObject);
@@ -108,7 +119,7 @@ begin
   TLabel(Sender).Font.Color := clGray;
 end;
 
-class procedure TfrmAdminLobbyView.Show;
+class procedure TfrmAdminLobbyView.ShowView;
 var
   View: TfrmAdminLobbyView;
 begin
