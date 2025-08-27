@@ -1,4 +1,4 @@
-unit PC.Lobby.View;
+unit PC.Main.View;
 
 interface
 
