@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage, PC.Board, PC.State, PC.BoardBuilder,
-  Vcl.StdCtrls, System.Threading, PC.Piece, System.JSON, PC.Timer, PC.Room.Controller, PC.Server.Service, ImageLoader,
+  Vcl.StdCtrls, System.Threading, PC.Piece, System.JSON, PC.Timer, PC.Room.Controller, PC.Server.Service, PC.Image.Loader,
   PC.Player, PC.CheckMate.View;
 
 type

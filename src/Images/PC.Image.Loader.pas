@@ -1,4 +1,4 @@
-unit ImageLoader;
+unit PC.Image.Loader;
 
 interface
 

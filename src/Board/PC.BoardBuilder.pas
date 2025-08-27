@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.Types, System.SysUtils, Vcl.ExtCtrls, Winapi.Windows,
-  Vcl.Controls, Vcl.Graphics, PC.Board, PC.State, PC.Piece, ImageLoader, PC.Color.Utils;
+  Vcl.Controls, Vcl.Graphics, PC.Board, PC.State, PC.Piece, PC.Image.Loader, PC.Color.Utils;
 
 type
   TRowBuilder = class

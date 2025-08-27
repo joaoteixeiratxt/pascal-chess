@@ -134,11 +134,8 @@
         <DCCReference Include="Pieces\King.pas"/>
         <DCCReference Include="Pieces\Rook.pas"/>
         <DCCReference Include="Pieces\Knight.pas"/>
-        <DCCReference Include="Images\ImageLoader.pas"/>
         <DCCReference Include="Utils\PC.Color.Utils.pas"/>
         <DCCReference Include="Pieces\PieceBase.pas"/>
-        <DCCReference Include="Utils\PC.Indy.Facade.pas"/>
-        <DCCReference Include="Controllers\PC.Server.Service.pas"/>
         <DCCReference Include="Board\PC.Board.pas"/>
         <DCCReference Include="Board\PC.BoardBuilder.pas"/>
         <DCCReference Include="Board\PC.Piece.pas"/>
@@ -174,6 +171,9 @@
             <Form>frmLobbyView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Images\PC.Image.Loader.pas"/>
+        <DCCReference Include="Server\PC.Indy.Facade.pas"/>
+        <DCCReference Include="Server\PC.Server.Service.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
