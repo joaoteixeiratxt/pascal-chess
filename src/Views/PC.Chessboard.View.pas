@@ -139,7 +139,7 @@ end;
 procedure TBoardView.SetCurrentPlayerBlackPiece;
 var
   ImageName: string;
-  CurrentPlayerBlackPiece: IBoardPlayer;
+  CurrentPlayerBlackPiece: IPlayer;
 begin
   if (FRoom.NextPlayersBlackPiece.Count = 0) then
     Exit;

@@ -92,7 +92,7 @@ end;
 
 procedure TfrmWaitingPlayersView.TimerWaitingPlayersTimer(Sender: TObject);
 var
-  Player: IBoardPlayer;
+  Player: IPlayer;
 begin
   TRoomController.Current.Pull();
 

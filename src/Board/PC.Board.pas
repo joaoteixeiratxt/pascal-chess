@@ -114,7 +114,7 @@ end;
 procedure TBoard.OnPieceClick(Sender: TObject);
 var
   Piece: IPiece;
-  CurrentPlayerBlackPiece: IBoardPlayer;
+  CurrentPlayerBlackPiece: IPlayer;
 begin
   if FState.CurrentPlayerColor <> FState.CurrentTurnColor  then
     Exit;

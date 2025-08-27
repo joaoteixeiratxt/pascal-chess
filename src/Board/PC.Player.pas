@@ -6,7 +6,7 @@ uses
   System.Classes, System.SysUtils, System.JSON, System.Generics.Collections;
 
 type
-  IBoardPlayer = interface
+  IPlayer = interface
   ['{4CF51BD8-4692-4125-B15E-A0958BB9FD31}']
     function GetName: string;
     procedure SetName(const Value: string);
@@ -21,9 +21,9 @@ type
     procedure LoadFromJSON(const JSON: TJSONObject);
   end;
 
-  TPlayerList = TList<IBoardPlayer>;
+  TPlayerList = TList<IPlayer>;
 
-  TBoardPlayer = class(TInterfacedObject, IBoardPlayer)
+  TPlayer = class(TInterfacedObject, IPlayer)
   private
     FId: string;
     FName: string;
@@ -45,9 +45,9 @@ type
 
    TPlayerListHelper = class helper for TPlayerList
    public
-    function AddNewPlayer(const Name: string; const IconIndex: Integer): IBoardPlayer;
-    function FindById(const Id: string): IBoardPlayer;
-    function FindByName(const Name: string): IBoardPlayer;
+    function AddNewPlayer(const Name: string; const IconIndex: Integer): IPlayer;
+    function FindById(const Id: string): IPlayer;
+    function FindByName(const Name: string): IPlayer;
     procedure DeleteById(const Id: string);
     function ToJSON: TJSONArray;
     procedure LoadFromJSON(const JSON: TJSONArray);
@@ -55,46 +55,46 @@ type
 
 implementation
 
-{ TBoardPlayer }
+{ TPlayer }
 
-constructor TBoardPlayer.Create(const Name: string; const IconIndex: Integer);
+constructor TPlayer.Create(const Name: string; const IconIndex: Integer);
 begin
   FName := Name;
   FIconIndex := IconIndex;
   FId := GUIDToString(TGUID.NewGuid);
 end;
 
-function TBoardPlayer.GetId: string;
+function TPlayer.GetId: string;
 begin
   Result := FId;
 end;
 
-procedure TBoardPlayer.SetId(const Value: string);
+procedure TPlayer.SetId(const Value: string);
 begin
   FId := Value;
 end;
 
-function TBoardPlayer.GetName: string;
+function TPlayer.GetName: string;
 begin
   Result := FName;
 end;
 
-procedure TBoardPlayer.SetName(const Value: string);
+procedure TPlayer.SetName(const Value: string);
 begin
   FName := Value;
 end;
 
-function TBoardPlayer.GetIconIndex: Integer;
+function TPlayer.GetIconIndex: Integer;
 begin
   Result := FIconIndex;
 end;
 
-procedure TBoardPlayer.SetIconIndex(const Value: Integer);
+procedure TPlayer.SetIconIndex(const Value: Integer);
 begin
   FIconIndex := Value;
 end;
 
-function TBoardPlayer.ToJSON: TJSONObject;
+function TPlayer.ToJSON: TJSONObject;
 begin
   Result := TJSONObject.Create();
   Result.AddPair('id', FId);
@@ -102,7 +102,7 @@ begin
   Result.AddPair('iconIndex', TJSONNumber.Create(FIconIndex));
 end;
 
-procedure TBoardPlayer.LoadFromJSON(const JSON: TJSONObject);
+procedure TPlayer.LoadFromJSON(const JSON: TJSONObject);
 begin
   FId := JSON.GetValue<string>('id');
   FName := JSON.GetValue<string>('name');
@@ -111,15 +111,15 @@ end;
 
 { TPlayerListHelper }
 
-function TPlayerListHelper.AddNewPlayer(const Name: string; const IconIndex: Integer): IBoardPlayer;
+function TPlayerListHelper.AddNewPlayer(const Name: string; const IconIndex: Integer): IPlayer;
 begin
-  Result := TBoardPlayer.Create(Name, IconIndex);
+  Result := TPlayer.Create(Name, IconIndex);
   Self.Add(Result);
 end;
 
-function TPlayerListHelper.FindById(const Id: string): IBoardPlayer;
+function TPlayerListHelper.FindById(const Id: string): IPlayer;
 var
-  Player: IBoardPlayer;
+  Player: IPlayer;
 begin
   Result := nil;
 
@@ -128,9 +128,9 @@ begin
       Exit(Player);
 end;
 
-function TPlayerListHelper.FindByName(const Name: string): IBoardPlayer;
+function TPlayerListHelper.FindByName(const Name: string): IPlayer;
 var
-  Player: IBoardPlayer;
+  Player: IPlayer;
 begin
   Result := nil;
 
@@ -142,7 +142,7 @@ end;
 procedure TPlayerListHelper.DeleteById(const Id: string);
 var
   I: Integer;
-  Player: IBoardPlayer;
+  Player: IPlayer;
 begin
   for I := 0 to Pred(Self.Count) do
   begin
@@ -158,7 +158,7 @@ end;
 
 function TPlayerListHelper.ToJSON: TJSONArray;
 var
-  Player: IBoardPlayer;
+  Player: IPlayer;
 begin
   Result := TJSONArray.Create();
 
@@ -169,13 +169,13 @@ end;
 procedure TPlayerListHelper.LoadFromJSON(const JSON: TJSONArray);
 var
   I: Integer;
-  Player: IBoardPlayer;
+  Player: IPlayer;
 begin
   Self.Clear();
 
   for I := 0 to Pred(JSON.Count) do
   begin
-    Player := TBoardPlayer.Create();
+    Player := TPlayer.Create();
     Player.LoadFromJSON(TJSONObject(JSON.Items[I]));
     Self.Add(Player);
   end;

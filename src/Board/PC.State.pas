@@ -186,7 +186,7 @@ end;
 
 procedure TBoardState.SetCurrentTurnColor;
 var
-  Player: IBoardPlayer;
+  Player: IPlayer;
   NextPlayersBlackPiece: TPlayerList;
 begin
   if FCurrentTurnColor = pcWhite then

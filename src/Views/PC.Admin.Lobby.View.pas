@@ -69,11 +69,11 @@ end;
 
 procedure TfrmAdminLobbyView.lblPlayClick(Sender: TObject);
 var
-  Player: IBoardPlayer;
+  Player: IPlayer;
 begin
   Self.Hide();
   try
-    Player := TBoardPlayer.Create(edtPlayerName.Text, FAvatarIndex);
+    Player := TPlayer.Create(edtPlayerName.Text, FAvatarIndex);
 
     TRoomController.CreateRoom(edtRoomName.Text, FRoomTime, Player);
 

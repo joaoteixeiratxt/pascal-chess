@@ -15,8 +15,8 @@ type
   ['{BECBB98B-2043-441F-9743-37E9443B7333}']
     function GetName: string;
     procedure SetName(const Value: string);
-    function GetOwner: IBoardPlayer;
-    procedure SetOwner(const Value: IBoardPlayer);
+    function GetOwner: IPlayer;
+    procedure SetOwner(const Value: IPlayer);
     function GetStatus: string;
     procedure SetStatus(const Value: string);
     function GetStarted: Boolean;
@@ -32,7 +32,7 @@ type
     function GetNextPlayersBlackPiece: TPlayerList;
     procedure SetNextPlayersBlackPiece(const Value: TPlayerList);
     property Name: string read GetName write SetName;
-    property Owner: IBoardPlayer read GetOwner write SetOwner;
+    property Owner: IPlayer read GetOwner write SetOwner;
     property Status: string read GetStatus write SetStatus;
     property Started: Boolean read GetStarted write SetStarted;
     property Time: Integer read GetTime write SetTime;
@@ -51,7 +51,7 @@ type
   TRoom = class(TInterfacedObject, IRoom)
   private
     FName: string;
-    FOwner: IBoardPlayer;
+    FOwner: IPlayer;
     FStatus: string;
     FStarted: Boolean;
     FTime: Integer;
@@ -62,8 +62,8 @@ type
     FNextPlayersBlackPiece: TPlayerList;
     function GetName: string;
     procedure SetName(const Value: string);
-    function GetOwner: IBoardPlayer;
-    procedure SetOwner(const Value: IBoardPlayer);
+    function GetOwner: IPlayer;
+    procedure SetOwner(const Value: IPlayer);
     function GetStatus: string;
     procedure SetStatus(const Value: string);
     function GetStarted: Boolean;
@@ -87,7 +87,7 @@ type
     procedure Update;
     procedure RegisterObserver(const Event: TRoomUpdateEvent);
     property Name: string read GetName write SetName;
-    property Owner: IBoardPlayer read GetOwner write SetOwner;
+    property Owner: IPlayer read GetOwner write SetOwner;
     property Status: string read GetStatus write SetStatus;
     property Started: Boolean read GetStarted write SetStarted;
     property Time: Integer read GetTime write SetTime;
@@ -103,19 +103,19 @@ type
   private
     class var FHttpClient: IHttpClient;
     class var FCurrent: IRoom;
-    class var FPlayer: IBoardPlayer;
+    class var FPlayer: IPlayer;
   public
     class constructor Create;
     class destructor Destroy;
-    class procedure Enter(const Player: IBoardPlayer; const RoomName: string); static;
-    class procedure CreateRoom(const Name: string; Time: Integer; Owner: IBoardPlayer); static;
+    class procedure Enter(const Player: IPlayer; const RoomName: string); static;
+    class procedure CreateRoom(const Name: string; Time: Integer; Owner: IPlayer); static;
     class function GetRoom(const Name: string): IRoom; static;
     class procedure DeleteRoom(const Name: string); static;
     class procedure GetRooms(out RoomsList: TStringList); static;
     class procedure UpdateState(const Room: IRoom); static;
     class procedure Leave; static;
     class property Current: IRoom read FCurrent write FCurrent;
-    class property Player: IBoardPlayer read FPlayer write FPlayer;
+    class property Player: IPlayer read FPlayer write FPlayer;
   end;
 
 implementation
@@ -130,7 +130,7 @@ begin
   FName := '';
   FStatus := '';
   FStarted := False;
-  FOwner := TBoardPlayer.Create('', 0);
+  FOwner := TPlayer.Create('', 0);
   FCurrentPlayerBlackPiece := -1;
   FPlayers := TPlayerList.Create();
   FEvents := TList<TRoomUpdateEvent>.Create();
@@ -240,12 +240,12 @@ begin
   FName := Value;
 end;
 
-function TRoom.GetOwner: IBoardPlayer;
+function TRoom.GetOwner: IPlayer;
 begin
   Result := FOwner;
 end;
 
-procedure TRoom.SetOwner(const Value: IBoardPlayer);
+procedure TRoom.SetOwner(const Value: IPlayer);
 begin
   FOwner := Value;
 end;
@@ -332,7 +332,7 @@ begin
   FHttpClient := nil;
 end;
 
-class procedure TRoomController.Enter(const Player: IBoardPlayer; const RoomName: string);
+class procedure TRoomController.Enter(const Player: IPlayer; const RoomName: string);
 begin
   FPlayer := Player;
 
@@ -345,7 +345,7 @@ begin
   FCurrent.Push();
 end;
 
-class procedure TRoomController.CreateRoom(const Name: string; Time: Integer; Owner: IBoardPlayer);
+class procedure TRoomController.CreateRoom(const Name: string; Time: Integer; Owner: IPlayer);
 var
   URL: string;
   JSON: TJSONObject;

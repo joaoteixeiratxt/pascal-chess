@@ -57,13 +57,13 @@ end;
 
 procedure TfrmPlayerLobbyView.lblPlayClick(Sender: TObject);
 var
-  Player: IBoardPlayer;
+  Player: IPlayer;
 begin
   Self.Hide();
   try
     TimerRooms.Enabled := False;
     try
-      Player := TBoardPlayer.Create(edtPlayerName.Text, FAvatarIndex);
+      Player := TPlayer.Create(edtPlayerName.Text, FAvatarIndex);
 
       TRoomController.Enter(Player,cbbRoom.Text);
 
