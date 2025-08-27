@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.ImageList, Vcl.ImgList,
   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Imaging.pngimage, ImageLoader, ColorUtils, PC.WaitingPlayers.View,
-  PC.Player, RoomController;
+  PC.Player, PC.Room.Controller;
 
 type
   TfrmAdminLobbyView = class(TForm)

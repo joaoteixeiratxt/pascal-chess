@@ -12,7 +12,6 @@ uses
   ColorUtils in 'Utils\ColorUtils.pas',
   PieceBase in 'Pieces\PieceBase.pas',
   HttpClient.IndyFacade in 'Utils\HttpClient.IndyFacade.pas',
-  RoomController in 'Controllers\RoomController.pas',
   PC.Server.Service in 'Controllers\PC.Server.Service.pas',
   PC.Admin.Lobby.View in 'PC.Admin.Lobby.View.pas' {frmAdminLobbyView},
   PC.CheckMate.View in 'PC.CheckMate.View.pas' {frmCheckMateView},
@@ -26,7 +25,8 @@ uses
   PC.Piece in 'Board\PC.Piece.pas',
   PC.Player in 'Board\PC.Player.pas',
   PC.State in 'Board\PC.State.pas',
-  PC.Timer in 'Board\PC.Timer.pas';
+  PC.Timer in 'Board\PC.Timer.pas',
+  PC.Room.Controller in 'Controllers\PC.Room.Controller.pas';
 
 {$R *.res}
 

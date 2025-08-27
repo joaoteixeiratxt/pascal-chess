@@ -80,7 +80,7 @@ type
 implementation
 
 uses
-  RoomController, Dialogs;
+  PC.Room.Controller, Dialogs;
 
 { TBoardState }
 

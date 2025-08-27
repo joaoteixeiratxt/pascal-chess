@@ -138,7 +138,6 @@
         <DCCReference Include="Utils\ColorUtils.pas"/>
         <DCCReference Include="Pieces\PieceBase.pas"/>
         <DCCReference Include="Utils\HttpClient.IndyFacade.pas"/>
-        <DCCReference Include="Controllers\RoomController.pas"/>
         <DCCReference Include="Controllers\PC.Server.Service.pas"/>
         <DCCReference Include="PC.Admin.Lobby.View.pas">
             <Form>frmAdminLobbyView</Form>
@@ -174,6 +173,7 @@
         <DCCReference Include="Board\PC.Player.pas"/>
         <DCCReference Include="Board\PC.State.pas"/>
         <DCCReference Include="Board\PC.Timer.pas"/>
+        <DCCReference Include="Controllers\PC.Room.Controller.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -201,7 +201,7 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="4">
-                <DeployFile LocalName="Dist\exe\PascalChess.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Dist\Debug\exe\PascalChess.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>PascalChess.exe</RemoteName>
                         <Overwrite>true</Overwrite>
