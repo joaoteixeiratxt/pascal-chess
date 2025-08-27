@@ -1,4 +1,4 @@
-unit PlayerLobbyView;
+unit PC.Player.Lobby.View;
 
 interface
 

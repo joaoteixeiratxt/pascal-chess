@@ -1,4 +1,4 @@
-unit WaitingPlayersView;
+unit PC.WaitingPlayers.View;
 
 interface
 

@@ -1,4 +1,4 @@
-unit ChessBoardView;
+unit PC.Chessboard.View;
 
 interface
 

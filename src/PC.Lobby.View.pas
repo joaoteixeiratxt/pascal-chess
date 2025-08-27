@@ -1,4 +1,4 @@
-unit LobbyView;
+unit PC.Lobby.View;
 
 interface
 

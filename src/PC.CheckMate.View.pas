@@ -1,4 +1,4 @@
-unit CheckMateView;
+unit PC.CheckMate.View;
 
 interface
 

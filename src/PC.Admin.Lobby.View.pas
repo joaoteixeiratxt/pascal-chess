@@ -1,4 +1,4 @@
-unit AdminLobbyView;
+unit PC.Admin.Lobby.View;
 
 interface
 

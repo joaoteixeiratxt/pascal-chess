@@ -1,4 +1,4 @@
-unit WaitingRoomView;
+unit PC.WaitingRoom.View;
 
 interface
 
