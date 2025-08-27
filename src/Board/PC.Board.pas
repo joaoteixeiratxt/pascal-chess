@@ -5,7 +5,7 @@ interface
 uses
   System.Classes, System.Types, System.SysUtils, Vcl.ExtCtrls, Winapi.Windows,
   Vcl.Controls, Vcl.Graphics, PC.State, PC.Piece, PC.Image.Loader, Dialogs,
-  System.Generics.Collections, PC.Room.Controller, PC.Player;
+  System.Generics.Collections, PC.Room.Controller, PC.Player, PC.Room;
 
 const
   PRIMARY_SQUARE_COLOR = 'EBECD0';

@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.pngimage,
-  Vcl.ExtCtrls, PC.Image.Loader, PC.Room.Controller, PC.Chessboard.View;
+  Vcl.ExtCtrls, PC.Image.Loader, PC.Room.Controller, PC.Chessboard.View, PC.Room;
 
 type
   TfrmWaitingRoomView = class(TForm)

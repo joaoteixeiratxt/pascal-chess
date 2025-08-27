@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.JSON, Vcl.StdCtrls, Vcl.ExtCtrls,
-  System.Generics.Collections, PC.Indy.Facade, PC.Room.Controller;
+  System.Generics.Collections, PC.Indy.Facade, PC.Room.Controller, PC.Room;
 
 type
   TOnErrorCallback = TProc<ExceptClass>;

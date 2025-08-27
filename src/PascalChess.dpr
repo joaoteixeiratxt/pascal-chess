@@ -26,7 +26,8 @@ uses
   PC.Main.View in 'PC.Main.View.pas' {frmMainView},
   PC.Image.Loader in 'Images\PC.Image.Loader.pas',
   PC.Indy.Facade in 'Server\PC.Indy.Facade.pas',
-  PC.Server.Service in 'Server\PC.Server.Service.pas';
+  PC.Server.Service in 'Server\PC.Server.Service.pas',
+  PC.Room in 'Board\PC.Room.pas';
 
 {$R *.res}
 
