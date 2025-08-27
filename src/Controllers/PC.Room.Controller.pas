@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.JSON, System.Generics.Collections,
-  HttpClient.IndyFacade, PC.State, PC.Player, PC.Piece;
+  PC.Indy.Facade, PC.State, PC.Player, PC.Piece;
 
 type
   EDeletedRoom = class(Exception);
