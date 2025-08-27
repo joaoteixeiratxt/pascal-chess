@@ -1,4 +1,4 @@
-unit BoardPlayer;
+unit PC.Player;
 
 interface
 

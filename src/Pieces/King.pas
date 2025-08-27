@@ -3,7 +3,7 @@ unit King;
 interface
 
 uses
-  System.Classes, System.Types, BoardPiece, BoardState, PieceBase;
+  System.Classes, System.Types, PC.Piece, PC.State, PieceBase;
 
 type
   TKing = class(TPieceBase)

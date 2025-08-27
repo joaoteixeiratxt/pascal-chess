@@ -3,7 +3,7 @@ unit Pawn;
 interface
 
 uses
-  System.Classes, System.Types, BoardPiece, PieceBase;
+  System.Classes, System.Types, PC.Piece, PieceBase;
 
 type
   TPawn = class(TPieceBase)

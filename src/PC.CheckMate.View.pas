@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
-  Vcl.StdCtrls, BoardPiece, ImageLoader;
+  Vcl.StdCtrls, PC.Piece, ImageLoader;
 
 type
   TfrmCheckMateView = class(TForm)

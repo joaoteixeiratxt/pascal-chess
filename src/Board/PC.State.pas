@@ -1,10 +1,10 @@
-unit BoardState;
+unit PC.State;
 
 interface
 
 uses
   System.Classes, System.Types, System.SysUtils, System.Generics.Collections,
-  System.JSON, System.IOUtils, BoardPiece, BoardPlayer;
+  System.JSON, System.IOUtils, PC.Piece, PC.Player;
 
 const
   BOARD_ROWS = 8;

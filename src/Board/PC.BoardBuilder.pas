@@ -1,10 +1,10 @@
-unit BoardBuilder;
+unit PC.BoardBuilder;
 
 interface
 
 uses
   System.Classes, System.Types, System.SysUtils, Vcl.ExtCtrls, Winapi.Windows,
-  Vcl.Controls, Vcl.Graphics, Board, BoardState, BoardPiece, ImageLoader, ColorUtils;
+  Vcl.Controls, Vcl.Graphics, PC.Board, PC.State, PC.Piece, ImageLoader, ColorUtils;
 
 type
   TRowBuilder = class

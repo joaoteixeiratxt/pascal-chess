@@ -3,8 +3,8 @@ unit PieceBase;
 interface
 
 uses
-  System.Classes, System.Types, System.JSON, BoardPiece,
-  BoardState, RoomController;
+  System.Classes, System.Types, System.JSON, PC.Piece,
+  PC.State, RoomController;
 
 type
   TPieceBase = class(TInterfacedObject, IPiece, IStrategy)

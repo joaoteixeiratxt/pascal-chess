@@ -1,11 +1,11 @@
-unit Board;
+unit PC.Board;
 
 interface
 
 uses
   System.Classes, System.Types, System.SysUtils, Vcl.ExtCtrls, Winapi.Windows,
-  Vcl.Controls, Vcl.Graphics, BoardState, BoardPiece, ImageLoader, Dialogs,
-  System.Generics.Collections, RoomController, BoardPlayer;
+  Vcl.Controls, Vcl.Graphics, PC.State, PC.Piece, ImageLoader, Dialogs,
+  System.Generics.Collections, RoomController, PC.Player;
 
 const
   PRIMARY_SQUARE_COLOR = 'EBECD0';

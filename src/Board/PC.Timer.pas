@@ -1,4 +1,4 @@
-unit BoardTimer;
+unit PC.Timer;
 
 interface
 
