@@ -22,15 +22,9 @@ type
     pnlControls: TPanel;
     imgOpponentAvatar: TImage;
     imgPlayerAvatar: TImage;
-    pnlNext: TPanel;
     pnlExit: TPanel;
-    pnlMessages: TPanel;
-    pnlPrevious: TPanel;
     lblOpponentName: TLabel;
     lblPlayerName: TLabel;
-    imgNext: TImage;
-    imgPrevious: TImage;
-    imgMessages: TImage;
     imgExit: TImage;
     lblPlayerTimer: TLabel;
     lblOpponentTimer: TLabel;
