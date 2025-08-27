@@ -2,10 +2,6 @@ program PascalChess;
 
 uses
   Vcl.Forms,
-  ChessBoardView in 'ChessBoardView.pas' {BoardView},
-  BoardState in 'Board\BoardState.pas',
-  BoardBuilder in 'Board\BoardBuilder.pas',
-  BoardPiece in 'Board\BoardPiece.pas',
   Pawn in 'Pieces\Pawn.pas',
   Bishop in 'Pieces\Bishop.pas',
   Queen in 'Pieces\Queen.pas',
@@ -14,19 +10,23 @@ uses
   Knight in 'Pieces\Knight.pas',
   ImageLoader in 'Images\ImageLoader.pas',
   ColorUtils in 'Utils\ColorUtils.pas',
-  Board in 'Board\Board.pas',
   PieceBase in 'Pieces\PieceBase.pas',
-  BoardTimer in 'Board\BoardTimer.pas',
-  LobbyView in 'LobbyView.pas' {frmLobbyView},
   HttpClient.IndyFacade in 'Utils\HttpClient.IndyFacade.pas',
-  BoardPlayer in 'Board\BoardPlayer.pas',
   RoomController in 'Controllers\RoomController.pas',
   ServerController in 'Controllers\ServerController.pas',
-  CheckMateView in 'CheckMateView.pas' {frmCheckMateView},
-  PlayerLobbyView in 'PlayerLobbyView.pas' {frmPlayerLobbyView},
-  AdminLobbyView in 'AdminLobbyView.pas' {frmAdminLobbyView},
-  WaitingPlayersView in 'WaitingPlayersView.pas' {frmWaitingPlayersView},
-  WaitingRoomView in 'WaitingRoomView.pas' {frmWaitingRoomView};
+  PC.Admin.Lobby.View in 'PC.Admin.Lobby.View.pas' {frmAdminLobbyView},
+  PC.CheckMate.View in 'PC.CheckMate.View.pas' {frmCheckMateView},
+  PC.Chessboard.View in 'PC.Chessboard.View.pas' {BoardView},
+  PC.Lobby.View in 'PC.Lobby.View.pas' {frmLobbyView},
+  PC.Player.Lobby.View in 'PC.Player.Lobby.View.pas' {frmPlayerLobbyView},
+  PC.WaitingPlayers.View in 'PC.WaitingPlayers.View.pas' {frmWaitingPlayersView},
+  PC.WaitingRoom.View in 'PC.WaitingRoom.View.pas' {frmWaitingRoomView},
+  PC.Board in 'Board\PC.Board.pas',
+  PC.BoardBuilder in 'Board\PC.BoardBuilder.pas',
+  PC.Piece in 'Board\PC.Piece.pas',
+  PC.Player in 'Board\PC.Player.pas',
+  PC.State in 'Board\PC.State.pas',
+  PC.Timer in 'Board\PC.Timer.pas';
 
 {$R *.res}
 

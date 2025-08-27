@@ -128,13 +128,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="ChessBoardView.pas">
-            <Form>BoardView</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="Board\BoardState.pas"/>
-        <DCCReference Include="Board\BoardBuilder.pas"/>
-        <DCCReference Include="Board\BoardPiece.pas"/>
         <DCCReference Include="Pieces\Pawn.pas"/>
         <DCCReference Include="Pieces\Bishop.pas"/>
         <DCCReference Include="Pieces\Queen.pas"/>
@@ -143,37 +136,44 @@
         <DCCReference Include="Pieces\Knight.pas"/>
         <DCCReference Include="Images\ImageLoader.pas"/>
         <DCCReference Include="Utils\ColorUtils.pas"/>
-        <DCCReference Include="Board\Board.pas"/>
         <DCCReference Include="Pieces\PieceBase.pas"/>
-        <DCCReference Include="Board\BoardTimer.pas"/>
-        <DCCReference Include="LobbyView.pas">
-            <Form>frmLobbyView</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="Utils\HttpClient.IndyFacade.pas"/>
-        <DCCReference Include="Board\BoardPlayer.pas"/>
         <DCCReference Include="Controllers\RoomController.pas"/>
         <DCCReference Include="Controllers\ServerController.pas"/>
-        <DCCReference Include="CheckMateView.pas">
-            <Form>frmCheckMateView</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="PlayerLobbyView.pas">
-            <Form>frmPlayerLobbyView</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="AdminLobbyView.pas">
+        <DCCReference Include="PC.Admin.Lobby.View.pas">
             <Form>frmAdminLobbyView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="WaitingPlayersView.pas">
+        <DCCReference Include="PC.CheckMate.View.pas">
+            <Form>frmCheckMateView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="PC.Chessboard.View.pas">
+            <Form>BoardView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="PC.Lobby.View.pas">
+            <Form>frmLobbyView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="PC.Player.Lobby.View.pas">
+            <Form>frmPlayerLobbyView</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="PC.WaitingPlayers.View.pas">
             <Form>frmWaitingPlayersView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="WaitingRoomView.pas">
+        <DCCReference Include="PC.WaitingRoom.View.pas">
             <Form>frmWaitingRoomView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Board\PC.Board.pas"/>
+        <DCCReference Include="Board\PC.BoardBuilder.pas"/>
+        <DCCReference Include="Board\PC.Piece.pas"/>
+        <DCCReference Include="Board\PC.Player.pas"/>
+        <DCCReference Include="Board\PC.State.pas"/>
+        <DCCReference Include="Board\PC.Timer.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
