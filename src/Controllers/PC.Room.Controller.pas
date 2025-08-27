@@ -23,8 +23,8 @@ type
     procedure SetStarted(const Value: Boolean);
     function GetTime: Integer;
     procedure SetTime(const Value: Integer);
-    function GetState: IBoardState;
-    procedure SetState(const Value: IBoardState);
+    function GetState: IState;
+    procedure SetState(const Value: IState);
     function GetPlayers: TPlayerList;
     procedure SetPlayers(const Value: TPlayerList);
     function GetCurrentPlayerBlackPiece: Integer;
@@ -39,7 +39,7 @@ type
     property Players: TPlayerList read GetPlayers write SetPlayers;
     property CurrentPlayerBlackPiece: Integer read GetCurrentPlayerBlackPiece write SetCurrentPlayerBlackPiece;
     property NextPlayersBlackPiece: TPlayerList read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
-    property State: IBoardState read GetState write SetState;
+    property State: IState read GetState write SetState;
     procedure Pull;
     procedure Push;
     procedure Update;
@@ -55,7 +55,7 @@ type
     FStatus: string;
     FStarted: Boolean;
     FTime: Integer;
-    FState: IBoardState;
+    FState: IState;
     FPlayers: TPlayerList;
     FEvents: TList<TRoomUpdateEvent>;
     FCurrentPlayerBlackPiece: Integer;
@@ -70,8 +70,8 @@ type
     procedure SetStarted(const Value: Boolean);
     function GetTime: Integer;
     procedure SetTime(const Value: Integer);
-    function GetState: IBoardState;
-    procedure SetState(const Value: IBoardState);
+    function GetState: IState;
+    procedure SetState(const Value: IState);
     function GetPlayers: TPlayerList;
     procedure SetPlayers(const Value: TPlayerList);
     function GetNextPlayersBlackPiece: TPlayerList;
@@ -94,7 +94,7 @@ type
     property Players: TPlayerList read GetPlayers write SetPlayers;
     property CurrentPlayerBlackPiece: Integer read GetCurrentPlayerBlackPiece write SetCurrentPlayerBlackPiece;
     property NextPlayersBlackPiece: TPlayerList read GetNextPlayersBlackPiece write SetNextPlayersBlackPiece;
-    property State: IBoardState read GetState write SetState;
+    property State: IState read GetState write SetState;
     function ToJSON: string;
     procedure LoadFromJSON(const JSON: TJSONObject);
   end;
@@ -135,7 +135,7 @@ begin
   FPlayers := TPlayerList.Create();
   FEvents := TList<TRoomUpdateEvent>.Create();
   FNextPlayersBlackPiece := TPlayerList.Create();
-  FState := TBoardState.Create();
+  FState := TState.Create();
 end;
 
 destructor TRoom.Destroy;
@@ -310,12 +310,12 @@ begin
   FNextPlayersBlackPiece := Value;
 end;
 
-function TRoom.GetState: IBoardState;
+function TRoom.GetState: IState;
 begin
   Result := FState;
 end;
 
-procedure TRoom.SetState(const Value: IBoardState);
+procedure TRoom.SetState(const Value: IState);
 begin
   FState := Value;
 end;

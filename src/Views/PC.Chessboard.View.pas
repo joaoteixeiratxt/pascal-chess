@@ -169,7 +169,7 @@ end;
 
 procedure TBoardView.UpdateTimers;
 var
-  State: IBoardState;
+  State: IState;
 begin
   State := FRoom.State;
   if State.CurrentTurnColor = State.CurrentPlayerColor then

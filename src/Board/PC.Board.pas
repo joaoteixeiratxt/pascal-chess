@@ -16,7 +16,7 @@ type
 
   IBoard = interface
   ['{9E74D5D8-3789-4B7F-A288-EEED76F9F589}']
-    procedure SetState(const State: IBoardState);
+    procedure SetState(const State: IState);
     procedure SetBoardPanel(const BoardPanel: TPanel);
     procedure SetBoardMatrix(const BoardMatrix: TBoardMatrix);
     procedure Render;
@@ -25,7 +25,7 @@ type
   TBoard = class(TInterfacedObject, IBoard)
   private
     FRoom: IRoom;
-    FState: IBoardState;
+    FState: IState;
     FBoardPanel: TPanel;
     FBoardMatrix: TBoardMatrix;
     FPiecesMap: TDictionary<Integer,IPiece>;
@@ -36,7 +36,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure SetState(const State: IBoardState);
+    procedure SetState(const State: IState);
     procedure SetBoardPanel(const BoardPanel: TPanel);
     procedure SetBoardMatrix(const BoardMatrix: TBoardMatrix);
     procedure Render;
@@ -58,7 +58,7 @@ begin
   inherited;
 end;
 
-procedure TBoard.SetState(const State: IBoardState);
+procedure TBoard.SetState(const State: IState);
 begin
   FState := State;
 end;

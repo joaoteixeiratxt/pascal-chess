@@ -13,7 +13,7 @@ const
 type
   TPieceMatrix = array[0..7, 0..7] of IPiece;
 
-  IBoardState = interface
+  IState = interface
   ['{984AB04C-D208-47A0-8A1C-71634201AB3B}']
     procedure Initialize;
     function GetPieceMatrix: TPieceMatrix;
@@ -39,7 +39,7 @@ type
     procedure LoadFromJSON(const JSON: TJSONObject);
   end;
 
-  TBoardState = class(TInterfacedObject, IBoardState)
+  TState = class(TInterfacedObject, IState)
   private
     FBoardMatrix: TPieceMatrix;
     FSelectedPiece: IPiece;
@@ -82,16 +82,16 @@ implementation
 uses
   PC.Room.Controller, Dialogs;
 
-{ TBoardState }
+{ TState }
 
-constructor TBoardState.Create;
+constructor TState.Create;
 begin
   FCurrentPlayerColor := pcWhite;
   FOpponentColor := pcBlack;
   FCurrentTurnColor := pcWhite;
 end;
 
-procedure TBoardState.Clear;
+procedure TState.Clear;
 var
   Row, Column: Integer;
 begin
@@ -100,7 +100,7 @@ begin
       FBoardMatrix[Column, Row] := nil;
 end;
 
-procedure TBoardState.CreatePieces(Color: TPieceColor);
+procedure TState.CreatePieces(Color: TPieceColor);
 var
   RowSpecialPieces, RowPawnPieces,
   KingColumn, QueenColumn, Column: Integer;
@@ -147,44 +147,44 @@ begin
   end;
 end;
 
-procedure TBoardState.Initialize;
+procedure TState.Initialize;
 begin
   Clear();
   CreatePieces(pcWhite);
   CreatePieces(pcBlack);
 end;
 
-function TBoardState.GetSelectedPiece: IPiece;
+function TState.GetSelectedPiece: IPiece;
 begin
   Result := FSelectedPiece;
 end;
 
-procedure TBoardState.SetSelectedPiece(const Value: IPiece);
+procedure TState.SetSelectedPiece(const Value: IPiece);
 begin
   FSelectedPiece := Value;
 end;
 
-function TBoardState.GetPieceMatrix: TPieceMatrix;
+function TState.GetPieceMatrix: TPieceMatrix;
 begin
   Result := FBoardMatrix;
 end;
 
-function TBoardState.GetCurrentPlayerColor: TPieceColor;
+function TState.GetCurrentPlayerColor: TPieceColor;
 begin
   Result := FCurrentPlayerColor;
 end;
 
-procedure TBoardState.SetCurrentPlayerColor(const Value: TPieceColor);
+procedure TState.SetCurrentPlayerColor(const Value: TPieceColor);
 begin
   FCurrentPlayerColor := Value;
 end;
 
-function TBoardState.GetCurrentTurnColor: TPieceColor;
+function TState.GetCurrentTurnColor: TPieceColor;
 begin
   Result := FCurrentTurnColor;
 end;
 
-procedure TBoardState.SetCurrentTurnColor;
+procedure TState.SetCurrentTurnColor;
 var
   Player: IPlayer;
   NextPlayersBlackPiece: TPlayerList;
@@ -207,32 +207,32 @@ begin
   NextPlayersBlackPiece.Add(Player);
 end;
 
-function TBoardState.GetPlayerID: string;
+function TState.GetPlayerID: string;
 begin
   Result := FPlayerID;
 end;
 
-procedure TBoardState.SetPlayerID(const Value: string);
+procedure TState.SetPlayerID(const Value: string);
 begin
   FPlayerID := Value;
 end;
 
-function TBoardState.GetOpponentColor: TPieceColor;
+function TState.GetOpponentColor: TPieceColor;
 begin
   Result := FOpponentColor;
 end;
 
-procedure TBoardState.SetOpponentColor(const Value: TPieceColor);
+procedure TState.SetOpponentColor(const Value: TPieceColor);
 begin
   FOpponentColor := Value;
 end;
 
-function TBoardState.GetPieceAt(const Coordinates: TPoint): IPiece;
+function TState.GetPieceAt(const Coordinates: TPoint): IPiece;
 begin
   Result := FBoardMatrix[Coordinates.X, Coordinates.Y];
 end;
 
-function TBoardState.FindKingPosition(Color: TPieceColor): TPoint;
+function TState.FindKingPosition(Color: TPieceColor): TPoint;
 var
   Row, Column: Integer;
   Piece: IPiece;
@@ -247,7 +247,7 @@ begin
     end;
 end;
 
-function TBoardState.MoveLeavesKingInCheck(const FromCoordinates, ToCoordinates: TPoint; const Color: TPieceColor): Boolean;
+function TState.MoveLeavesKingInCheck(const FromCoordinates, ToCoordinates: TPoint; const Color: TPieceColor): Boolean;
 var
   Piece, Captured: IPiece;
   OriginalFrom, OriginalTo: TPoint;
@@ -269,7 +269,7 @@ begin
   FBoardMatrix[OriginalTo.X, OriginalTo.Y] := Captured;
 end;
 
-function TBoardState.IsInCheck(Color: TPieceColor): Boolean;
+function TState.IsInCheck(Color: TPieceColor): Boolean;
 var
   KingPos, Move: TPoint;
   Row, Column: Integer;
@@ -307,7 +307,7 @@ begin
   Result := False;
 end;
 
-function TBoardState.IsCheckMate(Color: TPieceColor): Boolean;
+function TState.IsCheckMate(Color: TPieceColor): Boolean;
 var
   Row, Column: Integer;
   Piece: IPiece;
@@ -337,7 +337,7 @@ begin
   Result := True;
 end;
 
-procedure TBoardState.MovePiece(const FromCoordinates, ToCoordinates: TPoint);
+procedure TState.MovePiece(const FromCoordinates, ToCoordinates: TPoint);
 var
   Piece, Rook: IPiece;
   RookFrom, RookTo: TPoint;
@@ -378,7 +378,7 @@ begin
   TRoomController.Current.Update();
 end;
 
-function TBoardState.ToJSON: TJSONObject;
+function TState.ToJSON: TJSONObject;
 var
   Point: TPoint;
   Piece: IPiece;
@@ -407,7 +407,7 @@ begin
   end;
 end;
 
-procedure TBoardState.LoadFromJSON(const JSON: TJSONObject);
+procedure TState.LoadFromJSON(const JSON: TJSONObject);
 var
   I: Integer;
   Piece: IPiece;

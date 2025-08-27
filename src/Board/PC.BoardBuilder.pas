@@ -25,17 +25,17 @@ type
   IBoardBuilder = interface
   ['{C15DF4E4-4B03-4C73-B7DD-560151028BC9}']
     function SetBoardPanel(const BoardPanel: TPanel): IBoardBuilder;
-    function SetState(const State: IBoardState): IBoardBuilder;
+    function SetState(const State: IState): IBoardBuilder;
     function Build: IBoard;
   end;
 
   TBoardBuilder = class(TInterfacedObject, IBoardBuilder)
   private
     FBoardPanel: TPanel;
-    FState: IBoardState;
+    FState: IState;
   public
     function SetBoardPanel(const BoardPanel: TPanel): IBoardBuilder;
-    function SetState(const State: IBoardState): IBoardBuilder;
+    function SetState(const State: IState): IBoardBuilder;
     function Build: IBoard;
   end;
 
@@ -98,7 +98,7 @@ begin
   Result := Self;
 end;
 
-function TBoardBuilder.SetState(const State: IBoardState): IBoardBuilder;
+function TBoardBuilder.SetState(const State: IState): IBoardBuilder;
 begin
   FState := State;
   Result := Self;

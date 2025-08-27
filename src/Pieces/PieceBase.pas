@@ -9,7 +9,7 @@ uses
 type
   TPieceBase = class(TInterfacedObject, IPiece, IStrategy)
   protected
-    FState: IBoardState;
+    FState: IState;
     FColor: TPieceColor;
     FPieceType: TPieceType;
     FCoordinates: TPoint;
@@ -41,7 +41,7 @@ type
   TStrategyBase = class(TInterfacedObject, IStrategy)
   protected
     FCoordinates: TPoint;
-    FState: IBoardState;
+    FState: IState;
     FMatrix: TPieceMatrix;
     FCurrentPlayerColor: TPieceColor;
   public
@@ -113,7 +113,7 @@ function TPieceBase.GetLegalMoves: TLegalMoves;
 var
   Move: TPoint;
   Indice: Integer;
-  State: IBoardState;
+  State: IState;
   Moves: TLegalMoves;
 begin
   State := TRoomController.Current.State;
