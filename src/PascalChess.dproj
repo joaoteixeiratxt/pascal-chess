@@ -168,7 +168,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="PC.Main.View.pas">
-            <Form>frmLobbyView</Form>
+            <Form>frmMainView</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Images\PC.Image.Loader.pas"/>

@@ -1,4 +1,4 @@
-object frmLobbyView: TfrmLobbyView
+object frmMainView: TfrmMainView
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]

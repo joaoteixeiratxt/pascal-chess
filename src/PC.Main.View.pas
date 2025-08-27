@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, Vcl.ComCtrls, PC.Player.Lobby.View, PC.Admin.Lobby.View;
 
 type
-  TfrmLobbyView = class(TForm)
+  TfrmMainView = class(TForm)
     imgLogo: TImage;
     pnlPlay: TPanel;
     imgPlay: TImage;
@@ -21,18 +21,18 @@ type
   end;
 
 var
-  frmLobbyView: TfrmLobbyView;
+  frmMainView: TfrmMainView;
 
 implementation
 
 {$R *.dfm}
 
-procedure TfrmLobbyView.lblPlayClick(Sender: TObject);
+procedure TfrmMainView.lblPlayClick(Sender: TObject);
 begin
   TfrmPlayerLobbyView.ShowView();
 end;
 
-procedure TfrmLobbyView.lblCreateRoomClick(Sender: TObject);
+procedure TfrmMainView.lblCreateRoomClick(Sender: TObject);
 begin
   TfrmAdminLobbyView.ShowView();
 end;
