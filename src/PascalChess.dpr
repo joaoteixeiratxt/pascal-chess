@@ -13,7 +13,7 @@ uses
   PieceBase in 'Pieces\PieceBase.pas',
   HttpClient.IndyFacade in 'Utils\HttpClient.IndyFacade.pas',
   RoomController in 'Controllers\RoomController.pas',
-  ServerController in 'Controllers\ServerController.pas',
+  PC.Server.Service in 'Controllers\PC.Server.Service.pas',
   PC.Admin.Lobby.View in 'PC.Admin.Lobby.View.pas' {frmAdminLobbyView},
   PC.CheckMate.View in 'PC.CheckMate.View.pas' {frmCheckMateView},
   PC.Chessboard.View in 'PC.Chessboard.View.pas' {BoardView},

@@ -139,7 +139,7 @@
         <DCCReference Include="Pieces\PieceBase.pas"/>
         <DCCReference Include="Utils\HttpClient.IndyFacade.pas"/>
         <DCCReference Include="Controllers\RoomController.pas"/>
-        <DCCReference Include="Controllers\ServerController.pas"/>
+        <DCCReference Include="Controllers\PC.Server.Service.pas"/>
         <DCCReference Include="PC.Admin.Lobby.View.pas">
             <Form>frmAdminLobbyView</Form>
             <FormType>dfm</FormType>

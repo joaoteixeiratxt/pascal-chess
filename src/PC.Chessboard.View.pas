@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage, PC.Board, PC.State, PC.BoardBuilder,
-  Vcl.StdCtrls, System.Threading, PC.Piece, System.JSON, PC.Timer, RoomController, ServerController, ImageLoader,
+  Vcl.StdCtrls, System.Threading, PC.Piece, System.JSON, PC.Timer, RoomController, PC.Server.Service, ImageLoader,
   PC.Player, PC.CheckMate.View;
 
 type
@@ -36,7 +36,7 @@ type
     FRoom: IRoom;
     FTimerPlayer1: TBoardTimer;
     FTimerPlayer2: TBoardTimer;
-    FServerController: IServerController;
+    FServerService: IServerService;
     procedure SetPlayer;
     procedure SetCurrentPlayerBlackPiece;
     procedure UpdateBoard;
@@ -71,7 +71,7 @@ end;
 
 procedure TBoardView.FormDestroy(Sender: TObject);
 begin
-  FServerController.Finalize();
+  FServerService.Finalize();
 
   FreeAndNil(FTimerPlayer1);
   FreeAndNil(FTimerPlayer2);
@@ -101,8 +101,8 @@ begin
 
   FBoard.Render();
 
-  FServerController := TServerController.Create(FRoom, OnError);
-  FServerController.Start();
+  FServerService := TServerService.Create(FRoom, OnError);
+  FServerService.Start();
 
   UpdateTimers();
 end;

@@ -1,4 +1,4 @@
-unit ServerController;
+unit PC.Server.Service;
 
 interface
 
@@ -9,13 +9,13 @@ uses
 type
   TOnErrorCallback = TProc<ExceptClass>;
 
-  IServerController = interface
+  IServerService = interface
   ['{6B6A01E0-8138-4F06-BCCA-83B67F3F59CE}']
     procedure Start;
     procedure Finalize;
   end;
 
-  TServerController = class(TInterfacedObject, IServerController)
+  TServerService = class(TInterfacedObject, IServerService)
   private
     FRoom: IRoom;
     FTimer: TTimer;
@@ -32,9 +32,9 @@ type
 
 implementation
 
-{ TServerController }
+{ TServerService }
 
-constructor TServerController.Create(const Room: IRoom; const OnError: TOnErrorCallback);
+constructor TServerService.Create(const Room: IRoom; const OnError: TOnErrorCallback);
 begin
   FRoom := Room;
   FOnError := OnError;
@@ -46,7 +46,7 @@ begin
   FTimer.OnTimer := OnTimer;
 end;
 
-destructor TServerController.Destroy;
+destructor TServerService.Destroy;
 begin
   FTimer.Enabled := False;
   FreeAndNil(Ftimer);
@@ -54,7 +54,7 @@ begin
   inherited;
 end;
 
-procedure TServerController.OnTimer(Sender: TObject);
+procedure TServerService.OnTimer(Sender: TObject);
 var
   Hash: string;
   NewRoom: IRoom;
@@ -89,12 +89,12 @@ begin
   end;
 end;
 
-procedure TServerController.Start;
+procedure TServerService.Start;
 begin
   FTimer.Enabled := True;
 end;
 
-procedure TServerController.Finalize;
+procedure TServerService.Finalize;
 begin
   FTimer.Enabled := False;
 end;
