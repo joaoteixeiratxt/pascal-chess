@@ -4,6 +4,9 @@
 
 Pascal Chess é um estudo de caso de desenvolvimento de um jogo de xadrez em **Object Pascal**. O projeto une uma aplicação desktop (Delphi/Lazarus) a um pequeno servidor HTTP escrito em Node.js, permitindo partidas online e armazenamento do estado do jogo.
 
+Criado para praticar e ensinar o uso de **Design Patterns**, o projeto demonstra diferentes padrões de projeto aplicados no contexto de um jogo de xadrez.
+Por ser um estudo e evitar dependências de pacotes de terceiros, a comunicação com o servidor é feita apenas via HTTP simples, sem uso de WebSockets.
+
 ## Estrutura do Projeto
 
 ```text
