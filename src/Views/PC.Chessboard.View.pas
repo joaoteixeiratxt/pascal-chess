@@ -206,6 +206,13 @@ begin
     Self.Close();
     Abort;
   end;
+
+  if (FRoom.Players.FindById(FRoom.Owner.Id) = nil) then
+  begin
+    TCheckMateView.ShowView(pcBlack);
+    Self.Close();
+    Abort;
+  end;
 end;
 
 procedure TBoardView.OnError(E: ExceptClass);
