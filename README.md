@@ -1,4 +1,8 @@
-# Pascal Chess
+<p align="center">
+  <img src="logo.png" alt="Delphi Pascal Chess logo" />
+</p>
+
+<h1 align="center">Delphi Pascal Chess</h1>
 
 ## Visão Geral
 
