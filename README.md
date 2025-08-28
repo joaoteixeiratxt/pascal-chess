@@ -125,6 +125,14 @@ sequenceDiagram
     View->>Controller: solicita validação
     Controller->>Room: atualiza estado e sincroniza
 ```
+## TODOs
+
+- Implementar promoção de peões ao atingir a última fileira, permitindo ao jogador escolher a nova peça.
+- Adicionar captura *en passant*.
+- Permitir desfazer e refazer movimentos com um histórico de jogadas usando o padrão Command.
+- Corrigir a tela exibida quando o tempo do adversário expira, evitando tratá-la como xeque-mate.
+- Mostrar na interface as peças capturadas por cada jogador durante a partida.
+- Remover dependência recursiva entre estados usando o padrão Prototype para clonagem e validação.
 
 ## Licença
 Distribuído sob a licença MIT. Consulte o arquivo `LICENSE` para mais detalhes.
